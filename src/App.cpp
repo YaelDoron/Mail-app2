@@ -10,7 +10,10 @@
 
 using namespace std;    
 
-App::App() : filter(nullptr), urlFilePath("/usr/src/mytest/data/urls.txt"), bloomFilePath("/usr/src/mytest/data/bloom.txt"){}
+App::App() 
+    : filter(nullptr),
+      store("/usr/src/mytest/data/urls.txt"),
+      bloomFilePath("/usr/src/mytest/data/bloom.txt") {}
 
 bool App::isValidUrl(const string& url) {
     static const regex urlRegex(R"(^((https?:\/\/)?(www\.)?([a-zA-Z0-9\-]+\.)+[a-zA-Z0-9]{2,})(\/\S*)?$)");
@@ -55,10 +58,10 @@ void App::handleCommand(const string& line) {
     }
 
     if (commandType == 1) {
-        addUrl command(url, *filter, urlFilePath);
+        addUrl command(url, *filter, store);
         command.execute();
     } else if (commandType == 2) {
-        checkUrl command(url, *filter, urlFilePath);
+        checkUrl command(url, *filter, store);
         command.execute();
     } else {
         return;
@@ -82,7 +85,7 @@ void App::run() {
     if (loadedBits.size() > 0) {
         filter->setFilter(loadedBits);
     }
-    
+    store.load();
     string commandLine;
     while (getline(cin, commandLine)) {
         handleCommand(commandLine);

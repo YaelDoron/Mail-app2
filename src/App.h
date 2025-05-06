@@ -4,6 +4,7 @@
 #include "BloomFilter.h"
 #include <memory>
 #include <string>
+#include "UrlStore.h"
 using namespace std;
 
 // Main application class to handle URL filtering operations
@@ -11,7 +12,7 @@ class App
 {
 private:
     unique_ptr<BloomFilter> filter;
-    string urlFilePath;
+    UrlStore store;
     string bloomFilePath;
 
     // Initialize the Bloom filter from the given line

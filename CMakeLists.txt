@@ -22,7 +22,8 @@ add_executable(myProgram
     src/checkUrl.cpp
     src/RepeatableHashFunction.cpp
     src/App.cpp
-    src/main.cpp         
+    src/main.cpp
+    src/UrlStore.cpp         
 )
 
 target_link_libraries(myProgram stdc++fs)
@@ -40,7 +41,10 @@ src/RepeatableHashFunctionTest.cpp
 src/RepeatableHashFunction.cpp
 src/BloomFilterTest.cpp
 src/AppTests.cpp
-src/App.cpp)
+src/App.cpp
+src/delete_url_test.cpp
+src/deleteUrl.cpp
+src/UrlStore.cpp)
 
 target_link_libraries(runTests stdc++fs) # using std::filesystem in c++ 17 
 
