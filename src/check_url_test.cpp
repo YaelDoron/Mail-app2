@@ -1,21 +1,24 @@
 #include <gtest/gtest.h>
 #include "checkUrl.h"
-#include "BloomFilter.h"
 #include "addUrl.h"
+#include "BloomFilter.h"
+#include "UrlStore.h"
 
 #include <fstream>
 #include <algorithm>
 #include <filesystem>
-
+#include <sstream>
 
 using namespace std;
 
-//Test 1: One bit is off --> should print "false"
+// Test 1: One bit is off --> should print "false"
 TEST(CheckUrlTest, BitOff_PrintsFalse) {
     BloomFilter bf(8, {1}, std::hash<string>());
-    string url = "www.example.com";  // No bits are on
+    string url = "www.example.com";
+    UrlStore store("../data/test_urls.txt");
+    store.load();  // מומלץ לטעון לפני כל שימוש
 
-    checkUrl check(url, bf, "../data/test_urls.txt");
+    checkUrl check(url, bf, store);
 
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
@@ -26,24 +29,27 @@ TEST(CheckUrlTest, BitOff_PrintsFalse) {
     EXPECT_EQ(buffer.str(), "false\n");
 }
 
-//Test 2: All bits are on, but the URL is not in the file --> should print "true false"
+// Test 2: All bits are on, but the URL is not in the file --> should print "true false"
 TEST(CheckUrlTest, BitsOn_ButUrlNotInFile_PrintsTrueFalse) {
     const std::string testFile = "../data/test_urls.txt";
     std::filesystem::create_directory("../data");
-    std::string url = "www.example.com";
 
+    std::string url = "www.example.com";
     BloomFilter bf(8, {1}, std::hash<std::string>());
 
-    //Add URL using AddUrl – turns on the bits and writes to the file
-    addUrl add(url, bf, testFile);
+    UrlStore store(testFile);
+    store.load();
+
+    // Add URL – turns on the bits and adds to store
+    addUrl add(url, bf, store);
     add.execute();
 
-    //Clear the file to remove the URL
-    std::ofstream clear(testFile, std::ios::trunc);  
+    // Clear the file manually to simulate "missing" URL in file
+    std::ofstream clear(testFile, std::ios::trunc);
     clear.close();
+    store.load();  // חשוב לטעון מחדש את store (הקובץ עכשיו ריק)
 
-    //CheckUrl finds bits on but the URL is no longer in the file
-    checkUrl check(url, bf, testFile);
+    checkUrl check(url, bf, store);
 
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
@@ -56,18 +62,21 @@ TEST(CheckUrlTest, BitsOn_ButUrlNotInFile_PrintsTrueFalse) {
     std::remove(testFile.c_str());
 }
 
-//Test 3: All bits are on, and the URL is in the file --> should print "true true"
+// Test 3: All bits are on, and the URL is in the file --> should print "true true"
 TEST(CheckUrlTest, BitsOn_AndUrlInFile_PrintsTrueTrue) {
     const string testFile = "../data/test_urls.txt";
     std::filesystem::create_directory("../data");
-    std::string url = "www.added-by-addurl.com";
 
+    std::string url = "www.added-by-addurl.com";
     BloomFilter bf(8, {1}, std::hash<std::string>());
 
-    addUrl add(url, bf, testFile);
+    UrlStore store(testFile);
+    store.load();
+
+    addUrl add(url, bf, store);
     add.execute();
 
-    checkUrl check(url, bf, testFile);
+    checkUrl check(url, bf, store);
 
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
@@ -79,8 +88,3 @@ TEST(CheckUrlTest, BitsOn_AndUrlInFile_PrintsTrueTrue) {
 
     std::remove(testFile.c_str());
 }
-
-
-
-
-

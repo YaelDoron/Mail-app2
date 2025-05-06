@@ -5,26 +5,19 @@
 #include <fstream>
 using namespace std;
 
-addUrl::addUrl(const std::string& url, BloomFilter& bf, const std::string& file)
-:url(url),filter(bf),file(file) {}
+addUrl::addUrl(const std::string& url, BloomFilter& bf, UrlStore& store)
+:url(url),filter(bf),store(store) {}
 
 // Executes the add URL operation:
-// 1. Sets the relevant bits in the Bloom filter
-// 2. Appends the URL to the file
+// 1. Adds the URL to the store (if not already present)
+// 2. Saves the store to file
+// 3. Sets the relevant bits in the Bloom filter
 void addUrl::execute() {
     vector<int> indexes = filter.getIndexes(url);
     // Set each bit in the Bloom filter
     for (int idx : indexes){
         filter.setBit(idx);
     }
-
-    // Open the file in append mode to add the URL without overwriting existing data
-    std::ofstream file(this->file, std::ios::app); 
-    if (file.is_open()) {
-        file << url << "\n"; // write url followed by newline
-        file.close();
-    } else {
-        // Print error if the file could not be opened
-        std::cerr << "Failed to open urls.txt" << std::endl;
-    }
+    // add the url to the urlstore
+    store.add(url);
 }

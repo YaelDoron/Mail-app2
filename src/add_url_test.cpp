@@ -1,30 +1,28 @@
 #include <gtest/gtest.h>
 #include "addUrl.h"
 #include "BloomFilter.h"
+#include "UrlStore.h"
 
 #include <fstream>
 #include <algorithm>
 #include <filesystem>
 
-
-
 using namespace std;
 
-//tests if add_url adds the url to the blacklist text file
+// tests if add_url adds the url to the blacklist text file
 TEST(AddUrlTest, UrlIsSavedToFile) {
     const std::string testFile = "../data/test_urls.txt";
 
-    // making sure data folfer exists
     std::filesystem::create_directory("../data");
-
-    // making sure the file is empty
     std::ofstream clear(testFile, std::ios::trunc);
     clear.close();
 
     BloomFilter bf(8, {1}, std::hash<std::string>());
     std::string url = "www.unit-test.com";
+    UrlStore store(testFile);
+    store.load(); // לא חובה, אבל לא מזיק לפני טסט
 
-    addUrl add(url, bf, testFile);
+    addUrl add(url, bf, store);
     add.execute();
 
     std::ifstream file(testFile);
@@ -35,17 +33,20 @@ TEST(AddUrlTest, UrlIsSavedToFile) {
     EXPECT_EQ(line, url);
 
     file.close();
-    std::remove(testFile.c_str());  
+    std::remove(testFile.c_str());
 }
 
-
-//tests that the correct bits in the bloom filter are set
+// tests that the correct bits in the bloom filter are set
 TEST(AddUrlTest, BitsAreSetInBloomFilter) {
     const std::string testFile = "../data/test_urls.txt";
     std::filesystem::create_directory("../data");
+
     BloomFilter bf(8, {1}, std::hash<string>());
     string url = "www.example.com";
-    addUrl add(url, bf, testFile);  
+    UrlStore store(testFile);
+    store.load();
+
+    addUrl add(url, bf, store);
     add.execute();
 
     vector<int> indexes = bf.getIndexes({url});
@@ -55,20 +56,20 @@ TEST(AddUrlTest, BitsAreSetInBloomFilter) {
         EXPECT_TRUE(filter[idx]) << "Expected filter[" << idx << "] to be true";
     }
 
-    std::remove(testFile.c_str());  // clearing the file
+    std::remove(testFile.c_str());
 }
 
-
-//tests that only the relevant bits are set (all other bits should be false)
+// tests that only the relevant bits are set (all other bits should be false)
 TEST(AddUrlTest, OnlyRelevantBitsAreSetInFilter) {
     const std::string testFile = "../data/test_urls.txt";
-
     std::filesystem::create_directory("../data");
 
     BloomFilter bf(8, {1, 2}, std::hash<string>());
     string url = "www.example.com";
+    UrlStore store(testFile);
+    store.load();
 
-    addUrl add(url, bf, testFile);
+    addUrl add(url, bf, store);
     add.execute();
 
     vector<int> expectedIndexes = bf.getIndexes({url});
@@ -82,7 +83,7 @@ TEST(AddUrlTest, OnlyRelevantBitsAreSetInFilter) {
         }
     }
 
-    std::remove(testFile.c_str());  
+    std::remove(testFile.c_str());
 }
 
 int main(int argc, char **argv) {
