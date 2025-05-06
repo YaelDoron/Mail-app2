@@ -40,7 +40,7 @@ void UrlStore::add(const string& url) {
 }
 
 bool UrlStore::remove(const std::string& url) {
-    if (urls.erase(url)) {
+    if (urls.erase(url)) { // removes the url if it's in urlstore
         save(); // overwrite the file with updated set
         return true;
     }
