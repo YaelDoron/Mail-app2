@@ -1,6 +1,6 @@
 import socket
 
-class TCPClient:
+class client:
     # Store server details and create a TCP socket
     def __init__(self, server_ip, server_port):
         self.server_ip = server_ip
