@@ -44,7 +44,9 @@ src/AppTests.cpp
 src/App.cpp
 src/delete_url_test.cpp
 src/deleteUrl.cpp
-src/UrlStore.cpp)
+src/UrlStore.cpp
+src/CommandParser_test.cpp
+src/CommandParser.cpp)
 
 target_link_libraries(runTests stdc++fs) # using std::filesystem in c++ 17 
 
