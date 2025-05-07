@@ -32,6 +32,7 @@ bool checkUrl::isInUrlStore() const {
     return store.contains(url);
 }
 
+// Returns the result of the URL check ("true true", "true false", "false")
 string checkUrl::getResult() const {
     return result;
 }
