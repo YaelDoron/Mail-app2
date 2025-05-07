@@ -19,14 +19,8 @@ TEST(CheckUrlTest, BitOff_PrintsFalse) {
     store.load();  // מומלץ לטעון לפני כל שימוש
 
     checkUrl check(url, bf, store);
-
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-
     check.execute();
-
-    std::cout.rdbuf(old);
-    EXPECT_EQ(buffer.str(), "false\n");
+    EXPECT_EQ(check.getResult(), "false");
 }
 
 // Test 2: All bits are on, but the URL is not in the file --> should print "true false"
@@ -47,18 +41,11 @@ TEST(CheckUrlTest, BitsOn_ButUrlNotInFile_PrintsTrueFalse) {
     // Clear the file manually to simulate "missing" URL in file
     std::ofstream clear(testFile, std::ios::trunc);
     clear.close();
-    store.load();  // חשוב לטעון מחדש את store (הקובץ עכשיו ריק)
+    store.load();  
 
     checkUrl check(url, bf, store);
-
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-
     check.execute();
-
-    std::cout.rdbuf(old);
-    EXPECT_EQ(buffer.str(), "true false\n");
-
+    EXPECT_EQ(check.getResult(), "true false");
     std::remove(testFile.c_str());
 }
 
@@ -77,14 +64,7 @@ TEST(CheckUrlTest, BitsOn_AndUrlInFile_PrintsTrueTrue) {
     add.execute();
 
     checkUrl check(url, bf, store);
-
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-
     check.execute();
-
-    std::cout.rdbuf(old);
-    EXPECT_EQ(buffer.str(), "true true\n");
-
+    EXPECT_EQ(check.getResult(), "true true");
     std::remove(testFile.c_str());
 }

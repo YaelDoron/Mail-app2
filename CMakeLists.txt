@@ -45,6 +45,7 @@ src/App.cpp
 src/delete_url_test.cpp
 src/deleteUrl.cpp
 src/UrlStore.cpp
+src/CommandParser_test.cpp
 src/Server.cpp
 src/ServerTests.cpp
 src/CommandParser.cpp)

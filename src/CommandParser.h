@@ -1,7 +1,20 @@
-#pragma once
+#ifndef COMMANDPARSER_H
+#define COMMANDPARSER_H
+
+#include "BloomFilter.h"
+#include "UrlStore.h"
 #include <string>
 
 class CommandParser {
 public:
-    static std::string parse(const std::string& command);
+    CommandParser(BloomFilter& filter, UrlStore& store);
+
+    std::string Parse(const std::string& command);
+
+private:
+    BloomFilter& filter;
+    UrlStore& store;
 };
+
+#endif
+

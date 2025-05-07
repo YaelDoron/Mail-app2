@@ -19,15 +19,19 @@ void checkUrl::execute() {
     }
 
     if(!flag){
-        cout << "false" << endl; // Definitely not in the blacklist
+        result = "false"; // Definitely not in the blacklist
     }
     else{
         // Might be in the blacklist, check actual store
-        std::cout << (isInUrlStore() ? "true true" : "true false") << std::endl;
+        result = isInUrlStore() ? "true true" : "true false";
         }
     }
     
 // Checks if the URL is explicitly listed in the store
 bool checkUrl::isInUrlStore() const {
     return store.contains(url);
+}
+
+string checkUrl::getResult() const {
+    return result;
 }
