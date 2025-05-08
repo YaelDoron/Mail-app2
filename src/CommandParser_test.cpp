@@ -22,7 +22,7 @@ TEST(CommandParserTest, PostReturns201){
 
     CommandParser parser(bf, store);
     string response = parser.Parse("POST www.unit-test.com");
-    EXPECT_EQ(response, "201 Created");
+    EXPECT_EQ(response, "201 Created\n");
 }
 
 // Test that DELETE on an existing URL returns 204 No Content
@@ -40,7 +40,7 @@ TEST (CommandParserTest, DeleteReturns204){
     add.execute();       // Add URL before trying to delete
     CommandParser parser(bf, store);
     string response = parser.Parse("DELETE www.unit-test.com");
-    EXPECT_EQ(response, "204 No Content");
+    EXPECT_EQ(response, "204 No Content\n");
 }
 
 // Test that GET on an existing URL returns 200 OK
@@ -59,7 +59,7 @@ TEST (CommandParserTest, GetReturns200){
 
     CommandParser parser(bf,store);
     string response = parser.Parse("GET www.unit-test.com");
-    EXPECT_EQ(response, "200 Ok\n\ntrue true");   
+    EXPECT_EQ(response, "200 Ok\n\ntrue true\n");   
 }
 
 // Test that an unknown command returns 400 Bad Request
@@ -75,7 +75,7 @@ TEST (CommandParserTest, illegalCommandReturns400){
 
     CommandParser parser(bf, store);
     string response = parser.Parse("CHANGE www.unit-test.com");
-    EXPECT_EQ(response, "400 Bad Request");
+    EXPECT_EQ(response, "400 Bad Request\n");
 }
 
 // Test that a syntactically correct but invalid URL returns 400 Bad Request
@@ -91,7 +91,7 @@ TEST (CommandParserTest, illegalUrlReturns400){
 
     CommandParser parser(bf, store);
     string response = parser.Parse("POST htp:/google.com");
-    EXPECT_EQ(response, "400 Bad Request");
+    EXPECT_EQ(response, "400 Bad Request\n");
 }
 
 // Test that DELETE on a non-existing URL returns 404 Not Found
@@ -106,5 +106,5 @@ TEST (CommandParserTest, Delete_Test_UrlNotFoundReturns404){
     store.load();
     CommandParser parser(bf, store);
     string response = parser.Parse("DELETE www.unit-test.com");
-    EXPECT_EQ(response, "404 Not Found");
+    EXPECT_EQ(response, "404 Not Found\n");
 }
