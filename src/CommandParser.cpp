@@ -21,43 +21,43 @@ string CommandParser::Parse(const string& command) {
 
     // Reject command if missing parts or contains extra arguments
     if (method.empty() || url.empty() || !extra.empty()) {
-        return "400 Bad Request";
+        return "400 Bad Request\n";
     }
 
     // Check if the method is one of the supported commands
     if (method != "POST" && method != "GET" && method != "DELETE"){
-        return "400 Bad Request";
+        return "400 Bad Request\n";
     }
 
     // Validate the format of the URL
     if (!isValidUrl(url)){
-        return "400 Bad Request";
+        return "400 Bad Request\n";
     }
 
     // Handle POST command: add the URL to the blacklist
     if (method == "POST"){
         addUrl command(url, filter, store);
         command.execute();
-        return "201 Created";
+        return "201 Created\n";
     }
 
     // Handle GET command: check the URL and return the result
     if (method == "GET"){
         checkUrl command(url, filter, store);
         command.execute(); 
-        return "200 Ok\n\n" + command.getResult();
+        return "200 Ok\n\n" + command.getResult() + "\n";
     }
 
     // Handle DELETE command: try to remove the URL from the store
     if (method == "DELETE"){
         deleteUrl command(url, filter, store);
         if (!command.execute()){
-            return "404 Not Found";
+            return "404 Not Found\n";
         }
-        return "204 No Content";
+        return "204 No Content\n";
     }
     // Fallback return in case something was missed
-    return "400 Bad Request";
+    return "400 Bad Request\n";
 }
 
 // Checks whether a given URL is in valid format using regex
