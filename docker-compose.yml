@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: server
+    networks:
+      - appnet
+    entrypoint: ["./main"]  
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: client
+    depends_on:
+      - server
+    networks:
+      - appnet
+    entrypoint: ["python", "main.py"]  
+
+networks:
+  appnet:
+    driver: bridge

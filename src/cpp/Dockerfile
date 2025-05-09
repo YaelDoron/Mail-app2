@@ -11,5 +11,5 @@ WORKDIR /usr/src/mytest/build
 
 RUN cmake .. && make
 
-# Run tests
-CMD ["./myProgram"]
+ENTRYPOINT ["./main"]
+

@@ -9,11 +9,13 @@ class checkUrl : public Icommand {
 public:
     checkUrl(const std::string& url, BloomFilter& filter, const UrlStore& store);
     void execute() override;
+    std::string getResult() const;
 
 private:
     std::string url;
     const BloomFilter& filter;
     const UrlStore& store;
+    std::string result;
 
     // Check if the URL exists in the file
     bool isInUrlStore() const;
