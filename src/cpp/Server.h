@@ -1,12 +1,13 @@
-#ifndef IO_H
-#define IO_H
+#pragma once
 
 class Server {
     int port;
-public:
-    Server(int port, int filterSize, const std::vector<int>& seeds, IO& io);
-; // constructor
-    int start();
-};
+    int serverSocket;
+    BloomFilter filter;
+    UrlStore store;
 
-#endif
+public:
+    Server(int port, int filterSize, const std::vector<int>& seeds); // constructor
+    int start();
+    void handleClient(int client_sock);
+};

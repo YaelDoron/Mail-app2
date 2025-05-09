@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "IO.h"
 #include <iostream>
 #include <sys/socket.h>
 #include <stdio.h>
@@ -8,12 +7,11 @@
 #include <unistd.h>
 #include <string.h>
 //creating the server with the given arguments and uninitialized server socket 
-Server::Server(int port, int filterSize, const vector<int>& seeds,IO& io)
+Server::Server(int port, int filterSize, const vector<int>& seeds)
     : port(port),
       serverSocket(-1),
       filter(filterSize, seeds, std::hash<std::string>()),
-      store("/usr/src/mytest/data/urls.txt"),
-      io(io)
+      store("/usr/src/mytest/data/urls.txt")
 {
     vector<bool> loadedBits;
     LoadFromFilter loader("/usr/src/mytest/data/bloom.txt", loadedBits);
@@ -61,16 +59,26 @@ int Server::start() {
 }
 // Handles communication with a single client over an open socket.
 // Isolated for future scalability to support multiple clients concurrently.
-void Server::handleClient(SocketIO& clientSocketIO) {
+void Server::handleClient(int client_sock) {
     // Receive a message from the client
+    char buffer[4096];
     while (true) {
-        std::string read_bytes = clientSocketIO.getInput();
-        if (read_bytes.empty()) {
-        // Client closed connection or sent nothing
+        int expected_data_len = sizeof(buffer);
+        int read_bytes = recv(client_sock, buffer, expected_data_len, 0);
+        // If a message was received, print it
+        if (read_bytes == 0) {
+        // connection is closed
         break;
         }
-    
-        std::string response = CommandParser(filter, store).Parse(read_bytes);
-        clientSocketIO.displayOutput(response);
+        else if (read_bytes < 0) {
+        // error
+        break;
+        }
+        std::string command(buffer);
+        CommandParser parser(filter, store);
+        std::string response = parser.Parse(command);
+        send(client_sock, response.c_str(), response.length(), 0);
     }
+    // Close sockets
+    close(client_sock);
 }
