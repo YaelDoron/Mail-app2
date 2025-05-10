@@ -33,6 +33,7 @@ int Server::start() {
     // Creating the server's TCP socket
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket < 0) {
+        close(serverSocket);
         return;
     }
     // Setting up the address struct
@@ -43,10 +44,13 @@ int Server::start() {
     sin.sin_port = htons(port);
     // Binding the socket to the chosen port
     if (bind(serverSocket, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
+        // Close server socket if binding fails 
+        close(serverSocket);
         return;
     }
     // Start listening for client connections
     if (listen(serverSocket, MAX_CLIENTS) < 0) {
+        close(serverSocket);
         return;
     }
     // Accept a client connection
@@ -54,6 +58,8 @@ int Server::start() {
     unsigned int addr_len = sizeof(client_sin);
     int client_sock = accept(serverSocket,  (struct sockaddr *) &client_sin,  &addr_len);
     if (client_sock < 0) {
+        
+        close(serverSocket);
         return;
     }
     handleClient(client_sock);
@@ -71,10 +77,12 @@ void Server::handleClient(int client_sock) {
         // If a message was received, we send the response to the client
         if (read_bytes == 0) {
         // connection is closed
+        close(client_sock);
         break;
         }
         else if (read_bytes < 0) {
         // error
+        close(client_sock);
         break;
         }
         std::string command(buffer);
