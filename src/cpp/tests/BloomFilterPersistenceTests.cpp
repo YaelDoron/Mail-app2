@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "SaveToFilter.h"
-#include "LoadFromFilter.h"
+#include "../commands/SaveToFilter.h"
+#include "../commands/LoadFromFilter.h"
 # include <filesystem>
 #include <vector>
 #include <fstream>

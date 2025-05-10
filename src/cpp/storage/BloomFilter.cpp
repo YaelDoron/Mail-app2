@@ -1,5 +1,5 @@
 #include "BloomFilter.h"
-#include "RepeatableHashFunction.h"
+#include "../RepeatableHashFunction.h"
 #include <iostream>
 using namespace std;
 

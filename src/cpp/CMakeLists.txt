@@ -1,62 +1,65 @@
 cmake_minimum_required(VERSION 3.10)
 
+
 project(MailApp)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# Option to choose whether to build tests or the main application
+option(BUILD_TESTING "Build tests" OFF)
+
+# Fetch GoogleTest for unit testing
 include(FetchContent)
 FetchContent_Declare(
-    googletest
-    URL https://github.com/google/googletest/archive/refs/tags/release-1.11.0.zip
+  googletest
+  URL https://github.com/google/googletest/archive/refs/tags/release-1.11.0.zip
 )
 
-# For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-# Give tests access to headers in cpp/
-include_directories(${CMAKE_SOURCE_DIR})
+# Collect all source files under src/
+file(GLOB_RECURSE SRC_SOURCES "src/cpp/*.cpp" "src/cpp/*/*.cpp")
 
-add_executable(runTests 
-../tests/BloomFilterPersistenceTests.cpp 
-SaveToFilter.cpp
-LoadFromFilter.cpp  
-BloomFilter.cpp 
-../tests/add_url_test.cpp 
-addUrl.cpp 
-../tests/check_url_test.cpp
-checkUrl.cpp 
-../tests/RepeatableHashFunctionTest.cpp 
-RepeatableHashFunction.cpp
-../tests/BloomFilterTest.cpp
-tests/AppTests.cpp
-App.cpp
-../tests/delete_url_test.cpp
-deleteUrl.cpp
-UrlStore.cpp
-../tests/CommandParser_test.cpp
-CommandParser.cpp
-Server.cpp
-../tests/ServerTests.cpp)
+# Append manually the Server.cpp in case it's missed
+list(APPEND SRC_SOURCES src/cpp/Server.cpp)
 
-target_link_libraries(runTests stdc++fs) # using std::filesystem in c++ 17 
+# Exclude the server MainServer.cpp when building tests
+list(FILTER SRC_SOURCES EXCLUDE REGEX ".*/main.cpp$")
 
-target_link_libraries(runTests gtest_main)
 
-add_executable(server
-    main.cpp
-    Server.cpp
-    commands/CommandParser.cpp
-    storage/UrlStore.cpp
-    commands/addUrl.cpp
-    commands/checkUrl.cpp
-    commands/deleteUrl.cpp
-    storage/BloomFilter.cpp
-    storage/SaveToFilter.cpp
-    storage/LoadFromFilter.cpp
-    storage/RepeatableHashFunction.cpp
-    IO/ConsoleIO.cpp
+# Collect all test files under tests/
+file(GLOB TEST_SOURCES "tests/*.cpp")
+set(TEST_MAIN_SRC "tests/main.cpp")
+
+if(BUILD_TESTING)
+    message(STATUS "Building tests...")
+
+    # Exclude the tests' MainServer.cpp from normal test files (will add it separately)
+    list(REMOVE_ITEM TEST_SOURCES ${TEST_MAIN_SRC})
+
+    # Create a single executable for all tests
+    add_executable(runTests ${SRC_SOURCES} ${TEST_SOURCES} ${TEST_MAIN_SRC})
+
+    # Link GoogleTest and pthreads
+    target_link_libraries(runTests
+        gtest_main
+        pthread
+    )
+
+else()
+    message(STATUS "Building main application...")
+
+   include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/IO
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/commands
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/storage
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/tests
 )
 
-target_link_libraries(server stdc++fs)
+list(APPEND SRC_SOURCES src/cpp/Server.cpp)
 
+    # Build the main application with the real application main.cpp
+    add_executable(Server ${SRC_SOURCES})
+endif()

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "deleteUrl.h"
-#include "BloomFilter.h"
+#include "../commands/deleteUrl.h"
+#include "../storage/BloomFilter.h"
 
 #include <fstream>
 #include <algorithm>

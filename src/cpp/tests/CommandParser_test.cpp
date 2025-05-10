@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include "BloomFilter.h"
-#include "UrlStore.h"
-#include "addUrl.h"
-#include "CommandParser.h"
+#include "../storage/BloomFilter.h"
+#include "../storage/UrlStore.h"
+#include "../commands/addUrl.h"
+#include "../CommandParser.h"
 #include <fstream>
 #include <algorithm>
 #include <filesystem>

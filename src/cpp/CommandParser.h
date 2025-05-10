@@ -1,8 +1,8 @@
 #ifndef COMMANDPARSER_H
 #define COMMANDPARSER_H
 
-#include "BloomFilter.h"
-#include "UrlStore.h"
+#include "../storage/BloomFilter.h"
+#include "../storage/UrlStore.h"
 #include <string>
 
 // Responsible for parsing and executing commands (POST, GET, DELETE)

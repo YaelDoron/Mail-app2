@@ -1,4 +1,7 @@
 #pragma once
+#include <vector>             
+#include "storage/BloomFilter.h"      
+#include "storage/UrlStore.h"
 
 class Server {
     int port;

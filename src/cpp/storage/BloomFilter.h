@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 #include <functional>
-#include "RepeatableHashFunction.h"
+#include "../RepeatableHashFunction.h"
 
 // BloomFilter class definition
 class BloomFilter {

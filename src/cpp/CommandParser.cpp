@@ -4,9 +4,9 @@
 #include <fstream>
 #include <regex>
 #include <sstream>
-#include "addUrl.h"
-#include "checkUrl.h"
-#include "deleteUrl.h"
+#include "../commands/addUrl.h"
+#include "../commands/checkUrl.h"
+#include "../commands/deleteUrl.h"
 using namespace std;
 
 // Constructor: initializes references to the filter and store

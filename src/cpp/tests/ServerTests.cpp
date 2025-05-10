@@ -6,8 +6,8 @@
 #include <string>
 #include <thread>
 #include <chrono>
-#include "Server.h"
-#include "CommandParser.h"
+#include "../Server.h"
+#include "../CommandParser.h"
 
 
 //Testing that the connection with the server works properly

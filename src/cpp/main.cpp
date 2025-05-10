@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "ConsoleIO.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -26,7 +25,6 @@ int main(int argc, char* argv[]) {
         seeds.push_back(atoi(argv[i]));
     }
 
-    ConsoleIO io;
-    Server server(port, filterSize, seeds, io);
+    Server server(port, filterSize, seeds);
     return server.start();
 }
