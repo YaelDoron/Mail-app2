@@ -6,6 +6,9 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+
+#define MAX_CLIENTS 1
+
 //creating the server with the given arguments and uninitialized server socket 
 Server::Server(int port, int filterSize, const vector<int>& seeds)
     : port(port),
@@ -43,7 +46,7 @@ int Server::start() {
         return;
     }
     // Start listening for client connections
-    if (listen(serverSocket, 5) < 0) {
+    if (listen(serverSocket, MAX_CLIENTS) < 0) {
         return;
     }
     // Accept a client connection
