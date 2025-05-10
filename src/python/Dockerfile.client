@@ -1,9 +1,10 @@
-# Use official Python 3 base image
 FROM python:3.10-slim
 
+# Set working directory inside the container
 WORKDIR /usr/src/app
 
-COPY client.py main.py ./
-COPY IO ./IO   
+# Copy all client-related code into the container
+COPY . /usr/src/app
 
+# Run the main script by default, arguments from docker-compose will be passed
 ENTRYPOINT ["python", "main.py"]

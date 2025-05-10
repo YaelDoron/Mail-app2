@@ -1,26 +1,30 @@
-version: '3.8'
-
 services:
   server:
     build:
-      context: ./src/cpp
-      dockerfile: Dockerfile.server
-    container_name: server
+      context: .
+      dockerfile: src/cpp/Dockerfile.server
+    volumes:
+      - ./data:/usr/src/project/build/data
+    container_name: server_container
+    working_dir: /usr/src/project/build
     networks:
       - appnet
-    entrypoint: ["./server"]  
 
   client:
     build:
       context: ./src/python
       dockerfile: Dockerfile.client
-    container_name: client
-    depends_on:
-      - server
+    tty: true
+    stdin_open: true
+    init: true
+    container_name: client_container
+    working_dir: /usr/src/app
+    entrypoint: ["python", "main.py"]
     networks:
       - appnet
-    entrypoint: ["python", "main.py"]  
 
 networks:
   appnet:
     driver: bridge
+
+

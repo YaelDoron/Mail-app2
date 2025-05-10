@@ -3,6 +3,7 @@ from client import Client
 from IO.console_io import ConsoleIO
 
 def main():
+    print("[DEBUG] sys.argv:", sys.argv)
     # Check that exactly 2 arguments were passed (IP and port)
     if len(sys.argv) < 3:
         sys.exit(1)

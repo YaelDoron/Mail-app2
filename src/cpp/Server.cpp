@@ -1,4 +1,6 @@
 #include "Server.h"
+#include "CommandParser.h"
+#include "commands/LoadFromFilter.h"
 #include <iostream>
 #include <sys/socket.h>
 #include <stdio.h>
@@ -6,6 +8,9 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <vector>
+using std::vector;
+
 
 #define MAX_CLIENTS 1
 
@@ -34,7 +39,7 @@ int Server::start() {
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket < 0) {
         close(serverSocket);
-        return;
+        return -1;
     }
     // Setting up the address struct
     struct sockaddr_in sin;
@@ -46,21 +51,22 @@ int Server::start() {
     if (bind(serverSocket, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
         // Close server socket if binding fails 
         close(serverSocket);
-        return;
+        return -1;
     }
     // Start listening for client connections
     if (listen(serverSocket, MAX_CLIENTS) < 0) {
         close(serverSocket);
-        return;
+        return -1;
     }
     // Accept a client connection
     struct sockaddr_in client_sin;
     unsigned int addr_len = sizeof(client_sin);
+    std::cout << "[DEBUG] Server is listening on port " << port << std::endl;
     int client_sock = accept(serverSocket,  (struct sockaddr *) &client_sin,  &addr_len);
     if (client_sock < 0) {
         
         close(serverSocket);
-        return;
+        return -1;
     }
     handleClient(client_sock);
     close(serverSocket);

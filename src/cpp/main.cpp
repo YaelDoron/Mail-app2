@@ -8,20 +8,18 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    if (argc < 4) {
+    if (argc < 3) {
         return 1;
     }
 
-    string ip = argv[1]; 
-
-    int port = atoi(argv[2]);
+    int port = atoi(argv[1]);
     if (port <= 0 || port > 65535) {
         return 1;
 }
-    int filterSize = atoi(argv[3]);
+    int filterSize = atoi(argv[2]);
 
     vector<int> seeds;
-    for (int i = 4; i < argc; ++i) {
+    for (int i = 3; i < argc; ++i) {
         seeds.push_back(atoi(argv[i]));
     }
 

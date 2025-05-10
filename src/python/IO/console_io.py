@@ -1,4 +1,4 @@
-from io_interface import IOInterface
+from IO.io_interface import IOInterface
 
 class ConsoleIO(IOInterface):
     def get_input(self):
