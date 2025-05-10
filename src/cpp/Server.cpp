@@ -65,7 +65,7 @@ void Server::handleClient(int client_sock) {
     while (true) {
         int expected_data_len = sizeof(buffer);
         int read_bytes = recv(client_sock, buffer, expected_data_len, 0);
-        // If a message was received, print it
+        // If a message was received, we send the response to the client
         if (read_bytes == 0) {
         // connection is closed
         break;
