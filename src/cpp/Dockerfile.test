@@ -1,0 +1,20 @@
+FROM gcc:latest
+
+# Install cmake and git (required for FetchContent for googletest)
+RUN apt-get update && apt-get install -y cmake git
+
+# Create working directory
+WORKDIR /usr/src/project
+
+# Copy all project files into the container
+COPY . .
+
+# Clean build directory
+RUN rm -rf build && mkdir build
+
+# Build tests
+WORKDIR /usr/src/project/build
+RUN cmake -DBUILD_TESTING=ON .. && make
+
+# Set entrypoint to run the tests
+ENTRYPOINT ["./runTests"]

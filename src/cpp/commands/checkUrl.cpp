@@ -11,6 +11,13 @@ checkUrl::checkUrl(const string& url, BloomFilter& filter, const UrlStore& store
 // Executes the check: determines if the URL might exist and whether it actually exists in the file
 void checkUrl::execute() {
     vector <int> indexes = filter.getIndexes(url);
+    cout << "[GET] Indexes for URL: ";
+    for (int i : indexes) cout << i << " ";
+        std::cout << std::endl;
+
+    for (int idx : indexes) {
+        cout << "[GET] Bit at index " << idx << " = " << (filter.isBitOn(idx) ? "ON" : "OFF") << endl;
+    }
     bool flag = true;
     for (int idx : indexes){
         if (!filter.isBitOn(idx)){
@@ -25,7 +32,7 @@ void checkUrl::execute() {
         // Might be in the blacklist, check actual store
         result = isInUrlStore() ? "true true" : "true false";
         }
-    }
+}
     
 // Checks if the URL is explicitly listed in the store
 bool checkUrl::isInUrlStore() const {

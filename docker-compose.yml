@@ -8,7 +8,9 @@ services:
     container_name: server_container
     working_dir: /usr/src/project/build
     networks:
-      - appnet
+      appnet:
+        ipv4_address: 172.28.0.2
+
 
   client:
     build:
@@ -19,12 +21,22 @@ services:
     init: true
     container_name: client_container
     working_dir: /usr/src/app
-    entrypoint: ["python", "main.py"]
     networks:
-      - appnet
+      appnet:
+
+   
+  test:
+    build:
+      context: .
+      dockerfile: src/cpp/Dockerfile.test
+    container_name: test_container
+    working_dir: /usr/src/project/build
+    command: ./runTests
 
 networks:
   appnet:
-    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
 
-
+    

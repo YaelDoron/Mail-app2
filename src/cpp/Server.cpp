@@ -15,14 +15,14 @@ using std::vector;
 #define MAX_CLIENTS 1
 
 //creating the server with the given arguments and uninitialized server socket 
-Server::Server(int port, int filterSize, const vector<int>& seeds)
-    : port(port),
+Server::Server(const std::string& ip,int port, int filterSize, const vector<int>& seeds)
+    : ip(ip),port(port),
       serverSocket(-1),
       filter(filterSize, seeds, std::hash<std::string>()),
-      store("/usr/src/mytest/data/urls.txt")
+      store("data/urls.txt")
 {
     vector<bool> loadedBits;
-    LoadFromFilter loader("/usr/src/mytest/data/bloom.txt", loadedBits);
+    LoadFromFilter loader("data/bloom.txt", loadedBits);
     loader.execute();
     if (!loadedBits.empty()) {
         filter.setFilter(loadedBits);
@@ -41,34 +41,44 @@ int Server::start() {
         close(serverSocket);
         return -1;
     }
+
     // Setting up the address struct
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin));
     sin.sin_family = AF_INET;
-    sin.sin_addr.s_addr = INADDR_ANY;
+    inet_pton(AF_INET, ip.c_str(), &sin.sin_addr);
     sin.sin_port = htons(port);
+
     // Binding the socket to the chosen port
     if (bind(serverSocket, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
-        // Close server socket if binding fails 
         close(serverSocket);
         return -1;
     }
-    // Start listening for client connections
+
+    // Start listening
     if (listen(serverSocket, MAX_CLIENTS) < 0) {
         close(serverSocket);
         return -1;
     }
-    // Accept a client connection
-    struct sockaddr_in client_sin;
-    unsigned int addr_len = sizeof(client_sin);
+
     std::cout << "[DEBUG] Server is listening on port " << port << std::endl;
-    int client_sock = accept(serverSocket,  (struct sockaddr *) &client_sin,  &addr_len);
-    if (client_sock < 0) {
-        
-        close(serverSocket);
-        return -1;
+
+    while (true) {
+        struct sockaddr_in client_sin;
+        unsigned int addr_len = sizeof(client_sin);
+
+        int client_sock = accept(serverSocket, (struct sockaddr *) &client_sin, &addr_len);
+        if (client_sock < 0) {
+            std::cerr << "[ERROR] Failed to accept connection\n";
+            continue;
+        }
+
+        std::cout << "[DEBUG] New client connected\n";
+        handleClient(client_sock);
+        close(client_sock); // close only the client socket, not the server socket
     }
-    handleClient(client_sock);
+
+    // לא תגיעי לפה אף פעם, אבל זה ליתר ביטחון
     close(serverSocket);
     return 0;
 }
@@ -76,20 +86,17 @@ int Server::start() {
 // Isolated for future scalability to support multiple clients concurrently.
 void Server::handleClient(int client_sock) {
     // Receive a message from the client
-    char buffer[4096];
+    char buffer[4096]={0};
     while (true) {
         int expected_data_len = sizeof(buffer);
         int read_bytes = recv(client_sock, buffer, expected_data_len, 0);
         // If a message was received, we send the response to the client
         if (read_bytes == 0) {
         // connection is closed
-        close(client_sock);
         break;
         }
         else if (read_bytes < 0) {
-        // error
-        close(client_sock);
-        break;
+        continue;
         }
         std::string command(buffer);
         CommandParser parser(filter, store);

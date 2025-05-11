@@ -1,28 +1,50 @@
 import socket
+import sys
 
-class Client:
-    def __init__(self, server_ip, server_port, io):
-        self.server_ip = server_ip
-        self.server_port = server_port
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.io = io
+def main():
+    # Check for correct number of command-line arguments
+    if len(sys.argv) != 3:
+        print("Usage: python3 client.py <server_ip> <server_port>")
+        return
+    server_ip = sys.argv[1]
+    server_port = int(sys.argv[2])
 
-    def run(self):
-        print(f"[DEBUG] Trying to connect to {self.server_ip}:{self.server_port}...")
-        self.sock.connect((self.server_ip, self.server_port))
-        print("[DEBUG] Connected to server.")
-        
-        try:
-            while True:
-                msg = self.io.get_input()
-                self.sock.send(msg.encode('utf-8'))
-                data = self.sock.recv(4096)
-                self.io.display_output(data.decode('utf-8'))
+    # Create a TCP socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    # Connect to the server using IP and port
+    s.connect((server_ip, server_port))
 
-        except Exception as e:
-            print(f"[ERROR] Connection failed or terminated: {e}")
-            return
+    try:
+        while True:
+            user_input = input()
 
-        finally:
-            print("[DEBUG] Closing socket.")
-            self.sock.close()
+            # If the input is empty or whitespace, replace with a special marker
+            if not user_input.strip():
+                user_input = "<EMPTY>"
+
+            # Try to encode the input in UTF-8; if it fails, use an error marker
+            try:
+                encoded = user_input.encode('utf-8')
+            except UnicodeEncodeError:
+                encoded = b"<INVALID>"
+
+            # Send the encoded message to the server
+            s.send(encoded)
+
+            # Receive and print the server's response
+            response = s.recv(4096).decode('utf-8')
+            print(response)
+
+    except KeyboardInterrupt:
+        # Handle Ctrl+C to exit gracefully
+        print("\nClient terminated.")
+    except Exception as e:
+        # Handle any unexpected error
+        print(f"\nUnexpected error: {e}")
+    finally:
+        # Always close the socket on exit
+        s.close()
+
+if __name__ == "__main__":
+    main()

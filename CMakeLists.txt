@@ -36,6 +36,8 @@ list(APPEND SRC_SOURCES src/cpp/Server.cpp)
 if(NOT BUILD_TESTING)
     list(FILTER SRC_SOURCES EXCLUDE REGEX ".*/tests/.*\\.cpp$")
     list(FILTER SRC_SOURCES EXCLUDE REGEX ".*/main_test.cpp$")
+    else()
+    list(FILTER SRC_SOURCES EXCLUDE REGEX ".*/main\\.cpp$") 
 endif()
 
 # Collect test files if needed
@@ -43,7 +45,7 @@ if(BUILD_TESTING)
     message(STATUS "Building tests...")
 
     file(GLOB TEST_SOURCES "src/cpp/tests/*.cpp")
-    set(TEST_MAIN_SRC "src/cpp/tests/main_test.cpp")
+    set(TEST_MAIN_SRC "")
     list(REMOVE_ITEM TEST_SOURCES ${TEST_MAIN_SRC})  # Will add main separately
 
     add_executable(runTests ${SRC_SOURCES} ${TEST_SOURCES} ${TEST_MAIN_SRC})

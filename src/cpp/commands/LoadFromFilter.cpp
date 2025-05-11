@@ -1,6 +1,8 @@
 #include "LoadFromFilter.h"
 #include <fstream>
 #include <filesystem>
+#include <iostream>
+
 
 // Constructor that gets the name of the file and a vector.  
 //saving the name of the file in the parameter file_name and the loaded vector in the parameter loaded_vector
@@ -17,4 +19,10 @@ void LoadFromFilter::execute() { // overriding the execute function from the Ico
         if (c == '1') loaded_vector.push_back(true);
         else if (c == '0') loaded_vector.push_back(false);
     }
+    // DEBUG: הצגת האינדקסים שנטענו כ-true מהקובץ
+    std::cout << "[DEBUG - LoadFromFilter] Loaded bits: ";
+    for (size_t i = 0; i < loaded_vector.size(); ++i) {
+        if (loaded_vector[i]) std::cout << i << " ";
+    }
+    std::cout << std::endl;
 }

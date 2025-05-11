@@ -1,5 +1,6 @@
 #include <fstream>
 #include <filesystem>
+#include <iostream>
 #include "SaveToFilter.h"
 
 // Constructor that gets the name of the file and a vector.  
@@ -13,4 +14,10 @@ void SaveToFilter::execute() {
     for (bool bit : array_bits) { //untill the end of the vector we writ 1 and 0 accoarding to the vector
         out << (bit ? '1' : '0');
     }
+     // DEBUG: הדפסת ביטים שנשמרו כ-true
+     std::cout << "[DEBUG - SaveToFilter] Saved bits: ";
+     for (size_t i = 0; i < array_bits.size(); ++i) {
+         if (array_bits[i]) std::cout << i << " ";
+     }
+     std::cout << std::endl;
 }

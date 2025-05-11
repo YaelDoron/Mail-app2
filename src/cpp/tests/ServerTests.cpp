@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <string>
 #include <thread>
+#include <fstream>
+#include <filesystem> 
 #include <chrono>
 #include "../Server.h"
 #include "../CommandParser.h"
@@ -28,7 +30,7 @@ TEST(ServerTest, AcceptsClientConnection) {
 
     //running the server in different tread so it can run at the same time
     std::thread serverThread([](){
-        Server server(12345, 1000, {1, 2, 3});
+        Server server("127.0.0.1",12345, 1000, {1, 2, 3});
         server.start();
 
     });
@@ -73,7 +75,7 @@ TEST(ServerTest, ClientServerCommunication) {
 
    //running the server in different tread so it can run at the same time
    std::thread serverThread([](){
-    Server server(12345, 1000, {1, 2, 3});
+    Server server("127.0.0.1",12345, 1000, {1, 2, 3});
     server.start();
 
     });
@@ -106,7 +108,7 @@ TEST(ServerTest, ClientServerCommunication) {
     memset(buffer, 0, sizeof(buffer));
     recv(sock, buffer, sizeof(buffer), 0); //initiallizing the buffer
 
-    EXPECT_STREQ(buffer, "200 OK\n\ntrue true");  // We expect it to return true true beacause we first added the Url and the checked
+    EXPECT_STREQ(buffer, "200 Ok\n\ntrue true\n");  // We expect it to return true true beacause we first added the Url and the checked
 
     close(sock);
     serverThread.detach();

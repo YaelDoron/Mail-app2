@@ -21,7 +21,8 @@ RUN mkdir build
 WORKDIR /usr/src/project/build
 
 # Run CMake to configure the project (disabling test build), then compile
-RUN cmake -DBUILD_TESTING=OFF .. && make
+RUN cmake .. && make
+
 
 # Set the entry point of the container to the compiled server executable
 ENTRYPOINT ["./Server"]

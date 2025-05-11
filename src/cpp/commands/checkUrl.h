@@ -13,7 +13,7 @@ public:
 
 private:
     std::string url;
-    const BloomFilter& filter;
+    BloomFilter& filter;
     const UrlStore& store;
     std::string result;
 
