@@ -11,13 +11,22 @@ SaveToFilter::SaveToFilter(const std::string& file_name, const std::vector<bool>
 void SaveToFilter::execute() {
     std::filesystem::create_directory("data"); // Creating the data folder if it does not exist
     std::ofstream out(file_name); //opening the file to write the bits
+
+    // Add check for file open success
+    if (!out.is_open()) {
+        std::cerr << "[ERROR] Failed to open file for writing: " << file_name << std::endl;
+        return;
+    }
+
     for (bool bit : array_bits) { //untill the end of the vector we writ 1 and 0 accoarding to the vector
         out << (bit ? '1' : '0');
     }
-     // DEBUG: הדפסת ביטים שנשמרו כ-true
-     std::cout << "[DEBUG - SaveToFilter] Saved bits: ";
-     for (size_t i = 0; i < array_bits.size(); ++i) {
-         if (array_bits[i]) std::cout << i << " ";
-     }
-     std::cout << std::endl;
+
+    out.close();
+
+      
+    // Verify file was written correctly
+    std::ifstream verify(file_name);
+    std::string content((std::istreambuf_iterator<char>(verify)), std::istreambuf_iterator<char>());
+    std::cout << "[DEBUG] Saved " << content.length() << " bits to " << file_name << std::endl;
 }

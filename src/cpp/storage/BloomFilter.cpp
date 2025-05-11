@@ -3,7 +3,8 @@
 #include <iostream>
 using namespace std;
 
-BloomFilter::BloomFilter(int size, const vector<int>& repetitions, function<size_t(const string&)> hashFunction) {
+BloomFilter::BloomFilter(int size, const vector<int>& repetitions, std::function<std::size_t(const std::string&)> hashFunc)
+    : filter(size, false), hashRep(repetitions), hashFunc(hashFunc) {
     // Check if size is valid
     if (size <= 0) {
         throw invalid_argument("BloomFilter size must be greater than 0.");
@@ -27,8 +28,6 @@ BloomFilter::BloomFilter(int size, const vector<int>& repetitions, function<size
     //Initialize the remaining fields
     hashRep = repetitions; 
 
-
-    hashFunc = hashFunction; 
 }
 
 void BloomFilter::setBit(int index) {
@@ -43,15 +42,18 @@ bool BloomFilter::isBitOn(int index) const {
 
 vector<int> BloomFilter::getIndexes(const string& Url) const {
     vector<int> indexes;
+    std::cout << "[DEBUG - BloomFilter] Getting indexes for URL: " << Url << std::endl;
+    std::cout << "[DEBUG - BloomFilter] Using " << hashRep.size() << " hash functions" << std::endl;
+    
     for (int rep : hashRep) {
-         // Create hash function with repetitions add hash the URL
+        // Create hash function with repetitions add hash the URL
         RepeatableHashFunction rhf(rep, hashFunc); 
         size_t hashedValue = rhf.hash(Url); 
-         // Map the hash to the filter size and store the index
+        // Map the hash to the filter size and store the index
         int index = hashedValue % filter.size(); 
         indexes.push_back(index);
+        std::cout << "[DEBUG - BloomFilter] Hash(" << rep << "): " << hashedValue << " -> index " << index << std::endl;
     }
-     //Map the hash to the filter size
     return indexes;  
 }
 

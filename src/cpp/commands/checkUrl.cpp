@@ -15,23 +15,22 @@ void checkUrl::execute() {
     for (int i : indexes) cout << i << " ";
         std::cout << std::endl;
 
+    bool allBitsOn = true;
     for (int idx : indexes) {
         cout << "[GET] Bit at index " << idx << " = " << (filter.isBitOn(idx) ? "ON" : "OFF") << endl;
-    }
-    bool flag = true;
-    for (int idx : indexes){
         if (!filter.isBitOn(idx)){
-            flag = false;
+            allBitsOn = false;
+            break;
         }
     }
 
-    if(!flag){
+    if(!allBitsOn){
         result = "false"; // Definitely not in the blacklist
     }
     else{
         // Might be in the blacklist, check actual store
         result = isInUrlStore() ? "true true" : "true false";
-        }
+    }
 }
     
 // Checks if the URL is explicitly listed in the store

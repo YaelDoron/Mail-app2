@@ -35,8 +35,11 @@ bool UrlStore::contains(const string& url) const {
 
 
 void UrlStore::add(const string& url) {
+    std::cout << "[DEBUG - UrlStore] Adding URL: " << url << std::endl;
     urls.insert(url);
     save();
+    // Verify URL was actually added
+    std::cout << "[DEBUG - UrlStore] URL exists after add: " << (contains(url) ? "yes" : "no") << std::endl;
 }
 
 bool UrlStore::remove(const std::string& url) {

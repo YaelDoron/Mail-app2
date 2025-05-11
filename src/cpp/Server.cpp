@@ -15,8 +15,8 @@ using std::vector;
 #define MAX_CLIENTS 1
 
 //creating the server with the given arguments and uninitialized server socket 
-Server::Server(const std::string& ip,int port, int filterSize, const vector<int>& seeds)
-    : ip(ip),port(port),
+Server::Server(const std::string& ip, int port, int filterSize, const vector<int>& seeds)
+    : ip(ip), port(port),
       serverSocket(-1),
       filter(filterSize, seeds, std::hash<std::string>()),
       store("data/urls.txt")
@@ -26,9 +26,13 @@ Server::Server(const std::string& ip,int port, int filterSize, const vector<int>
     loader.execute();
     if (!loadedBits.empty()) {
         filter.setFilter(loadedBits);
+        std::cout << "[DEBUG] Loaded " << loadedBits.size() << " bits from bloom filter" << std::endl;
+    } else {
+        std::cout << "[DEBUG] No bloom filter data loaded or file doesn't exist yet" << std::endl;
     }
 
     store.load();
+    std::cout << "[DEBUG] URL store loaded" << std::endl;
 }
 
 
@@ -78,7 +82,6 @@ int Server::start() {
         close(client_sock); // close only the client socket, not the server socket
     }
 
-    // לא תגיעי לפה אף פעם, אבל זה ליתר ביטחון
     close(serverSocket);
     return 0;
 }
@@ -99,9 +102,13 @@ void Server::handleClient(int client_sock) {
         continue;
         }
         std::string command(buffer);
+        std::cout << "[DEBUG] Received command: " << command << std::endl;
         CommandParser parser(filter, store);
         std::string response = parser.Parse(command);
+        std::cout << "[DEBUG] Responding with: " << response << std::endl;
         send(client_sock, response.c_str(), response.length(), 0);
+        
+        memset(buffer, 0, sizeof(buffer));
     }
     // Close sockets
     close(client_sock);
