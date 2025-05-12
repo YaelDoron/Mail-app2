@@ -25,7 +25,7 @@ As the system evolves, we continue to structure the code according to core softw
 - Adding New Commands - We followed the Open/Closed Principle by implementing each command as a separate class inheriting from a common iCommand interface. The new DELETE command was added simply by creating a new class (DeleteUrl) and registering it in the parser.
 - Changing Output Format - The addition of status codes like 200 Ok, 201 Created, and 400 Bad Request was handled in the CommandParser, which serves as a centralized coordinator. This allowed us to extend output behavior without modifying individual command implementations.
 - Switching from Console to Socket I/O - In Assignment 1, input was received from the console. In this assignment, we switched to socket-based communication between a Python client and a C++ server. This required refactoring the way commands are received and responses are sent. However, most of the command logic remained untouched, as the changes were isolated to the networking layer and integration with CommandParser. This separation ensured minimal impact on the core logic.
-- upporting Multiple Clients - Not yet implemented, but the code is ready for extension.
+- Supporting Multiple Clients - Not yet implemented, but the code is ready for extension.
 Currently, the server handles only one client at a time. However, the client-handling logic is isolated in a dedicated method (handleClient), making it straightforward to adapt it in the future. The architecture anticipates future support for concurrent clients with minimal changes to existing logic.
 
 ## How to Build and Run
