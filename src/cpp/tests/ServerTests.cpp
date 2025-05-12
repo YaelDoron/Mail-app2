@@ -30,7 +30,7 @@ TEST(ServerTest, AcceptsClientConnection) {
 
     //running the server in different tread so it can run at the same time
     std::thread serverThread([](){
-        Server server("127.0.0.1",12345, 1000, {1, 2, 3});
+        Server server(12345, 1000, {1, 2, 3});
         server.start();
 
     });
@@ -75,7 +75,7 @@ TEST(ServerTest, ClientServerCommunication) {
 
    //running the server in different tread so it can run at the same time
    std::thread serverThread([](){
-    Server server("127.0.0.1",12345, 1000, {1, 2, 3});
+    Server server(12345, 1000, {1, 2, 3});
     server.start();
 
     });

@@ -12,18 +12,17 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    std::string ip = argv[1];
-    int port = std::stoi(argv[2]);
-    int filterSize = std::stoi(argv[3]);
+    int port = std::atoi(argv[1]);
+    int filterSize = std::atoi(argv[2]);
     if (port <= 0 || port > 65535) {
         return 1;
 }
 
     vector<int> seeds;
-    for (int i =4 ; i < argc; ++i) {
+    for (int i = 3 ; i < argc; ++i) {
         seeds.push_back(atoi(argv[i]));
     }
 
-    Server server(ip,port, filterSize, seeds);
+    Server server(port, filterSize, seeds);
     return server.start();
 }

@@ -15,8 +15,8 @@ using std::vector;
 #define MAX_CLIENTS 1
 
 //creating the server with the given arguments and uninitialized server socket 
-Server::Server(const std::string& ip, int port, int filterSize, const vector<int>& seeds)
-    : ip(ip), port(port),
+Server::Server(int port, int filterSize, const vector<int>& seeds)
+    : port(port),
       serverSocket(-1),
       filter(filterSize, seeds, std::hash<std::string>()),
       store("data/urls.txt")
@@ -50,7 +50,7 @@ int Server::start() {
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin));
     sin.sin_family = AF_INET;
-    inet_pton(AF_INET, ip.c_str(), &sin.sin_addr);
+    sin.sin_addr.s_addr = INADDR_ANY;
     sin.sin_port = htons(port);
 
     // Binding the socket to the chosen port

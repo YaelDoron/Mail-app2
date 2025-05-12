@@ -1,10 +1,12 @@
 import socket
 import sys
 
+HOST = "172.28.0.2"
+
+
 def main():
     # Check for correct number of command-line arguments
     if len(sys.argv) != 3:
-        print("Usage: python3 client.py <server_ip> <server_port>")
         return
     server_ip = sys.argv[1]
     server_port = int(sys.argv[2])
@@ -13,7 +15,7 @@ def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     # Connect to the server using IP and port
-    s.connect((server_ip, server_port))
+    s.connect((HOST, server_port))
 
     try:
         while True:
