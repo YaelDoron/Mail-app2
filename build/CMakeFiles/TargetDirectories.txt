@@ -1,3 +1,0 @@
-/mnt/c/Users/orhas/OneDrive/שולחן העבודה/שנה ב סמסטר ב/תכנות מתקדם/Mail-app2/build/CMakeFiles/Server.dir
-/mnt/c/Users/orhas/OneDrive/שולחן העבודה/שנה ב סמסטר ב/תכנות מתקדם/Mail-app2/build/CMakeFiles/edit_cache.dir
-/mnt/c/Users/orhas/OneDrive/שולחן העבודה/שנה ב סמסטר ב/תכנות מתקדם/Mail-app2/build/CMakeFiles/rebuild_cache.dir
