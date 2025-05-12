@@ -85,7 +85,7 @@ Examples:
 
 ![Example](https://github.com/user-attachments/assets/186a82c6-6f1b-4342-98b1-6b8560f0b9f0)
 
-![Add/Check Example](https://github.com/OrHastar/Mail-app/issues/13)
+![Example](https://github.com/user-attachments/assets/0d1bc468-4c7f-4d30-94d5-75e172af955f)
 
 ## Notes
 - False positives may occur.
