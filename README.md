@@ -83,7 +83,7 @@ In any case where an invalid or unrecognized command is received, the server sho
 
 Examples:
 
-![Initialization Example](https://github.com/OrHastar/Mail-app/issues/12)
+![Example](https://github.com/user-attachments/assets/186a82c6-6f1b-4342-98b1-6b8560f0b9f0)
 
 ![Add/Check Example](https://github.com/OrHastar/Mail-app/issues/13)
 
