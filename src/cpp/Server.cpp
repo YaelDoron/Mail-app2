@@ -26,13 +26,8 @@ Server::Server(int port, int filterSize, const vector<int>& seeds)
     loader.execute();
     if (!loadedBits.empty()) {
         filter.setFilter(loadedBits);
-        std::cout << "[DEBUG] Loaded " << loadedBits.size() << " bits from bloom filter" << std::endl;
-    } else {
-        std::cout << "[DEBUG] No bloom filter data loaded or file doesn't exist yet" << std::endl;
     }
-
     store.load();
-    std::cout << "[DEBUG] URL store loaded" << std::endl;
 }
 
 
@@ -65,19 +60,14 @@ int Server::start() {
         return -1;
     }
 
-    std::cout << "[DEBUG] Server is listening on port " << port << std::endl;
-
     while (true) {
         struct sockaddr_in client_sin;
         unsigned int addr_len = sizeof(client_sin);
 
         int client_sock = accept(serverSocket, (struct sockaddr *) &client_sin, &addr_len);
         if (client_sock < 0) {
-            std::cerr << "[ERROR] Failed to accept connection\n";
             continue;
         }
-
-        std::cout << "[DEBUG] New client connected\n";
         handleClient(client_sock);
         close(client_sock); // close only the client socket, not the server socket
     }
@@ -102,12 +92,9 @@ void Server::handleClient(int client_sock) {
         continue;
         }
         std::string command(buffer);
-        std::cout << "[DEBUG] Received command: " << command << std::endl;
         CommandParser parser(filter, store);
         std::string response = parser.Parse(command);
-        std::cout << "[DEBUG] Responding with: " << response << std::endl;
         send(client_sock, response.c_str(), response.length(), 0);
-        
         memset(buffer, 0, sizeof(buffer));
     }
     // Close sockets

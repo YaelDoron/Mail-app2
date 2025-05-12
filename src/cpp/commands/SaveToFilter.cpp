@@ -14,7 +14,6 @@ void SaveToFilter::execute() {
 
     // Add check for file open success
     if (!out.is_open()) {
-        std::cerr << "[ERROR] Failed to open file for writing: " << file_name << std::endl;
         return;
     }
 
@@ -24,9 +23,4 @@ void SaveToFilter::execute() {
 
     out.close();
 
-      
-    // Verify file was written correctly
-    std::ifstream verify(file_name);
-    std::string content((std::istreambuf_iterator<char>(verify)), std::istreambuf_iterator<char>());
-    std::cout << "[DEBUG] Saved " << content.length() << " bits to " << file_name << std::endl;
 }

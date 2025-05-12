@@ -42,8 +42,6 @@ bool BloomFilter::isBitOn(int index) const {
 
 vector<int> BloomFilter::getIndexes(const string& Url) const {
     vector<int> indexes;
-    std::cout << "[DEBUG - BloomFilter] Getting indexes for URL: " << Url << std::endl;
-    std::cout << "[DEBUG - BloomFilter] Using " << hashRep.size() << " hash functions" << std::endl;
     
     for (int rep : hashRep) {
         // Create hash function with repetitions add hash the URL
@@ -52,7 +50,6 @@ vector<int> BloomFilter::getIndexes(const string& Url) const {
         // Map the hash to the filter size and store the index
         int index = hashedValue % filter.size(); 
         indexes.push_back(index);
-        std::cout << "[DEBUG - BloomFilter] Hash(" << rep << "): " << hashedValue << " -> index " << index << std::endl;
     }
     return indexes;  
 }

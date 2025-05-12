@@ -14,14 +14,12 @@ void LoadFromFilter::execute() { // overriding the execute function from the Ico
 
     // Check if file exists first
     if (!std::filesystem::exists(file_name)) {
-        std::cout << "[DEBUG] Filter file doesn't exist yet: " << file_name << std::endl;
         return;
     }
 
     std::ifstream in(file_name);
 
     if (!in.is_open()) {
-        std::cerr << "[ERROR] Failed to open filter file: " << file_name << std::endl;
         return;
     }
 
@@ -32,11 +30,4 @@ void LoadFromFilter::execute() { // overriding the execute function from the Ico
         if (c == '1') loaded_vector.push_back(true);
         else if (c == '0') loaded_vector.push_back(false);
     }
-    std::cout << "[DEBUG - LoadFromFilter] Loaded " << loaded_vector.size() << " bits from file" << std::endl;
-    // DEBUG
-    std::cout << "[DEBUG - LoadFromFilter] Loaded bits: ";
-    for (size_t i = 0; i < loaded_vector.size(); ++i) {
-        if (loaded_vector[i]) std::cout << i << " ";
-    }
-    std::cout << std::endl;
 }

@@ -16,7 +16,7 @@ TEST(CheckUrlTest, BitOff_PrintsFalse) {
     BloomFilter bf(8, {1}, std::hash<string>());
     string url = "www.example.com";
     UrlStore store("../data/test_urls.txt");
-    store.load();  // מומלץ לטעון לפני כל שימוש
+    store.load();  
 
     checkUrl check(url, bf, store);
     check.execute();

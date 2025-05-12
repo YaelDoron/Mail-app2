@@ -20,7 +20,7 @@ TEST(AddUrlTest, UrlIsSavedToFile) {
     BloomFilter bf(8, {1}, std::hash<std::string>());
     std::string url = "www.unit-test.com";
     UrlStore store(testFile);
-    store.load(); // לא חובה, אבל לא מזיק לפני טסט
+    store.load(); 
 
     addUrl add(url, bf, store);
     add.execute();
