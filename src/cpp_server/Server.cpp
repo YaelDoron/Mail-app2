@@ -68,8 +68,12 @@ int Server::start() {
         if (client_sock < 0) {
             continue;
         }
-        handleClient(client_sock);
-        close(client_sock); // close only the client socket, not the server socket
+        // Create a new thread to handle the client independently
+        std::thread t([this, client_sock]() {
+        this->handleClient(client_sock);
+    });
+    // Detach the thread so it runs in the background without blocking
+    t.detach();
     }
 
     close(serverSocket);
@@ -92,6 +96,10 @@ void Server::handleClient(int client_sock) {
         continue;
         }
         std::string command(buffer);
+
+        // Lock the files to ensure thread-safe access
+        std::lock_guard<std::mutex> lock(dataMutex);
+
         CommandParser parser(filter, store);
         std::string response = parser.Parse(command);
         send(client_sock, response.c_str(), response.length(), 0);
