@@ -1,0 +1,23 @@
+{
+  "name": "mail-app2",
+  "version": "1.0.0",
+  "description": "This project implements a URL filtering system based on a Bloom Filter.  \r It allows:\r - Adding URLs to a blacklist.\r - Checking whether a URL might be blacklisted (probabilistic check).\r - Persisting the Bloom Filter and the URL list across sessions.\r - Running all functionalities via a command-line interface.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YaelDoron/Mail-app2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YaelDoron/Mail-app2/issues"
+  },
+  "homepage": "https://github.com/YaelDoron/Mail-app2#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
