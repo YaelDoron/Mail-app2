@@ -1,4 +1,4 @@
-# URL Filtering System Using a Bloom Filter
+# The code for ex2 is in branch: "Exercisse-2"
 
 ## Overview
 This project implements a URL filtering system based on a Bloom Filter.  
