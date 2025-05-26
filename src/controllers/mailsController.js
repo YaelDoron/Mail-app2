@@ -19,7 +19,7 @@ function getMailById(req, res){
     if (!userId){
          return res.status(400).json({error: 'Missing User-ID header'});
     }
-    const mail = Mail.getMailById(userId)
+    const mail = Mail.getMailById(id)
     if(!mail){
         return res.status(404).json({error: 'Mail not found'});
     }
@@ -68,10 +68,10 @@ function deleteMail(req, res){
         return res.status(404).json({ error: 'Mail not found' });
     }
     // בדיקת הרשאה – רק אם המייל שייך למשתמש
-    if (mail.from !== userId && mail.to !== userId) {
+    if (mail.owner !== userId) {
         return res.status(403).json({ error: 'Access denied' });
     }
-    const deleted = Mail.deleteMail(id);
+    const deleted = Mail.deleteMail(id, userId);
     res.status(204).end(); 
 };
 
@@ -88,11 +88,11 @@ function deleteMail(req, res){
             return res.status(404).json({ error: 'Mail not found' });
         }
         // הרשאה: רק השולח יכול לערוך
-        if (mail.from !== userId) {
+        if (mail.owner !== userId) {
             return res.status(403).json({ error: 'Only the sender can edit the mail' });
          }
 
-        const updated = Mail.editMail(id, newData);
+        const updated = Mail.editMail(id, userId, newData);
         res.status(204).end();
     }
 
