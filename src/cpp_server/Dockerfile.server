@@ -9,7 +9,9 @@ RUN apt-get update && apt-get install -y cmake
 COPY . /usr/src/project
 
 # Set the working directory to the project root
-WORKDIR /usr/src/project
+
+WORKDIR /usr/src/project/src/cpp_server
+
 
 # Clean up any previous build artifacts if they exist
 RUN rm -rf build CMakeCache.txt CMakeFiles cmake_install.cmake Makefile
@@ -18,7 +20,9 @@ RUN rm -rf build CMakeCache.txt CMakeFiles cmake_install.cmake Makefile
 RUN mkdir build
 
 # Change to the build directory
-WORKDIR /usr/src/project/build
+
+WORKDIR /usr/src/project/src/cpp_server/build
+
 
 # Run CMake to configure the project (disabling test build), then compile
 RUN cmake .. && make

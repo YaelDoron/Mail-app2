@@ -4,7 +4,9 @@ FROM gcc:latest
 RUN apt-get update && apt-get install -y cmake git
 
 # Create working directory
-WORKDIR /usr/src/project
+
+WORKDIR /usr/src/project/src/cpp_server
+
 
 # Copy all project files into the container
 COPY . .
@@ -13,7 +15,9 @@ COPY . .
 RUN rm -rf build && mkdir build
 
 # Build tests
-WORKDIR /usr/src/project/build
+
+WORKDIR /usr/src/project/src/cpp_server/build
+
 RUN cmake -DBUILD_TESTING=ON .. && make
 
 # Set entrypoint to run the tests

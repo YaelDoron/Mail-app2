@@ -14,6 +14,12 @@ function createUser(req, res) {
   if (UserService.findUserByEmail(email)) {
     return res.status(409).json("Email address already exists");
   }
+  // Validate birthDate format
+  const birthDateError = UserService.validateBirthDate(birthDate);
+  if (birthDateError) {
+    return res.status(400).json(birthDateError);
+  }
+
   //the json returns the new user's id
   res.status(201).json({ id: newUser.id });
 }
