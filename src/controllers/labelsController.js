@@ -20,7 +20,7 @@ exports.createLabel = (req, res) => {
   // Check if 'name' is present
   const name = req.body.name
   if (!name) {
-    return res.status(400).json({ error: 'Name required' })
+    return res.status(400).json({ error: 'Name is required' })
   }
   const newLabel = Label.createLabel(name, userId)
   // Return the location of the new label
@@ -52,7 +52,7 @@ exports.updateLabel = (req, res) => {
   const newName = req.body.name
   // Check if 'newName' is present
   if (!newName) {
-    return res.status(400).json({ error: 'Name required' })
+    return res.status(400).json({ error: 'Name is required' })
   }
   const updatedLabel = Label.updateLabel(id, newName, userId)
   // Return error if the label not exist
