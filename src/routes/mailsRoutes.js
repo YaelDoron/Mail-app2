@@ -13,3 +13,5 @@ router.route('/:id')
 
 router.route('/search/:query')
     .get(controller.searchMails)
+
+module.exports = router;

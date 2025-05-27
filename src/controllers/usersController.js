@@ -20,6 +20,16 @@ function createUser(req, res) {
     return res.status(400).json(birthDateError);
   }
 
+  const newUser = User.createUser({
+  firstName,
+  lastName,
+  birthDate,
+  gender,
+  email,
+  password,
+  profilePicture
+});
+
   //the json returns the new user's id
   res.status(201).json({ id: newUser.id });
 }
@@ -27,7 +37,7 @@ function createUser(req, res) {
 // function that gets user by ID
 function getUserById(req, res) {
   const id = req.params.id;
-  const user = UserService.getUserById(id);
+  const user = User.getUserById(id);
 
   if (!user) {
     return res.status(404).send("User not found");

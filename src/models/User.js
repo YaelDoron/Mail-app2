@@ -16,21 +16,14 @@ const createUser=({ id, firstName, lastName, birthDate, gender, email, password,
   users.push(user);
   return user;
 }
-
-module.exports = {
-  addUser,
-  getUserById,
-  exists,
-  findUserByEmail,
-  createUser
-};
-
-
 // Returns a user by ID
 const getUserById=(id) => {
-  return users.find(user => user.id === id);
+  return users.find(user => user.id == id);
 }
-
-
+module.exports = {
+  getUserById,
+  createUser,
+  users
+};
 
 

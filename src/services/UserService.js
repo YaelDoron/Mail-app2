@@ -1,11 +1,14 @@
+const User = require('../models/User');
+
+
 // Checks if a user with the given ID exists
 const exists=(id) => {
-  return users.some(user => user.id == id);
+  return User.users.some(user => user.id == id);
 }
 
 // Finds a user by email address
 const findUserByEmail=(email)=>  {
-  return users.find(user => user.email === email);
+  return User.users.find(user => user.email === email);
 }
 
 // Validates the birthDate format and value
@@ -23,3 +26,8 @@ const validateBirthDate=(birthDate)=> {
   }
   return null; // valid
 }
+module.exports = {
+  exists,
+  findUserByEmail,
+  validateBirthDate
+};
