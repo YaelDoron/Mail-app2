@@ -13,6 +13,7 @@ const createUser=({ id, firstName, lastName, birthDate, gender, email, password,
     password,
     profilePicture
   };
+  // Add the new user to the in-memory list and return it
   users.push(user);
   return user;
 }

@@ -1,5 +1,7 @@
 const UserService= require('../services/UserService');
 
+// Handles login requests: checks if a user with the provided email exists
+// and returns the user ID if found. Returns 404 if not found.
 function loginUser(req, res) {
   const { email, password } = req.body;
 

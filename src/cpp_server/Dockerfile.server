@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y cmake
 COPY . /usr/src/project
 
 # Set the working directory to the project root
-
 WORKDIR /usr/src/project
 
 
