@@ -1,10 +1,10 @@
-const { exists } = require('../services/UserService');
+const UserService= require('../services/UserService');
 
 function loginUser(req, res) {
   const { email, password } = req.body;
 
   // Try to find the user by email
-  const user = findUserByEmail(email);
+  const user = UserService.findUserByEmail(email);
 
  // If user doesn't exist
   if (!user) {
