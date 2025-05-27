@@ -21,16 +21,20 @@ endif()
 
 # Include directories
 include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/IO
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/commands
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/storage
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/tests
+  ${CMAKE_CURRENT_SOURCE_DIR}/commands
+  ${CMAKE_CURRENT_SOURCE_DIR}/storage
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/tests
 )
 
 # Collect all source files
-file(GLOB_RECURSE SRC_SOURCES "src/cpp/*.cpp" "src/cpp/*/*.cpp")
-list(APPEND SRC_SOURCES src/cpp/Server.cpp)
+file(GLOB_RECURSE SRC_SOURCES "*.cpp" "*/*.cpp")
+
+list(FILTER SRC_SOURCES EXCLUDE REGEX ".*/\\.cmake/.*")
+list(FILTER SRC_SOURCES EXCLUDE REGEX ".*/CMakeFiles/.*")
+list(FILTER SRC_SOURCES EXCLUDE REGEX ".*/build/.*")
+
+list(APPEND SRC_SOURCES "Server.cpp")
 
 # Exclude the main file for tests if building the main app
 if(NOT BUILD_TESTING)
@@ -44,7 +48,7 @@ endif()
 if(BUILD_TESTING)
     message(STATUS "Building tests...")
 
-    file(GLOB TEST_SOURCES "src/cpp/tests/*.cpp")
+    file(GLOB TEST_SOURCES "src/cpp_server/tests/*.cpp")
     set(TEST_MAIN_SRC "")
     list(REMOVE_ITEM TEST_SOURCES ${TEST_MAIN_SRC})  # Will add main separately
 

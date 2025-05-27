@@ -10,7 +10,7 @@ COPY . /usr/src/project
 
 # Set the working directory to the project root
 
-WORKDIR /usr/src/project/src/cpp_server
+WORKDIR /usr/src/project
 
 
 # Clean up any previous build artifacts if they exist
@@ -21,12 +21,14 @@ RUN mkdir build
 
 # Change to the build directory
 
-WORKDIR /usr/src/project/src/cpp_server/build
+WORKDIR /usr/src/project/build
 
 
 # Run CMake to configure the project (disabling test build), then compile
 RUN cmake .. && make
 
+# Expose port 3000 to allow outside connections
+EXPOSE 3000
 
 # Set the entry point of the container to the compiled server executable
 ENTRYPOINT ["./Server"]
