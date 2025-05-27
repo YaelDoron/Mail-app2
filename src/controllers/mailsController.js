@@ -2,10 +2,7 @@ const Mail = require('../models/Mail')
 const BlacklistService = require('../services/BlacklistService');
 
 function getUserMails(req, res) {
-    const userId = req.header('User-ID')
-    if (!userId){
-        return res.status(400).json({error: 'Missing User-ID header'});
-    }
+    const userId = req.userId;
     const mails = Mail.getUserMails(userId);
     if(!mails){
         return res.status(404).json({error: 'Mail not found'})
@@ -15,10 +12,7 @@ function getUserMails(req, res) {
 
 function getMailById(req, res){
     const id = parseInt(req.params.id);
-    const userId = req.header('User-ID')
-    if (!userId){
-         return res.status(400).json({error: 'Missing User-ID header'});
-    }
+    const userId = req.userId;
     const mail = Mail.getMailById(id)
     if(!mail){
         return res.status(404).json({error: 'Mail not found'});
@@ -32,7 +26,7 @@ function getMailById(req, res){
 }
 
 async function createMail(req, res){
-    const from = req.header('User-ID');
+    const from = req.userId;
     const { to, subject, content } = req.body;
 
     if (!from || !to || !subject || !content) {
@@ -58,11 +52,8 @@ async function createMail(req, res){
 };
 
 function deleteMail(req, res){
-    const userId = req.header('User-ID');
+    const userId = req.userId;
     const id = parseInt(req.params.id);
-    if (!userId){
-        return res.status(400).json({error: 'Missing User-ID header'});
-    }
     const mail = Mail.getMailById(id);
     if (!mail) {
         return res.status(404).json({ error: 'Mail not found' });
@@ -76,12 +67,9 @@ function deleteMail(req, res){
 };
 
     function editMail(req, res){
-        const userId = req.header('User-ID');
+        const userId = req.userId;
         const id = parseInt(req.params.id);
         const newData = req.body;
-        if (!userId){
-            return res.status(400).json({error: 'Missing User-ID header'});
-        }
         const mail = Mail.getMailById(id);
 
         if (!mail) {
@@ -97,12 +85,8 @@ function deleteMail(req, res){
     }
 
     function searchMails(req, res){
-        const userId = req.header('User-ID');
+        const userId = req.userId;
         const term = req.params.query;
-
-        if (!userId) {
-            return res.status(401).json({ error: 'Missing User-ID header' });
-        }
 
         if (!term) {
             return res.status(400).json({ error: 'Missing search term in URL' });

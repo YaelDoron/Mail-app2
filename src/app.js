@@ -16,10 +16,10 @@ const tokensRoutes = require('./routes/tokensRoutes');
 // Apply authMiddleware only where needed
 app.use('/api/labels', authMiddleware, labelsRoutes);
 app.use('/api/mails', authMiddleware, mailsRoutes);
-app.use('/api/blacklist', authMiddleware, blacklistRoutes);
-app.use('/api/tokens', authMiddleware, tokensRoutes);
 
 // No auth check for users route (e.g. login/register)
+app.use('/api/blacklist', blacklistRoutes);
+app.use('/api/tokens', tokensRoutes);
 app.use('/api/users', usersRoutes);
 
 // 404 error
