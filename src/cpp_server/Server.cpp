@@ -13,12 +13,12 @@
 
 using std::vector;
 
-
+#define realPort 12345
 #define MAX_CLIENTS 1
 
 //creating the server with the given arguments and uninitialized server socket 
-Server::Server(int port, int filterSize, const vector<int>& seeds)
-    : port(port),
+Server::Server(int filterSize, const vector<int>& seeds)
+    : port(realPort),
       serverSocket(-1),
       filter(filterSize, seeds, std::hash<std::string>()),
       store("data/urls.txt")

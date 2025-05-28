@@ -26,6 +26,6 @@ int main(int argc, char* argv[]) {
         seeds.push_back(atoi(argv[i]));
     }
     // Initialize and start the server
-    Server server(port, filterSize, seeds);
+    Server server(filterSize, seeds);
     return server.start();
 }

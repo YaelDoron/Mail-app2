@@ -26,8 +26,5 @@ WORKDIR /usr/src/project/build
 # Run CMake to configure the project (disabling test build), then compile
 RUN cmake .. && make
 
-# Expose port 3000 to allow outside connections
-EXPOSE 3000
-
 # Set the entry point of the container to the compiled server executable
 ENTRYPOINT ["./Server"]
