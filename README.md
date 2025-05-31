@@ -99,7 +99,7 @@ docker-compose run test
 
 Here are some examples to help you test the REST API using `curl`.
 > Remember to include the `user-id` header for all mail and label operations.
-Run the command in a third terminal.
+Run the commands in a third terminal.
 
 ### Register a user
 ```bash
