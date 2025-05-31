@@ -154,17 +154,17 @@ curl -i http://localhost:3000/api/labels -H "user-id: 1234"
 
 ### Get label by ID
 ```bash
-curl -i http://localhost:3000/api/labels/3 -H "user-id: 1234"
+curl -i http://localhost:3000/api/labels/1 -H "user-id: 1234"
 ```
 
 ### Update label
 ```bash
-curl -i -X PATCH http://localhost:3000/api/labels/3 -H "Content-Type: application/json" -H "user-id: 1234" -d "{\"name\":\"Updated Label\"}"
+curl -i -X PATCH http://localhost:3000/api/labels/1 -H "Content-Type: application/json" -H "user-id: 1234" -d "{\"name\":\"Updated Label\"}"
 ```
 
 ### Delete label
 ```bash
-curl -i -X DELETE http://localhost:3000/api/labels/3 -H "user-id: 1234"
+curl -i -X DELETE http://localhost:3000/api/labels/1 -H "user-id: 1234"
 ```
 
 ### Add a URL to the blacklist
