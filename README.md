@@ -186,5 +186,9 @@ curl -i -X POST http://localhost:3000/api/blacklist -H "Content-Type: applicatio
 curl -i -X DELETE "http://localhost:3000/api/blacklist/http:%2F%2Fbad-website.org"
 ```
 
+## Examples
+![curl example1](https://user-images.githubusercontent.com/12345678/abcdefg.png)
+
+
 ## 🔗 Related Docs
 [Team Meeting Documentation](https://docs.google.com/document/d/13VuUzQ-KDu7Q3zzVhvA42WCy0XEnrzZqYtl7023NFDo/edit?tab=t.0)
