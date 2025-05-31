@@ -183,8 +183,9 @@ curl -i -X DELETE "http://localhost:3000/api/blacklist/http:%2F%2Fbad-website.or
 ![curl example3](https://github.com/user-attachments/assets/dac9cd7f-9bef-4e6a-89dc-4b9d3137df56)
 ![curl example4](https://github.com/user-attachments/assets/b7a09b76-817a-498f-8fb8-00d0b43d926f)
 ![curl example5](https://github.com/user-attachments/assets/40224132-9121-462a-999f-df96df6e3f90)
-![curl example6](https://github.com/user-attachments/assets/d1ed4069-08aa-4254-b344-6ef85677b34c)
-![curl example7](https://github.com/user-attachments/assets/b49342e0-4d18-4f4b-ab44-eca836f1feb8)
+![curl example6](https://github.com/user-attachments/assets/8327104e-9847-46ac-8abf-afb338c3fc22)
+![curl example7](https://github.com/user-attachments/assets/d1ed4069-08aa-4254-b344-6ef85677b34c)
+![curl example8](https://github.com/user-attachments/assets/b49342e0-4d18-4f4b-ab44-eca836f1feb8)
 
 
 
