@@ -1,12 +1,12 @@
-const HOST = "172.28.0.2";
-const net = require('net');
+const HOST = "172.28.0.2";  // IP address of the TCP server (Exercise 2)
+const net = require('net'); // Node.js core module for TCP sockets
 
-// שולח פקודה (GET / POST / DELETE) לשרת תרגיל 2
+// Sends a command (GET / POST / DELETE) to the TCP server
 const sendToServer = (command, url) => {
   return new Promise((resolve, reject) => {
     const client = new net.Socket();
     let response = '';
-
+    // Connect to the server on port 12345
     client.connect(12345, HOST, () => {
       client.write(`${command} ${url}\n`);
     });
@@ -21,7 +21,7 @@ const sendToServer = (command, url) => {
   });
 };
 
-// בודק אם אחד הקישורים מתוך subject + content מופיע ב־blacklist
+// Checks if any URL from subject or content is blacklisted
 const check = async (subject, content) => {
   const urls = [
     ...extractUrls(subject),
@@ -29,48 +29,47 @@ const check = async (subject, content) => {
   ];
   
   if (urls.length === 0) {
-    return false;
+    return false;  // No URLs to check
   }
 
   for (const url of urls) {
     try {
       const res = await sendToServer('GET', url);
-      // בדוק גם 'true' וגם 'true true' למקרה שהשרת מחזיר פורמטים שונים
       if (res === 'true' || res === 'true true' || res.includes('true')) {
-        return true;
+        return true;  // URL is blacklisted
       }
     } catch (error) {
       console.error(`>> Error checking URL ${url}:`, error);
-      // במקרה של שגיאה, נמשיך לבדוק URLs נוספים
+      // Continue checking other URLs even if one fails
     }
   }
-  return false;
+  return false;  // No blacklisted URLs found
 };
 
-// מוסיף קישור לרשימה האסורה
+// Adds a URL to the blacklist via the TCP server
 const add = async (url) => {
   const result = await sendToServer('POST', url);
   return result;
 };
 
-// מוחק קישור מהרשימה האסורה
+// Removes a URL from the blacklist via the TCP server
 const remove = async (url) => {
   const result = await sendToServer('DELETE', url);
   return result;
 };
 
-// מחלץ קישורים מתוך טקסט (subject או content)
+// Extracts URLs from a given text (e.g., subject or content)
 const extractUrls = (text) => {
   const urlRegex = /https?:\/\/[^\s]+/g;
   const matches = text.match(urlRegex) || [];
   
-  // דקודינג של URL encoding בקישורים שנמצאו
+  // Decode any percent-encoded URLs
   return matches.map(url => {
     try {
       return decodeURIComponent(url);
     } catch (e) {
       console.warn("Failed to decode URL:", url, e.message);
-      return url; // אם הדקודינג נכשל, השתמש ב-URL המקורי
+      return url; // // Fallback to original URL if decoding fails
     }
   });
 };

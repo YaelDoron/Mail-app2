@@ -1,32 +1,66 @@
-# The code for ex2 is in branch: "Exercise-2"
+# Mail App – Modern Email System with Smart Blacklisting    The code for ex2 is in branch: "Exercise-2"
 
 ## Overview
-This project implements a URL filtering system based on a Bloom Filter.  
-It allows:
-- Adding URLs to a blacklist.
-- Checking whether a URL might be blacklisted (probabilistic check).
-- Persisting the Bloom Filter and the URL list across sessions.
-- Running all functionalities via a command-line interface.
+**Mail App** is a web-based email system. It enables users to register, send and receive emails, manage labels (tags), and automatically filter harmful links using a smart blacklist system powered by a C++ backend.
 
-The program is now implemented as a client-server system:
-- The server (C++) runs and listens on a given port.
-- The client (Python) connects to the server and sends commands (POST, GET, DELETE).
+This project combines:
+- A **RESTful Node.js/Express server** – responsible for user management, mail logic, labels, and blacklist handling.
+- A low-level **C++ server** that efficiently stores and checks URLs using a Bloom Filter via a socket interface.
 
-The server handles:
-- URL insertion (POST)
-- URL query (GET)
-- URL deletion (DELETE)
+## Features
 
-It uses C++17, GoogleTest for unit tests, CMake for building, and Docker for containerized execution.
+### Email Functionality
+- Send mails to one or multiple recipients
+- Receive mails (per user inbox)
+- Edit mails (by the sender)
+- Delete mails 
+- Search through your mails by subject or content
 
-## Code Design and Future Flexibility
-As the system evolves, we continue to structure the code according to core software engineering principles, with special attention to loose coupling and the SOLID principles. This enables us to easily extend the codebase while minimizing the need to modify existing components. The following points address key design considerations from this assignment:
-- Changing Command Names - The mapping from command names to actions is handled in a centralized CommandParser. Thanks to this separation of concerns (designed in Assignment 1), updating command names required changes only in the parser, without touching any command logic.
-- Adding New Commands - We followed the Open/Closed Principle by implementing each command as a separate class inheriting from a common iCommand interface. The new DELETE command was added simply by creating a new class (DeleteUrl) and registering it in the parser.
-- Changing Output Format - The addition of status codes like 200 Ok, 201 Created, and 400 Bad Request was handled in the CommandParser, which serves as a centralized coordinator. This allowed us to extend output behavior without modifying individual command implementations.
-- Switching from Console to Socket I/O - In Assignment 1, input was received from the console. In this assignment, we switched to socket-based communication between a Python client and a C++ server. This required refactoring the way commands are received and responses are sent. However, most of the command logic remained untouched, as the changes were isolated to the networking layer and integration with CommandParser. This separation ensured minimal impact on the core logic.
-- Supporting Multiple Clients - Not yet implemented, but the code is ready for extension.
-Currently, the server handles only one client at a time. However, the client-handling logic is isolated in a dedicated method (handleClient), making it straightforward to adapt it in the future. The architecture anticipates future support for concurrent clients with minimal changes to existing logic.
+### Label Management
+- Create, update, delete, and view custom labels
+- Labels are user-specific and used to categorize mails
+
+### User System
+- Register new users with profile info (name, gender, birthdate, profile picture(optional))
+- Retrieve user profiles by ID  
+- Login using email and password (returns user ID as token)
+- All other operations require sending the user ID in a header
+(*Note: full login/session support is planned but not required in this version*)
+
+### Smart Blacklist Filtering
+- When sending a mail, any embedded URL is automatically checked using the C++ server
+- If a blacklisted link is detected – the mail is rejected
+- URLs can be added or removed from the blacklist using the REST API endpoints
+
+## Authentication (Tokens)
+
+The app uses a basic token-based login system to simulate authentication.  
+Once a user is registered, they can log in using their email and password to retrieve their user ID:
+
+### Login endpoint:
+```http
+POST /api/tokens
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "123456"
+}
+```
+
+### Response:
+```json
+{ "id": 1234 }
+```
+
+This ID must be included in all subsequent requests using the `user-id` header:
+
+```http
+user-id: 1234
+```
+
+This acts as a temporary token for identifying users until a real authentication system is implemented in a future assignment.
+
 
 ## How to Build and Run
 First, build the Docker image by executing:
@@ -45,17 +79,15 @@ Arguments:
 - filterSize: Number of bits in the Bloom Filter
 - seed1> <seed2> ... : One or more seed values for the hash functions
 
-Use this command to run the Python client:
+Use this command to Start the web server (in a second terminal):
 
 ```bash
-docker-compose run client <server_ip> <port>
+docker-compose up client
 ```
-Arguments:
-- server_ip: IP address of the server
-- port: Port number (must match the server's port)
+> The REST API will be available at `http://localhost:3000`
 
 
-## Running tests
+## Running tests of the c++ server
 Build the Docker image if you haven’t done it yet.  
 And then execute:
 
@@ -63,33 +95,96 @@ And then execute:
 docker-compose run test
 ```
 
-## How to Use the Program
+## Runnung the program - Example API Usage
 
-Once both the server and client are running, you can interact with the system by entering commands in the client terminal.
+Here are some examples to help you test the REST API using `curl`.
+> Remember to include the `user-id` header for all mail and label operations.
+Run the command in a third terminal.
 
-Commands explanation:
-- POST <url> - Adds the given URL to the blacklist.<br>
-Response: '201 Created'
-- GET <url> - Checks if the URL is possibly in the blacklist using the Bloom Filter.<br>
-Response - '200 Ok' followed by a single line with two values:<br>
-First value: the result from the Bloom Filter (if it's false then there won't be a second value)<br>
-Second value: the actual presence in the URL store
-- DELETE <url>
-Removes the given URL from the store.<br>
-Response: '204 No Content' if deleted successfully, or '404 Not Found' url wasn't added.
+### Register a user
+```bash
+curl -i -X POST http://localhost:3000/api/users -H "Content-Type: application/json" -d "{\"firstName\":\"Alice\",\"lastName\":\"Cohen\",\"birthDate\":\"2000-01-01\",\"gender\":\"female\",\"email\":\"user@example.com\",\"password\":\"123456\"}"
+```
 
-In any case where an invalid or unrecognized command is received, the server should ignore it and respond to the client with:
-'400 Bad Request'
+### Get user by ID
+```bash
+curl -i http://localhost:3000/api/users/0
+```
 
-Examples:
+### Log in and get user token (user ID)
+```bash
+curl -i -X POST http://localhost:3000/api/tokens -H "Content-Type: application/json" -d "{\"email\":\"user@example.com\",\"password\":\"123456\"}"
+```
 
-![Example](https://github.com/user-attachments/assets/186a82c6-6f1b-4342-98b1-6b8560f0b9f0)
+### Send mail - one recipient
+```bash
+curl -i -X POST http://localhost:3000/api/mails -H "Content-Type: application/json" -H "user-id: 1234" -d "{\"to\":[\"5678\"],\"subject\":\"Hello\",\"content\":\"This is a test email\"}"
+```
 
-![Example](https://github.com/user-attachments/assets/0d1bc468-4c7f-4d30-94d5-75e172af955f)
+### Send mail - many recipients
+```bash
+curl -i -X POST http://localhost:3000/api/mails -H "Content-Type: application/json" -H "user-id: 1234" -d "{\"to\":[\"5678\",\"9999\",\"1111\"],\"subject\":\"Team Update\",\"content\":\"Reminder: meeting at 10AM\"}"
+```
 
-## Notes
-- False positives may occur.
-- False negatives cannot happen.
-- After each command, the filter is automatically saved to disk (`data/bloom.txt`) and the URLs are saved in (`data/urls.txt`).
+### Get user's mails
+```bash
+curl -i http://localhost:3000/api/mails -H "user-id: 1234"
+```
 
+### Search mails
+```bash
+curl -i http://localhost:3000/api/mails/search/Hello -H "user-id: 1234"
+```
+
+### Get mail by ID
+```bash
+curl -i http://localhost:3000/api/mails/5 -H "user-id: 1234"
+```
+
+### Delete mail
+```bash
+curl -i -X DELETE http://localhost:3000/api/mails/3 -H "user-id: 1234"
+```
+
+### Edit mail
+```bash
+curl -i -X PATCH http://localhost:3000/api/mails/1 -H "Content-Type: application/json" -H "user-id: 1234" -d "{\"subject\":\"Hello everyone\",\"content\":\"Meeting at 12AM\"}"
+```
+
+### Create a label
+```bash
+curl -i -X POST http://localhost:3000/api/labels -H "Content-Type: application/json" -H "user-id: 1234" -d "{\"name\":\"Work\"}"
+```
+
+### Get all labels
+```bash
+curl -i http://localhost:3000/api/labels -H "user-id: 1234"
+```
+
+### Get label by ID
+```bash
+curl -i http://localhost:3000/api/labels/3 -H "user-id: 1234"
+```
+
+### Update label
+```bash
+curl -i -X PATCH http://localhost:3000/api/labels/3 -H "Content-Type: application/json" -H "user-id: 1234" -d "{\"name\":\"Updated Label\"}"
+```
+
+### Delete label
+```bash
+curl -i -X DELETE http://localhost:3000/api/labels/3 -H "user-id: 1234"
+```
+
+### Add a URL to the blacklist
+```bash
+curl -i -X POST http://localhost:3000/api/blacklist -H "Content-Type: application/json" -d "{\"url\":\"http://bad-website.org\"}"
+```
+
+### Remove a URL from the blacklist
+```bash
+curl -i -X DELETE "http://localhost:3000/api/blacklist/http:%2F%2Fbad-website.org"
+```
+
+## 🔗 Related Docs
 [Team Meeting Documentation](https://docs.google.com/document/d/13VuUzQ-KDu7Q3zzVhvA42WCy0XEnrzZqYtl7023NFDo/edit?tab=t.0)
