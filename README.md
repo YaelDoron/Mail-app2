@@ -86,15 +86,6 @@ docker-compose up client
 ```
 > The REST API will be available at `http://localhost:3000`
 
-
-## Running tests of the c++ server
-Build the Docker image if you haven’t done it yet.  
-And then execute:
-
-```bash
-docker-compose run test
-```
-
 ## Running the program - Example API Usage
 
 Here are some examples to help you test the REST API using `curl`.
