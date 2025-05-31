@@ -1,4 +1,4 @@
-# Mail App – Modern Email System with Smart Blacklisting    The code for ex2 is in branch: "Exercise-2"
+# Mail App
 
 ## Overview
 **Mail App** is a web-based email system. It enables users to register, send and receive emails, manage labels (tags), and automatically filter harmful links using a smart blacklist system powered by a C++ backend.
@@ -180,6 +180,12 @@ curl -i -X DELETE "http://localhost:3000/api/blacklist/http:%2F%2Fbad-website.or
 ## Examples
 ![curl example1](https://github.com/user-attachments/assets/9716df8f-29b8-4183-b482-87370a69a676)
 ![curl example2](https://github.com/user-attachments/assets/7fc0cd39-a523-4b6d-8e98-301ca37010ea)
+![curl example3](https://github.com/user-attachments/assets/dac9cd7f-9bef-4e6a-89dc-4b9d3137df56)
+![curl example4](https://github.com/user-attachments/assets/b7a09b76-817a-498f-8fb8-00d0b43d926f)
+![curl example5](https://github.com/user-attachments/assets/40224132-9121-462a-999f-df96df6e3f90)
+![curl example6](https://github.com/user-attachments/assets/d1ed4069-08aa-4254-b344-6ef85677b34c)
+![curl example7](https://github.com/user-attachments/assets/b49342e0-4d18-4f4b-ab44-eca836f1feb8)
+
 
 
 ## 🔗 Related Docs
