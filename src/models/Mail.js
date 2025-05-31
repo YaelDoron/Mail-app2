@@ -21,6 +21,7 @@ const searchMails = (userId, term) => {
 
 // Create a mail from sender to one or more recipients
 const createMail = (from, to, subject, content) => {
+    const timestamp = new Date();
     // Save a copy for the sender
     const senderMail = {
     id: ++idCounter,
