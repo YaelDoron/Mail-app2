@@ -187,7 +187,7 @@ curl -i -X DELETE "http://localhost:3000/api/blacklist/http:%2F%2Fbad-website.or
 ```
 
 ## Examples
-![curl example1](https://user-images.githubusercontent.com/12345678/abcdefg.png)
+![curl example1]([https://user-images.githubusercontent.com/12345678/abcdefg.png](https://github.com/YaelDoron/Mail-app2/issues/25#issue-3105917053))
 
 
 ## 🔗 Related Docs
