@@ -95,7 +95,7 @@ And then execute:
 docker-compose run test
 ```
 
-## Runnung the program - Example API Usage
+## Running the program - Example API Usage
 
 Here are some examples to help you test the REST API using `curl`.
 > Remember to include the `user-id` header for all mail and label operations.
