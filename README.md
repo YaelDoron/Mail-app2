@@ -190,4 +190,4 @@ curl -i -X DELETE "http://localhost:3000/api/blacklist/http:%2F%2Fbad-website.or
 
 
 ## 🔗 Related Docs
-[Team Meeting Documentation](https://docs.google.com/document/d/13VuUzQ-KDu7Q3zzVhvA42WCy0XEnrzZqYtl7023NFDo/edit?tab=t.0)
+[Team Meeting Documentation](https://docs.google.com/document/d/1NZ0ywz-4A9IH51_t-o3KTL9_KhU9OUAnxeKMghk-4jA/edit?tab=t.0)
