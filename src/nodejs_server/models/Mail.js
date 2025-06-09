@@ -13,65 +13,147 @@ const deleteMail = (id, userId) => {
     return mails.splice(index, 1)[0]; // Remove from array and return the deleted mail
 };
 
-// Search mails by subject or content, only within the user's own mails
+// Search mails by subject or content (excluding spam and drafts)
 const searchMails = (userId, term) => {
-    return mails.filter(mail => (mail.owner === userId) &&
-        (mail.subject.includes(term) || mail.content.includes(term)));
+    return mails.filter(mail =>
+        mail.owner === userId &&
+        !mail.isDraft &&
+        !mail.isSpam &&
+        (mail.subject.includes(term) || mail.content.includes(term))
+    );
 };
 
-// Create a mail from sender to one or more recipients
-const createMail = (from, to, subject, content) => {
-    const timestamp = new Date();
-    // Save a copy for the sender
+// Create a mail or a draft
+const createMail = (from, to, subject, content, isSpam = false, isDraft = false) => {
+    const timestamp = isDraft ? null : new Date();
+
     const senderMail = {
-    id: ++idCounter,
-    from,
-    to,
-    subject,
-    content,
-    timestamp,
-    owner: from
-  };
-  mails.push(senderMail);
-  // Save a copy for each recipient
-  for (const recipientId of to) {
-    mails.push({
-      id: ++idCounter,
-      from,
-      to,
-      subject,
-      content,
-      timestamp,
-      owner: recipientId
-    });
-  }
+        id: ++idCounter,
+        from,
+        to,
+        subject,
+        content,
+        timestamp,
+        owner: from,
+        labels: [],
+        isSpam,
+        isDraft
+    };
+    mails.push(senderMail);
 
-  return senderMail;
+    // only if not draft send to recipients
+    if (!isDraft) {
+        for (const recipientId of to) {
+            mails.push({
+                id: ++idCounter,
+                from,
+                to,
+                subject,
+                content,
+                timestamp,
+                owner: recipientId,
+                labels: [],
+                isSpam: false,
+                isDraft: false
+            });
+        }
+    }
+
+    return senderMail;
 };
 
-// Return up to 50 latest mails owned by the user, sorted by time (most recent first)
+
+// Return up to 50 latest mails owned by the user, sorted by time (most recent first,excluding drafts & spam) 
 const getUserMails = (userId) => {
-    const relevant = mails.filter(mail => mail.owner === userId);
+    const relevant = mails.filter(mail =>
+        mail.owner === userId &&
+        !mail.isDraft &&
+        !mail.isSpam
+    );
     relevant.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     return relevant.slice(0, 50);
 };
 
-// Edit subject/content of a mail, only if it's owned and sent by the user
-const editMail = (id, userId, newData) => {
-    const mail = mails.find(mail => mail.id === id && mail.owner === userId);
-    if (!mail) return null;
-    // Only the sender is allowed to edit
-    if (mail.from !== userId) return null;
-    if (newData.subject) mail.subject = newData.subject;
-    if (newData.content) mail.content = newData.content;
+// Assign labels to a specific mail
+const assignLabels = (id, userId, labels) => {
+    const mail = getMailById(id);
+    if (mail && mail.owner === userId) {
+        mail.labels = labels;
+        return mail;
+    }
+    return null;
+};
+
+// Toggle spam status
+const toggleSpam = (id, userId) => {
+    const mail = getMailById(id);
+    if (mail && mail.owner === userId) {
+        mail.isSpam = !mail.isSpam;
+        return mail;
+    }
+    return null;
+};
+
+const updateDraft = (id, userId, updates) => {
+    const mail = getMailById(id);
+    if (!mail || mail.owner !== userId || !mail.isDraft || mail.from !== userId) return null;
+
+    if (updates.subject !== undefined) {
+        mail.subject = updates.subject;
+    }
+    if (updates.content !== undefined) {
+        mail.content = updates.content;
+    }
+    if (updates.to !== undefined) {
+        mail.to = updates.to;
+    }
+
     return mail;
 };
 
+// Send a draft (convert to normal mail and send to recipients)
+const sendDraft = (id, userId) => {
+    const draft = getMailById(id);
+    if (!draft || draft.owner !== userId || !draft.isDraft) return null;
+
+    draft.isDraft = false;
+    draft.timestamp = new Date();
+
+    for (const recipientId of draft.to) {
+        mails.push({
+            id: ++idCounter,
+            from: draft.from,
+            to: draft.to,
+            subject: draft.subject,
+            content: draft.content,
+            timestamp: draft.timestamp,
+            owner: recipientId,
+            labels: [],
+            isSpam: false,
+            isDraft: false
+        });
+    }
+
+    return draft;
+};
+
+const getSpamMails = (userId) => {
+    return mails
+        .filter(mail => mail.owner === userId && mail.isSpam)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+};
+
+
+
 module.exports = {
+    createMail,
     getMailById,
     deleteMail,
     searchMails,
-    createMail,
     getUserMails,
-    editMail
-}
+    assignLabels,
+    toggleSpam,
+    updateDraft,
+    sendDraft,
+    getSpamMails
+};
