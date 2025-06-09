@@ -5,9 +5,6 @@ const BlacklistService = require('../services/BlacklistService');
     function getUserMails(req, res) {
         const userId = req.userId;
         const mails = Mail.getUserMails(userId);
-        if(!mails){
-            return res.status(404).json({error: 'Mail not found'})
-        }
         res.status(200).json(mails);
     }
 
@@ -27,10 +24,10 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(mail);
     }
 
-    // Create a new mail, after checking for blacklisted content
+    // Create a new mail (or draft) after blacklist check
     async function createMail(req, res){
         const from = req.userId;
-        const { to, subject, content } = req.body;
+        const { to, subject, content, isSpam = false, isDraft = false } = req.body;
         // Validate input
         if (!from || !Array.isArray(to) || to.length === 0 || !subject || !content) {
         return res.status(400).json({ error: 'Missing required fields' });
@@ -43,7 +40,7 @@ const BlacklistService = require('../services/BlacklistService');
         return res.status(400).json({ error: 'Mail contains blacklisted content' });
         }
 
-        const newMail = Mail.createMail(from, to, subject, content);
+        const newMail = Mail.createMail(from, to, subject, content, isSpam, isDraft);
         res.status(201)
     .location(`/api/mails/${newMail.id}`)
     .end();
@@ -70,23 +67,67 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(204).end(); 
     };
 
-    // Edit a mail, only if the logged-in user is the sender
-    function editMail(req, res){
+    // Edit a draft, only if the logged-in user is the sender
+    function updateDraft(req, res){
         const userId = req.userId;
         const id = parseInt(req.params.id);
-        const newData = req.body;
+        const updates = req.body;
         const mail = Mail.getMailById(id);
 
         if (!mail) {
             return res.status(404).json({ error: 'Mail not found' });
         }
         // Authorization check: only the sender can edit the mail
-        if (mail.owner !== userId) {
-            return res.status(403).json({ error: 'Only the sender can edit the mail' });
+        if (mail.owner !== userId || mail.from !== userId) {
+            return res.status(403).json({ error: 'Only the sender can edit the draft' });
          }
 
-        const updated = Mail.editMail(id, userId, newData);
+         if (!mail.isDraft) {
+            return res.status(400).json({ error: 'Mail is not a draft' });
+        }
+
+        const updated = Mail.updateDraft(id, userId, updates);
         res.status(204).end();
+    }
+
+        // Assign labels to a mail
+    function assignLabelsToMail(req, res) {
+        const userId = req.userId;
+        const id = parseInt(req.params.id);
+        const { labels } = req.body;
+
+        const updated = Mail.assignLabels(id, userId, labels);
+        if (!updated) {
+            return res.status(403).json({ error: 'Unable to assign labels' });
+        }
+
+        res.status(200).json(updated);
+    }
+
+        // Toggle spam status
+    function toggleSpamStatus(req, res) {
+        const userId = req.userId;
+        const id = parseInt(req.params.id);
+
+        const updated = Mail.toggleSpam(id, userId);
+        if (!updated) {
+            return res.status(403).json({ error: 'Unable to update spam status' });
+        }
+
+        res.status(200).json(updated);
+    }
+
+        // Send a draft
+    function sendDraftMail(req, res) {
+        const userId = req.userId;
+        const id = parseInt(req.params.id);
+
+        const sent = Mail.sendDraft(id, userId);
+        if (!sent) {
+            return res.status(403).json({ error: 'Unable to send draft' });
+        }
+
+        res.status(200).json(sent);
     }
 
     // Search user's mails using a query term
@@ -102,11 +143,22 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(results);
     }
 
-    module.exports = {
-        getUserMails,
-        getMailById,
-        createMail,
-        deleteMail,
-        editMail,
-        searchMails
+    function getSpamMails(req, res) {
+    const userId = req.userId;
+    const mails = Mail.getSpamMails(userId);
+    res.status(200).json(mails); 
     }
+
+
+    module.exports = {
+    getUserMails,
+    getMailById,
+    createMail,
+    deleteMail,
+    updateDraft,
+    assignLabelsToMail,
+    toggleSpamStatus,
+    sendDraftMail,
+    searchMails,
+    getSpamMails
+};

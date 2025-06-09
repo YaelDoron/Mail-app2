@@ -8,7 +8,7 @@ router.route('/')
 
 router.route('/:id')
     .get(controller.getMailById)
-    .patch(controller.editMail)
+    .patch(controller.updateDraft)
     .delete(controller.deleteMail)
 
 router.route('/search/:query')
