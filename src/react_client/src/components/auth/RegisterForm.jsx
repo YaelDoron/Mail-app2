@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./RegisterForm.css";
-import { RegisterUser } from "../../services/api";
+import { RegisterUser } from "../../services/authService";
 import RegisterInput from "./RegisterInput";
 import ImageUploader from "./ImageUploader";
 import { useNavigate } from "react-router-dom"; // Used for page navigation after successful registration
@@ -86,7 +86,7 @@ const RegisterForm = () => {
 
         if (token) {
         localStorage.setItem("token", token); // שמירת JWT
-        navigate("/inbox"); // מעבר לאינבוקס
+        navigate("/login"); 
         } else {
         alert("Registration succeeded but no token was returned.");
         }
