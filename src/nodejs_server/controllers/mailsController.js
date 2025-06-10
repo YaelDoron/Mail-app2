@@ -27,7 +27,7 @@ const BlacklistService = require('../services/BlacklistService');
     // Create a new mail (or draft) after blacklist check
     async function createMail(req, res){
         const from = req.userId;
-        const { to, subject, content, isSpam = false, isDraft = false } = req.body;
+        const { to, subject, content, isDraft = false } = req.body;
         // Validate input
         if (!from || !Array.isArray(to) || to.length === 0 || !subject || !content) {
         return res.status(400).json({ error: 'Missing required fields' });
@@ -35,12 +35,7 @@ const BlacklistService = require('../services/BlacklistService');
 
     try {
         const isBlocked = await BlacklistService.check(subject, content);
-
-        if (isBlocked) {
-        return res.status(400).json({ error: 'Mail contains blacklisted content' });
-        }
-
-        const newMail = Mail.createMail(from, to, subject, content, isSpam, isDraft);
+        const newMail = Mail.createMail(from, to, subject, content, isBlocked, isDraft);
         res.status(201)
     .location(`/api/mails/${newMail.id}`)
     .end();

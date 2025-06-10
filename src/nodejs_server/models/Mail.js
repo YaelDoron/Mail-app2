@@ -36,7 +36,7 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
         timestamp,
         owner: from,
         labels: [],
-        isSpam,
+        isSpam: false,
         isDraft
     };
     mails.push(senderMail);
@@ -53,7 +53,7 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
                 timestamp,
                 owner: recipientId,
                 labels: [],
-                isSpam: false,
+                isSpam: isSpam,
                 isDraft: false
             });
         }
