@@ -14,4 +14,31 @@ router.route('/:id')
 router.route('/search/:query')
     .get(controller.searchMails)
 
+// ספאם
+router.route('/spam')
+    .get(controller.getSpamMails);
+
+// דואר מסומן בכוכב
+router.route('/star/:id')
+    .patch(controller.toggleStarredStatus);
+
+// שליחת טיוטה
+router.route('/send/:id')
+    .post(controller.sendDraftMail);
+
+// תיוג
+router.route('/labels/:id')
+    .patch(controller.assignLabelsToMail);
+
+// כל הדואר
+router.route('/all')
+    .get(controller.getAllUserMails);
+
+// דואר שנשלח
+router.route('/sent')
+    .get(controller.getSentMails);
+
+// אשפה
+router.route('/trash')
+    .get(controller.getTrashMails);
 module.exports = router;
