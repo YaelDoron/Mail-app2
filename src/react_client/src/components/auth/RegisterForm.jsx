@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./RegisterForm.css";
-import { RegisterUser } from "../../services/authService";
+import { RegisterUser } from "../../services/api";
 import RegisterInput from "./RegisterInput";
 import ImageUploader from "./ImageUploader";
 import { useNavigate } from "react-router-dom"; // Used for page navigation after successful registration
