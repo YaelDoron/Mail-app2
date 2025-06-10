@@ -13,7 +13,7 @@ const BlacklistService = require('../services/BlacklistService');
         const id = parseInt(req.params.id);
         const userId = req.userId;
         const mail = Mail.getMailById(id)
-        if(!mail){
+        if(!mail || mail.isDeleted){
             return res.status(404).json({error: 'Mail not found'});
         }
 
@@ -58,9 +58,18 @@ const BlacklistService = require('../services/BlacklistService');
         if (mail.owner !== userId) {
             return res.status(403).json({ error: 'Access denied' });
         }
-        const deleted = Mail.deleteMail(id, userId);
+        const moved = Mail.moveToTrash(id, userId);
+        if (!moved) {
+            return res.status(403).json({ error: 'Unable to move to trash' });
+        }
         res.status(204).end(); 
     };
+
+    function getTrashMails(req, res) {
+        const userId = req.userId;
+        const mails = Mail.getTrashMails(userId);
+        res.status(200).json(mails);
+    }
 
     // Edit a draft, only if the logged-in user is the sender
     function updateDraft(req, res){
@@ -144,6 +153,30 @@ const BlacklistService = require('../services/BlacklistService');
     res.status(200).json(mails); 
     }
 
+    function toggleStarredStatus(req, res) {
+        const userId = req.userId;
+        const id = parseInt(req.params.id);
+
+        const updated = Mail.toggleStarred(id, userId);
+        if (!updated) {
+            return res.status(403).json({ error: 'Unable to update starred status' });
+        }
+
+        res.status(200).json(updated);
+    }
+
+    function getAllUserMails(req, res) {
+        const userId = req.userId;
+        const mails = Mail.getAllMails(userId);
+        res.status(200).json(mails);
+    }
+
+    function getSentMails(req, res) {
+        const userId = req.userId;
+        const mails = Mail.getSentMails(userId);
+        res.status(200).json(mails);
+    }
+
 
     module.exports = {
     getUserMails,
@@ -155,5 +188,9 @@ const BlacklistService = require('../services/BlacklistService');
     toggleSpamStatus,
     sendDraftMail,
     searchMails,
-    getSpamMails
+    getSpamMails,
+    toggleStarredStatus,
+    getAllUserMails,
+    getSentMails,
+    getTrashMails
 };

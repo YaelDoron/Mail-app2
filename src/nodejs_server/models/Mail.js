@@ -15,18 +15,20 @@ const deleteMail = (id, userId) => {
 
 // Search mails by subject or content (excluding spam and drafts)
 const searchMails = (userId, term) => {
-    return mails.filter(mail =>
-        mail.owner === userId &&
-        !mail.isDraft &&
-        !mail.isSpam &&
-        (mail.subject.includes(term) || mail.content.includes(term))
-    );
+    return mails
+        .filter(mail =>
+            mail.owner === userId &&
+            !mail.isDeleted &&
+            !mail.isDraft &&
+            !mail.isSpam &&
+            (mail.subject.includes(term) || mail.content.includes(term))
+        )
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); 
 };
 
 // Create a mail or a draft
 const createMail = (from, to, subject, content, isSpam = false, isDraft = false) => {
-    const timestamp = isDraft ? null : new Date();
-
+    const timestamp = new Date();
     const senderMail = {
         id: ++idCounter,
         from,
@@ -37,7 +39,10 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
         owner: from,
         labels: [],
         isSpam: false,
-        isDraft
+        isDraft,
+        isStarred: false,
+        isDeleted: false,
+        deletedAt: null
     };
     mails.push(senderMail);
 
@@ -54,7 +59,10 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
                 owner: recipientId,
                 labels: [],
                 isSpam: isSpam,
-                isDraft: false
+                isDraft: false,
+                isStarred: false,
+                isDeleted: false,
+                deletedAt: null
             });
         }
     }
@@ -68,7 +76,8 @@ const getUserMails = (userId) => {
     const relevant = mails.filter(mail =>
         mail.owner === userId &&
         !mail.isDraft &&
-        !mail.isSpam
+        !mail.isSpam &&
+        !mail.isDeleted
     );
     relevant.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     return relevant.slice(0, 50);
@@ -77,7 +86,7 @@ const getUserMails = (userId) => {
 // Assign labels to a specific mail
 const assignLabels = (id, userId, labels) => {
     const mail = getMailById(id);
-    if (mail && mail.owner === userId) {
+    if (mail && mail.owner === userId && !mail.isDeleted) {
         mail.labels = labels;
         return mail;
     }
@@ -87,7 +96,7 @@ const assignLabels = (id, userId, labels) => {
 // Toggle spam status
 const toggleSpam = (id, userId) => {
     const mail = getMailById(id);
-    if (mail && mail.owner === userId) {
+    if (mail && mail.owner === userId && !mail.isDeleted) {
         mail.isSpam = !mail.isSpam;
         return mail;
     }
@@ -96,7 +105,7 @@ const toggleSpam = (id, userId) => {
 
 const updateDraft = (id, userId, updates) => {
     const mail = getMailById(id);
-    if (!mail || mail.owner !== userId || !mail.isDraft || mail.from !== userId) return null;
+    if (!mail || mail.owner !== userId || !mail.isDraft || mail.from !== userId || mail.isDeleted) return null;
 
     if (updates.subject !== undefined) {
         mail.subject = updates.subject;
@@ -107,14 +116,14 @@ const updateDraft = (id, userId, updates) => {
     if (updates.to !== undefined) {
         mail.to = updates.to;
     }
-
+    mail.timestamp = new Date();
     return mail;
 };
 
 // Send a draft (convert to normal mail and send to recipients)
 const sendDraft = (id, userId) => {
     const draft = getMailById(id);
-    if (!draft || draft.owner !== userId || !draft.isDraft) return null;
+    if (!draft || draft.owner !== userId || !draft.isDraft || draft.isDeleted) return null;
 
     draft.isDraft = false;
     draft.timestamp = new Date();
@@ -130,7 +139,10 @@ const sendDraft = (id, userId) => {
             owner: recipientId,
             labels: [],
             isSpam: false,
-            isDraft: false
+            isDraft: false,
+            isStarred: false,
+            isDeleted: false,
+            deletedAt: null
         });
     }
 
@@ -139,21 +151,88 @@ const sendDraft = (id, userId) => {
 
 const getSpamMails = (userId) => {
     return mails
-        .filter(mail => mail.owner === userId && mail.isSpam)
+        .filter(mail => mail.owner === userId && mail.isSpam && !mail.isDeleted)
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 };
 
+// Toggle starred status
+const toggleStarred = (id, userId) => {
+    const mail = getMailById(id);
+    if (mail && mail.owner === userId && !mail.isDeleted) {
+        mail.isStarred = !mail.isStarred;
+        return mail;
+    }
+    return null;
+};
+
+// Get all mails regardless of status
+const getAllMails = (userId) => {
+    return mails
+        .filter(mail =>
+            mail.owner === userId &&
+            !mail.isSpam && 
+            !mail.isDeleted
+        )
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+};
+
+// Get sent mails (only mails where user is sender and owner)
+const getSentMails = (userId) => {
+    return mails
+        .filter(mail => mail.owner === userId && mail.from === userId &&
+             !mail.isDraft && !mail.isDeleted)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+};
+
+// Move a mail to trash 
+const moveToTrash = (id, userId) => {
+    const mail = getMailById(id);
+    if (mail && mail.owner === userId && !mail.isDeleted) {
+        mail.isDeleted = true;
+        mail.deletedAt = new Date();
+        return mail;
+    }
+    return null;
+};
+
+// Automatically purge trash after 30 days
+const purgeOldTrash = () => {
+    const now = Date.now();
+    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    for (let i = mails.length - 1; i >= 0; i--) {
+        const mail = mails[i];
+        if (mail.isDeleted && mail.deletedAt) {
+            const deletedTime = new Date(mail.deletedAt).getTime();
+            if (now - deletedTime > THIRTY_DAYS) {
+                mails.splice(i, 1);
+            }
+        }
+    }
+};
+
+// Get all mails in trash
+const getTrashMails = (userId) => {
+    purgeOldTrash();
+    return mails
+        .filter(mail => mail.owner === userId && mail.isDeleted)
+        .sort((a, b) => new Date(b.deletedAt) - new Date(a.deletedAt));
+};
 
 
 module.exports = {
     createMail,
     getMailById,
-    deleteMail,
+    moveToTrash,
+    getTrashMails,
+    purgeOldTrash,
     searchMails,
     getUserMails,
     assignLabels,
     toggleSpam,
+    toggleStarred,
     updateDraft,
     sendDraft,
-    getSpamMails
+    getSpamMails,
+    getAllMails,
+    getSentMails
 };
