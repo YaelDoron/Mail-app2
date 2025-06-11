@@ -78,4 +78,8 @@ export const createMail = async (mailData, token) => {
         Authorization: `Bearer ${token}`, 
       },
     });
-
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
