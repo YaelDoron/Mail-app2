@@ -5,7 +5,9 @@ const UserService = require('../services/UserService');
 
 // Create a new user
 function createUser(req, res) {
-  const { firstName, lastName, birthDate, gender, email, password, profilePicture} = req.body;
+  const { firstName, lastName, birthDate, gender, email, password} = req.body;
+  const profilePicture = req.file?.path;
+
   // Check required fields
   if (!firstName || !lastName || !birthDate || !gender || !email || !password) {
     return res.status(400).json("Missing required fields");

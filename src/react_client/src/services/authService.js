@@ -1,3 +1,7 @@
+
+import { jwtDecode } from "jwt-decode";
+
+
 const TOKEN_KEY = "jwtToken";
 
 export const saveToken = (token) => {
@@ -15,3 +19,11 @@ export const removeToken = () => {
 export const isLoggedIn = () => {
   return !!getToken();
 };
+
+export const getUserIdFromToken = () => {
+  const token = getToken();
+  if (!token) return null;
+  const decoded = jwtDecode(token);
+  return decoded.userId;
+};
+
