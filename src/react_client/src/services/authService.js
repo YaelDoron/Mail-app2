@@ -1,4 +1,6 @@
+
 import { jwtDecode } from "jwt-decode";
+
 
 const TOKEN_KEY = "jwtToken";
 
@@ -24,3 +26,4 @@ export const getUserIdFromToken = () => {
   const decoded = jwtDecode(token);
   return decoded.userId;
 };
+

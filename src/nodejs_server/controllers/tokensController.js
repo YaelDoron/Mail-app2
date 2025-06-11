@@ -1,22 +1,37 @@
-const UserService= require('../services/UserService');
+const jwt = require("jsonwebtoken");
+const UserService = require('../services/UserService');
 
-// Handles login requests: checks if a user with the provided email exists
-// and returns the user ID if found. Returns 404 if not found.
+// Secret key used to sign JWT tokens
+const SECRET = process.env.JWT_SECRET || "your-secret-key";
+
+/**
+ * Handles user login.
+ * Expects { email, password } in the request body.
+ * If credentials are valid, returns a signed JWT token.
+ */
 function loginUser(req, res) {
   const { email, password } = req.body;
 
-  // Try to find the user by email
+  // Attempt to find the user by email
   const user = UserService.findUserByEmail(email);
 
- // If user doesn't exist
+  // If user not found, return 404
   if (!user) {
     return res.status(404).send("User not found");
   }
-  
-// If login is successful, return the user's ID
-  res.status(200).json({ id: user.id });
+
+  // If password does not match, return 401 (Unauthorized)
+  if (user.password !== password) {
+    return res.status(401).send("Incorrect password");
+  }
+
+  // If login is successful, generate a JWT containing the user's ID
+  const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: "2h" });
+
+  // Send the token back to the client
+  res.status(200).json({ token });
 }
 
 module.exports = {
-    loginUser
+  loginUser
 };
