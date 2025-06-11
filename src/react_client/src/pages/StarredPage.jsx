@@ -3,6 +3,8 @@ import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
 import MailList from "../components/mail/MailList";
 import { getAllMails } from "../services/mailsService";
+import MailLayout from "./MailLayout";
+
 
 const StarredPage = () => {
   const [starredMails, setStarredMails] = useState([]);

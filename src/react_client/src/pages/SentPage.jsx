@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getSentMails } from "../services/mailsService";
 import MailList from "../components/mail/MailList";
-import MailLayout from "../layouts/MailLayout";
+import MailLayout from "./MailLayout";
+
 
 const SentPage = () => {
   const [sentMails, setSentMails] = useState([]);
