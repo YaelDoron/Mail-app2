@@ -1,13 +1,19 @@
-import { Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-// ...
+
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MailPage from "./pages/MailPage";
+
+
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      {/* שאר הנתיבים */}
-    </Routes>
+    <Router>
+      <Routes>
+        <Route path="/mailpage" element={<MailPage />} />
+        <Route path="/mail/:id" element={<MailPage />} />
+
+      </Routes>
+    </Router>
   );
 }
 
