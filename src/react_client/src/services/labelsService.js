@@ -1,6 +1,5 @@
 import axios from "axios";
 
-const API_BASE_URL = 3001; //לשנות ל process.env.REACT_APP_API_BASE_URL
 //Fetches all labels from the server, makes a GET request to the /api/labels endpoint
 export const fetchLabels = async () => {
   const response = await axios.get("/api/labels");
