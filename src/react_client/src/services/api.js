@@ -69,3 +69,13 @@ export const getUserInfo = async () => {
   }
 };
 
+// Sends a new mail or saves it as a draft, depending on the isDraft flag
+export const createMail = async (mailData, token) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/mails`, mailData, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+
