@@ -4,6 +4,8 @@ import {
   FaEllipsisV, FaTrash, FaExclamationCircle, FaTag,
   FaStar, FaRegStar
 } from "react-icons/fa";
+import { toggleStarMail } from "../../services/mailsService";
+
 
 const MailHeader = ({ mail, onToggleStar, onDelete, onMarkSpam, onLabel }) => {
   const [starred, setStarred] = useState(mail.isStarred || false);

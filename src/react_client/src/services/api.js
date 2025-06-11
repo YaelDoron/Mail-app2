@@ -36,7 +36,6 @@ export const loginUser = async (credentials) => {
   }
 };
 
-
 export const updateUserImage = async (file) => {
   try {
     const formData = new FormData();
