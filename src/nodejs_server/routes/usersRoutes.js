@@ -2,9 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const { createUser, getUserById } = require('../controllers/usersController');
+const upload = require("../middleware/upload");
 
 // Register a new user
-router.post('/', createUser);
+router.post('/', upload.single("image"), createUser);
 
 // Get a user profile by ID
 router.get('/:id', getUserById);
