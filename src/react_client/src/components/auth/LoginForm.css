@@ -1,0 +1,68 @@
+.gmail-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f2f2f2;
+  font-family: "Roboto", sans-serif;
+}
+
+.gmail-login-form {
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gmail-logo {
+  height: 40px;
+  margin-bottom: 1rem;
+}
+
+.gmail-login-title {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #202124;
+  font-weight: 500;
+}
+
+.gmail-login-input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.25rem;
+  border: none;
+  border-bottom: 1px solid #dadce0;
+  font-size: 1rem;
+}
+
+.gmail-login-input:focus {
+  border-bottom: 2px solid #1a73e8;
+  outline: none;
+}
+
+.gmail-next-button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
+}
+
+.gmail-next-button:hover {
+  background-color: #185abc;
+}
+
+.gmail-login-error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
