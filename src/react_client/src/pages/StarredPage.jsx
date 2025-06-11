@@ -22,19 +22,13 @@ const StarredPage = () => {
   }, []);
 
   return (
-    <div className="d-flex">
-      <Sidebar />
-      <div className="flex-grow-1">
-        <Topbar />
-        <div className="container mt-4">
-          {starredMails.length > 0 ? (
+    <MailLayout>
+        {starredMails.length > 0 ? (
             <MailList mails={starredMails} />
-          ) : (
+            ) : (
             <p className="text-muted">No starred mails yet.</p>
-          )}
-        </div>
-      </div>
-    </div>
+        )}
+    </MailLayout>
   );
 };
 
