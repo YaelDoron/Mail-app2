@@ -1,12 +1,13 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { BrowserRouter } from 'react-router-dom'; // ← הוספת הייבוא
 
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
-
+    <BrowserRouter> {/* ← לעטוף את כל האפליקציה */}
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );

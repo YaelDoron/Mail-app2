@@ -7,6 +7,7 @@ import "./LoginForm.css";
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [step, setStep] = useState("email");
   const navigate = useNavigate();
@@ -34,51 +35,91 @@ function LoginForm() {
   };
 
   return (
-    <div className="gmail-login-container">
-      <form
-        className="gmail-login-form"
-        onSubmit={step === "password" ? handleSubmit : (e) => e.preventDefault()}
-      >
+    <div className="gmail-login-box">
+      <div className="gmail-login-left">
         <img
           src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r5.png"
           alt="Google Logo"
           className="gmail-logo"
         />
-        <h2 className="gmail-login-title">Sign in</h2>
+        <h2 className="gmail-login-title">
+          {step === "email" ? "Sign in" : "Welcome"}
+        </h2>
 
+        {step === "password" && (
+          <div className="gmail-email-display">
+            <i className="bi bi-person-circle gmail-user-icon"></i>
+            <span>{email}</span>
+          </div>
+        )}
+      </div>
+
+      <form
+        className="gmail-login-right"
+        onSubmit={step === "password" ? handleSubmit : (e) => e.preventDefault()}
+      >
         {step === "email" && (
           <>
             <input
               className="gmail-login-input"
-              type="email"
+              type="text"
+              autoComplete="off"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button
-              className="gmail-next-button"
-              type="button"
-              onClick={handleNext}
-            >
-              Next
-            </button>
+            <div className="gmail-button-container">
+              <div className="gmail-button-row">
+                <button
+                  className="gmail-create-account"
+                  type="button"
+                  onClick={() => navigate("/register")}
+                >
+                  Create account
+                </button>
+                <button
+                  className="gmail-next-button"
+                  type="button"
+                  onClick={handleNext}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           </>
         )}
 
         {step === "password" && (
           <>
+            <p className="gmail-subtext">To continue, first verify it’s you</p>
+
             <input
               className="gmail-login-input"
-              type="password"
-              placeholder="Password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="off"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <button className="gmail-next-button" type="submit">
-              Login
-            </button>
+
+            <label className="gmail-show-password">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              Show password
+            </label>
+
+            <div className="gmail-button-container">
+              <div className="gmail-button-row">
+                <button className="gmail-next-button" type="submit">
+                  Next
+                </button>
+              </div>
+            </div>
           </>
         )}
 

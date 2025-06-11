@@ -4,14 +4,10 @@ import "./LoginPage.css";
 
 function LoginPage() {
   return (
-    <div>
+    <div className="login-page-container">
       <LoginForm />
     </div>
   );
 }
 
 export default LoginPage;
-
-
-
-
