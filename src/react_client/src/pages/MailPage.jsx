@@ -45,13 +45,9 @@ useEffect(() => {
   if (!mail) return <p>Loading...</p>;
 
   return (
-    <div style={{ height: "100vh" }}>
-      <Topbar /> 
-      <div className="d-flex">
-        <Sidebar />
-        <MailView mail={mail} />
-      </div>
-    </div>
+    <MailLayout>
+      <MailView mail={mail} />
+    </MailLayout>
   );
 };
 

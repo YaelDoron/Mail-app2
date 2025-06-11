@@ -3,6 +3,7 @@ import React from "react";
 import MailPage from "./pages/MailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage"
+import StarredPage from "./pages/StarredPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/starred" element={<StarredPage />} />
       </Routes>
   );
 }
