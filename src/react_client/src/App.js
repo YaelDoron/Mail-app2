@@ -4,6 +4,7 @@ import MailPage from "./pages/MailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage"
 import StarredPage from "./pages/StarredPage";
+import SentPage from "./pages/SentPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/starred" element={<StarredPage />} />
+        <Route path="/sent" element={<SentPage />} />
       </Routes>
   );
 }
