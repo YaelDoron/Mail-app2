@@ -3,14 +3,16 @@ import React from "react";
 import MailPage from "./pages/MailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage"
-import MailLayout from "./components/pages/MailLayout";
-import InboxPage from "./components/pages/InboxPage";
-import AllMailsPage from "./components/pages/AllMailsPage";
-import StarredPage from "./components/pages/StarredPage";
-import SentPage from "./components/pages/SentPage";
-import DraftsPage from "./components/pages/DraftsPage";
-import SpamPage from "./components/pages/SpamPage";
-import TrashPage from "./components/pages/TrashPage";
+import MailLayout from "./pages/MailLayout";
+import InboxPage from "./pages/InboxPage";
+import AllMailsPage from "./pages/AllMailsPage";
+import StarredPage from "./pages/StarredPage";
+import SentPage from "./pages/SentPage";
+import DraftsPage from "./pages/DraftsPage";
+import SpamPage from "./pages/SpamPage";
+import TrashPage from "./pages/TrashPage";
+import SearchResultsPage from "./pages/SearchResultsPage";
+import LabelPage from "./pages/LabelPage";
 import MailItem from "./components/mail/MailItem"
 import MailList from "./components/mail/MailList";
 
@@ -137,6 +139,8 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/test" element={<TestMailItem />} />
         <Route path="/testlist" element={<TestMailList />} />
+        <Route path="/search/:query" element={<MailLayout><SearchResultsPage /></MailLayout>} />
+
       </Routes>
   );
 }
