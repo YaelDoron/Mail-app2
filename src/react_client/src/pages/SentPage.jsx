@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import MailList from "../components/mail/MailList";
 import { getSentMails } from "../services/mailsService";
 
+
 const SentPage = () => {
   const [mails, setMails] = useState([]);
 

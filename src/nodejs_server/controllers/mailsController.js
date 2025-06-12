@@ -201,6 +201,18 @@ function getMailsByLabel(req, res) {
     res.status(200).json(mails);
 }
 
+    function markMailAsRead(req, res) {
+        const userId = req.userId;
+        const id = parseInt(req.params.id);
+
+        const updated = Mail.markAsRead(id, userId);
+        if (!updated) {
+            return res.status(403).json({ error: 'Unable to mark mail as read' });
+        }
+
+        res.status(204).end(); // אין צורך להחזיר גוף
+    }
+
     module.exports = {
     getUserMails,
     getMailById,
@@ -217,5 +229,7 @@ function getMailsByLabel(req, res) {
     getSentMails,
     getDraftMails,
     getStarredMails,
-    getMailsByLabel
+    getMailsByLabel,
+    getTrashMails,
+    markMailAsRead
 };

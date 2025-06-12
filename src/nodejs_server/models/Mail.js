@@ -42,7 +42,8 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
         isDraft,
         isStarred: false,
         isDeleted: false,
-        deletedAt: null
+        deletedAt: null,
+        isRead: false
     };
     mails.push(senderMail);
 
@@ -62,7 +63,8 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
                 isDraft: false,
                 isStarred: false,
                 isDeleted: false,
-                deletedAt: null
+                deletedAt: null,
+                isRead: false
             });
         }
     }
@@ -244,6 +246,23 @@ const getMailsByLabel = (userId, labelName) => {
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 };
 
+const markAsRead = (id, userId) => {
+    const mail = getMailById(id);
+    if (
+        mail &&
+        mail.owner === userId &&     // שייך למשתמש
+        mail.from !== userId &&      // לא נשלח על ידי המשתמש
+        !mail.isDraft &&             // לא טיוטה
+        !mail.isDeleted              // לא נמחק
+    ) {
+        mail.isRead = true;
+        return mail;
+    }
+    return null;
+};
+
+
+
 module.exports = {
     createMail,
     getMailById,
@@ -262,5 +281,6 @@ module.exports = {
     getSentMails,
     getDraftMails,
     getStarredMails,
-    getMailsByLabel
+    getMailsByLabel,
+    markAsRead
 };

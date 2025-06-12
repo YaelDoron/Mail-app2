@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import MailList from "../components/mail/MailList";
 import { getStarredMails } from "../services/mailsService";
 
+
 const StarredPage = () => {
   const [mails, setMails] = useState([]);
 

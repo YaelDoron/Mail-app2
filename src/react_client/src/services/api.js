@@ -82,3 +82,109 @@ export const createMail = async (mailData, token) => {
     throw error.response?.data || error.message;
   }
 };
+
+export const markMailAsRead = async (mailId) => {
+  try {
+    await axios.patch(
+      `${API_BASE_URL}/api/mails/read/${mailId}`,
+      {}, // אין צורך ב-body
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Failed to mark mail as read", error);
+  }
+};
+
+export const toggleStarred = async (mailId) => {
+  try {
+    const res = await axios.patch(
+      `${API_BASE_URL}/api/mails/star/${mailId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    console.error("Failed to toggle starred status", error);
+  }
+};
+
+export const getUserById = async (id) => {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Failed to fetch user by ID", err);
+  }
+};
+
+export const deleteMail = async (mailId) => {
+  try {
+    await axios.delete(`${API_BASE_URL}/api/mails/${mailId}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+  } catch (error) {
+    console.error("Failed to delete mail", error);
+  }
+};
+
+export const toggleSpam = async (mailId) => {
+  try {
+    const response = await axios.patch(`${API_BASE_URL}/api/mails/spam/${mailId}`, {}, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to toggle spam status", error);
+  }
+};
+
+export const assignLabelsToMail = async (mailId, labelIds) => {
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}/api/mails/labels/${mailId}`,
+      { labels: labelIds }, // מערך של תוויות
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to assign labels", error);
+  }
+};
+
+export const fetchLabels = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/labels`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch labels", error);
+    return [];
+  }
+};
+
+
+
+

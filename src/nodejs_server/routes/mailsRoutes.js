@@ -55,3 +55,12 @@ router.route('/labels/:labelName')
     .get(controller.getMailsByLabel);         
 
 module.exports = router;
+
+// סימון מייל כנקרא
+router.route('/read/:id')
+    .patch(controller.markMailAsRead);
+
+// סימון מייל כספאם
+router.route('/spam/:id')
+    .patch(controller.toggleSpamStatus);
+
