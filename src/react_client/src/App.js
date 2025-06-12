@@ -5,6 +5,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage"
 import MailItem from "./components/mail/MailItem"
 import MailList from "./components/mail/MailList";
+import StarredPage from "./pages/StarredPage";
+import SentPage from "./pages/SentPage";
 
 const TestMailItem = () => {
   const mockMail = {
@@ -107,7 +109,6 @@ const TestMailList = () => {
     </div>
   );
 };
-
 
 
 function App() {
