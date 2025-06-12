@@ -71,7 +71,7 @@ export const getUserInfo = async () => {
 // Sends a new mail or saves it as a draft, depending on the isDraft flag
 export const createMail = async (mailData, token) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/api/mails`, mailData, {
+    const response = await axios.post(`${API_BASE_URL}/mails`, mailData, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`, 
@@ -86,7 +86,7 @@ export const createMail = async (mailData, token) => {
 export const markMailAsRead = async (mailId) => {
   try {
     await axios.patch(
-      `${API_BASE_URL}/api/mails/read/${mailId}`,
+      `${API_BASE_URL}/mails/read/${mailId}`,
       {}, // אין צורך ב-body
       {
         headers: {
@@ -102,7 +102,7 @@ export const markMailAsRead = async (mailId) => {
 export const toggleStarred = async (mailId) => {
   try {
     const res = await axios.patch(
-      `${API_BASE_URL}/api/mails/star/${mailId}`,
+      `${API_BASE_URL}/mails/star/${mailId}`,
       {},
       {
         headers: {
@@ -131,7 +131,7 @@ export const getUserById = async (id) => {
 
 export const deleteMail = async (mailId) => {
   try {
-    await axios.delete(`${API_BASE_URL}/api/mails/${mailId}`, {
+    await axios.delete(`${API_BASE_URL}/mails/${mailId}`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
@@ -143,7 +143,7 @@ export const deleteMail = async (mailId) => {
 
 export const toggleSpam = async (mailId) => {
   try {
-    const response = await axios.patch(`${API_BASE_URL}/api/mails/spam/${mailId}`, {}, {
+    const response = await axios.patch(`${API_BASE_URL}/mails/spam/${mailId}`, {}, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
@@ -157,7 +157,7 @@ export const toggleSpam = async (mailId) => {
 export const assignLabelsToMail = async (mailId, labelIds) => {
   try {
     const response = await axios.patch(
-      `${API_BASE_URL}/api/mails/labels/${mailId}`,
+      `${API_BASE_URL}/mails/labels/${mailId}`,
       { labels: labelIds }, // מערך של תוויות
       {
         headers: {
@@ -173,7 +173,7 @@ export const assignLabelsToMail = async (mailId, labelIds) => {
 
 export const fetchLabels = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/api/labels`, {
+    const response = await axios.get(`${API_BASE_URL}/labels`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
