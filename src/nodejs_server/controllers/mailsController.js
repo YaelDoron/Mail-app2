@@ -3,7 +3,7 @@ const BlacklistService = require('../services/BlacklistService');
 
     // Get all mails for the logged-in user
     function getUserMails(req, res) {
-        const userId = req.userId;
+        const userId = req.user.userId;
         const mails = Mail.getUserMails(userId);
         res.status(200).json(mails);
     }
@@ -11,7 +11,7 @@ const BlacklistService = require('../services/BlacklistService');
     // Get a specific mail by ID, only if it belongs to the user (either sender or receiver)
     function getMailById(req, res){
         const id = parseInt(req.params.id);
-        const userId = req.userId;
+        const userId = req.user.userId;
         const mail = Mail.getMailById(id)
         if(!mail || mail.isDeleted){
             return res.status(404).json({error: 'Mail not found'});
@@ -26,7 +26,7 @@ const BlacklistService = require('../services/BlacklistService');
 
     // Create a new mail (or draft) after blacklist check
     async function createMail(req, res){
-        const from = req.userId;
+        const from = req.user.userId;
         const { to, subject, content, isDraft = false } = req.body;
         // Validate input
         if (!from || !Array.isArray(to) || to.length === 0 || !subject || !content) {
@@ -48,7 +48,7 @@ const BlacklistService = require('../services/BlacklistService');
 
     // Delete a mail, only if the logged-in user is the mail's owner
     function deleteMail(req, res){
-        const userId = req.userId;
+        const userId = req.user.userId;
         const id = parseInt(req.params.id);
         const mail = Mail.getMailById(id);
         if (!mail) {
@@ -66,14 +66,14 @@ const BlacklistService = require('../services/BlacklistService');
     };
 
     function getTrashMails(req, res) {
-        const userId = req.userId;
+        const userId = req.user.userId;
         const mails = Mail.getTrashMails(userId);
         res.status(200).json(mails);
     }
 
     // Edit a draft, only if the logged-in user is the sender
     function updateDraft(req, res){
-        const userId = req.userId;
+        const userId = req.user.userId;
         const id = parseInt(req.params.id);
         const updates = req.body;
         const mail = Mail.getMailById(id);
@@ -96,7 +96,7 @@ const BlacklistService = require('../services/BlacklistService');
 
         // Assign labels to a mail
     function assignLabelsToMail(req, res) {
-        const userId = req.userId;
+        const userId = req.user.userId;
         const id = parseInt(req.params.id);
         const { labels } = req.body;
 
@@ -110,7 +110,7 @@ const BlacklistService = require('../services/BlacklistService');
 
         // Toggle spam status
     function toggleSpamStatus(req, res) {
-        const userId = req.userId;
+        const userId = req.user.userId;
         const id = parseInt(req.params.id);
 
         const updated = Mail.toggleSpam(id, userId);
@@ -123,7 +123,7 @@ const BlacklistService = require('../services/BlacklistService');
 
         // Send a draft
     function sendDraftMail(req, res) {
-        const userId = req.userId;
+        const userId = req.user.userId;
         const id = parseInt(req.params.id);
 
         const sent = Mail.sendDraft(id, userId);
@@ -136,7 +136,7 @@ const BlacklistService = require('../services/BlacklistService');
 
     // Search user's mails using a query term
     function searchMails(req, res){
-        const userId = req.userId;
+        const userId = req.user.userId;
         const term = req.params.query;
 
         if (!term) {
@@ -148,13 +148,13 @@ const BlacklistService = require('../services/BlacklistService');
     }
 
     function getSpamMails(req, res) {
-    const userId = req.userId;
+    const userId = req.user.userId;
     const mails = Mail.getSpamMails(userId);
     res.status(200).json(mails); 
     }
 
     function toggleStarredStatus(req, res) {
-        const userId = req.userId;
+        const userId = req.user.userId;
         const id = parseInt(req.params.id);
 
         const updated = Mail.toggleStarred(id, userId);
@@ -166,31 +166,31 @@ const BlacklistService = require('../services/BlacklistService');
     }
 
     function getAllUserMails(req, res) {
-        const userId = req.userId;
+        const userId = req.user.userId;
         const mails = Mail.getAllMails(userId);
         res.status(200).json(mails);
     }
 
     function getSentMails(req, res) {
-        const userId = req.userId;
+        const userId = req.user.userId;
         const mails = Mail.getSentMails(userId);
         res.status(200).json(mails);
     }
 
     function getDraftMails(req, res) {
-    const userId = req.userId;
+    const userId = req.user.userId;
     const drafts = Mail.getDraftMails(userId);
     res.status(200).json(drafts);
 }
 
 function getStarredMails(req, res) {
-    const userId = req.userId;
+    const userId = req.user.userId;
     const starred = Mail.getStarredMails(userId);
     res.status(200).json(starred);
 }
 
 function getMailsByLabel(req, res) {
-    const userId = req.userId;
+    const userId = req.user.userId;
     const labelName = req.params.labelName;
 
     if (!labelName) {
@@ -202,7 +202,7 @@ function getMailsByLabel(req, res) {
 }
 
     function markMailAsRead(req, res) {
-        const userId = req.userId;
+        const userId = req.user.userId;
         const id = parseInt(req.params.id);
 
         const updated = Mail.markAsRead(id, userId);

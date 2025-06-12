@@ -1,14 +1,14 @@
 const Label = require('../models/Label.js')
 
 exports.getUserLabels = (req, res) => {
-    const userId = req.userId;
+    const userId = req.user.userId;
     // Return all the user labels
     const labels = Label.getAllLabels(userId);
     res.status(200).json(labels);
 }
 
 exports.createLabel = (req, res) => {
-  const userId = req.userId;
+  const userId = req.user.userId;
   // Check if 'name' is present
   const name = req.body.name
   if (!name) {
@@ -20,7 +20,7 @@ exports.createLabel = (req, res) => {
 }
 
 exports.getLabelById = (req, res) => {
-  const userId = req.userId;
+  const userId = req.user.userId;
   const label = Label.getLabel(parseInt(req.params.id), userId)
   // Check if a label with this ID exists
   if (!label) {
@@ -31,7 +31,7 @@ exports.getLabelById = (req, res) => {
 }
 
 exports.updateLabel = (req, res) => {
-  const userId = req.userId;
+  const userId = req.user.userId;
   const id = parseInt(req.params.id)
   const newName = req.body.name
   // Check if 'newName' is present
@@ -48,7 +48,7 @@ exports.updateLabel = (req, res) => {
 }
 
 exports.deleteLabel = (req, res) => {
-  const userId = req.userId;
+  const userId = req.user.userId;
   const id = parseInt(req.params.id)
   const success = Label.deleteLabel(id, userId)
   // Return 404 error if the label does not exist

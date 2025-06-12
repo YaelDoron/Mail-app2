@@ -13,14 +13,14 @@ const usersRoutes = require('./routes/usersRoutes');
 const blacklistRoutes = require('./routes/blacklistRoutes');
 const tokensRoutes = require('./routes/tokensRoutes');
 
-// Apply authMiddleware only where needed
+// Public routes (לא דורשים התחברות)
+app.use('/api/users', usersRoutes);
+app.use('/api/tokens', tokensRoutes);
+
+// Protected routes (דורשים התחברות)
 app.use('/api/labels', authMiddleware, labelsRoutes);
 app.use('/api/mails', authMiddleware, mailsRoutes);
-
-// No auth check for users route (e.g. login/register)
-app.use('/api/blacklist', blacklistRoutes);
-app.use('/api/tokens', tokensRoutes);
-app.use('/api/users', usersRoutes);
+app.use('/api/blacklist', authMiddleware, blacklistRoutes);
 
 // 404 error
 app.use((req, res) => {

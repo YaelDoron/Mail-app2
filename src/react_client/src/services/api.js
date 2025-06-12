@@ -74,7 +74,7 @@ export const createMail = async (mailData, token) => {
     const response = await axios.post(`${API_BASE_URL}/mails`, mailData, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${getToken()}`, 
       },
     });
     return response.data;

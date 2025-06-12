@@ -1,12 +1,17 @@
-module.exports = (req, res, next) => {
-  const userId = req.header('user-id');
+const jwt = require("jsonwebtoken");
+const SECRET = process.env.JWT_SECRET || "your-secret-key";
 
-  // If the header is missing, return a 400 Bad Request response
-  if (!userId) {
-    return res.status(400).json({ error: 'Missing user-id header' });
-  }
-  // If present, attach the userId to the request object
-  req.userId = userId;
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-  next(); 
-};
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
+
+module.exports = authenticateToken;

@@ -10,16 +10,16 @@ function createUser(req, res) {
 
   // Check required fields
   if (!firstName || !lastName || !birthDate || !gender || !email || !password) {
-    return res.status(400).json("Missing required fields");
+    return res.status(400).json({ error: "Missing required fields" });
   }
   // Prevent duplicate emails
   if (UserService.findUserByEmail(email)) {
-    return res.status(409).json("Email address already exists");
+    return res.status(409).json({ error: "Email address already exists" });
   }
   // Validate birthDate format
   const birthDateError = UserService.validateBirthDate(birthDate);
   if (birthDateError) {
-    return res.status(400).json(birthDateError);
+    return res.status(400).json({ error: birthDateError });
   }
 
   // Create a new user object using the model's factory function
@@ -43,7 +43,7 @@ function getUserById(req, res) {
   const user = User.getUserById(id);
 
   if (!user) {
-    return res.status(404).send("User not found");
+    return res.status(404).json({ error: "User not found" });
   }
 
   // Return full user profile

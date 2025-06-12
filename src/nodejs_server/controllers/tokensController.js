@@ -17,12 +17,12 @@ function loginUser(req, res) {
 
   // If user not found, return 404
   if (!user) {
-    return res.status(404).send("User not found");
+    res.status(404).json({ error: "User not found" });
   }
 
   // If password does not match, return 401 (Unauthorized)
   if (user.password !== password) {
-    return res.status(401).send("Incorrect password");
+    res.status(401).json({ error: "Incorrect password" });
   }
 
   // If login is successful, generate a JWT containing the user's ID
