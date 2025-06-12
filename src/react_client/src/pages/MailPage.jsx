@@ -45,9 +45,7 @@ useEffect(() => {
   if (!mail) return <p>Loading...</p>;
 
   return (
-    <MailLayout>
       <MailView mail={mail} />
-    </MailLayout>
   );
 };
 

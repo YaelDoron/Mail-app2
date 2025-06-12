@@ -1,36 +1,28 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/layout/Sidebar";
-import Topbar from "../components/layout/Topbar";
 import MailList from "../components/mail/MailList";
-import { getAllMails } from "../services/mailsService";
-import MailLayout from "./MailLayout";
+import { getStarredMails } from "../services/mailsService";
 
 
 const StarredPage = () => {
-  const [starredMails, setStarredMails] = useState([]);
+  const [mails, setMails] = useState([]);
 
   useEffect(() => {
-    const fetchStarred = async () => {
+    const fetchstarredMails = async () => {
       try {
-        const all = await getAllMails();
-        const starred = all.filter(mail => mail.isStarred);
-        setStarredMails(starred);
+        const data = await getStarredMails();
+        setMails(data);
       } catch (err) {
-        console.error("שגיאה בשליפת מיילים עם כוכב", err);
+        console.error("Failed to load starred mails:", err);
       }
     };
-
-    fetchStarred();
+    fetchstarredMails();
   }, []);
 
   return (
-    <MailLayout>
-        {starredMails.length > 0 ? (
-            <MailList mails={starredMails} />
-            ) : (
-            <p className="text-muted">No starred mails yet.</p>
-        )}
-    </MailLayout>
+    <div className="container p-3">
+      <h3>Starred</h3>
+      <MailList mails={mails} viewType="Starred" />
+    </div>
   );
 };
 

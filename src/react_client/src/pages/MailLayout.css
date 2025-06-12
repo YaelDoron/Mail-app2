@@ -1,0 +1,41 @@
+/* עוטף כללי של הלייאאוט */
+.mail-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* טופ בר עליון */
+.mail-topbar {
+  height: 60px;
+  background-color: #f1f3f4;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  font-weight: bold;
+  z-index: 1000;
+}
+
+/* גוף התצוגה מתחת לטופבר */
+.mail-body {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 60px); /* מתחשב בגובה הטופבר */
+}
+
+/* סיידבר */
+.mail-sidebar {
+  width: 280px;
+  background-color: #f8f9fa;
+  border-right: 1px solid #ddd;
+  padding: 1rem 0.5rem;
+  overflow-y: auto;
+}
+
+/* תוכן מרכזי (רשימת מיילים, תצוגת מייל וכו') */
+.mail-main {
+  flex-grow: 1;
+  padding: 1rem 1.5rem;
+  overflow-y: auto;
+}

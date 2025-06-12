@@ -177,6 +177,30 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(mails);
     }
 
+    function getDraftMails(req, res) {
+    const userId = req.userId;
+    const drafts = Mail.getDraftMails(userId);
+    res.status(200).json(drafts);
+}
+
+function getStarredMails(req, res) {
+    const userId = req.userId;
+    const starred = Mail.getStarredMails(userId);
+    res.status(200).json(starred);
+}
+
+function getMailsByLabel(req, res) {
+    const userId = req.userId;
+    const labelName = req.params.labelName;
+
+    if (!labelName) {
+        return res.status(400).json({ error: 'Missing label name' });
+    }
+
+    const mails = Mail.getMailsByLabel(userId, labelName);
+    res.status(200).json(mails);
+}
+
     function markMailAsRead(req, res) {
         const userId = req.userId;
         const id = parseInt(req.params.id);
@@ -188,8 +212,6 @@ const BlacklistService = require('../services/BlacklistService');
 
         res.status(204).end(); // אין צורך להחזיר גוף
     }
-
-
 
     module.exports = {
     getUserMails,
@@ -205,6 +227,9 @@ const BlacklistService = require('../services/BlacklistService');
     toggleStarredStatus,
     getAllUserMails,
     getSentMails,
+    getDraftMails,
+    getStarredMails,
+    getMailsByLabel,
     getTrashMails,
     markMailAsRead
 };
