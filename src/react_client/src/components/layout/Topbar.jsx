@@ -44,8 +44,12 @@ const Topbar = () => {
   };
 
   return (
-    <div className="d-flex justify-content-between align-items-center px-4 py-2 border-bottom bg-light position-relative">
-
+    <div className="d-flex justify-content-between align-items-center px-4 py-2 border-bottom bg-light position-relative w-100">
+      <div><img
+          src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r5.png"
+          alt="Google Logo"
+          className="gmail-logo"
+        /></div>
       {/* תיבת חיפוש */}
       <div className="flex-grow-1 d-flex justify-content-center px-3">
         <div style={{ position: "relative", maxWidth: "500px", width: "100%" }}>
