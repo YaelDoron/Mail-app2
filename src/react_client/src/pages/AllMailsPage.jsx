@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MailList from "../components/mail/MailList";
-import { getAllMails } from "../services/mailsService";
+import { getAllMailsUser } from "../services/mailsService";
 
 const AllMailsPage = () => {
   const [mails, setMails] = useState([]);
@@ -8,7 +8,7 @@ const AllMailsPage = () => {
   useEffect(() => {
     const fetchAllMails = async () => {
       try {
-        const data = await getAllMails();
+        const data = await getAllMailsUser();
         setMails(data);
       } catch (err) {
         console.error("Failed to load All mail:", err);
