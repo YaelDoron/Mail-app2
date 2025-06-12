@@ -42,3 +42,12 @@ router.route('/sent')
 router.route('/trash')
     .get(controller.getTrashMails);
 module.exports = router;
+
+// סימון מייל כנקרא
+router.route('/read/:id')
+    .patch(controller.markMailAsRead);
+
+// סימון מייל כספאם
+router.route('/spam/:id')
+    .patch(controller.toggleSpamStatus);
+
