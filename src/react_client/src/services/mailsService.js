@@ -62,3 +62,8 @@ export const getMailsByLabel = async (labelName) => {
   const res = await axios.get(`${API_BASE_URL}mails/labels/${labelName}`, authHeader());
   return res.data;
 };
+
+export const getSearchMails = async (query) => {
+  const res = await axios.get(`${API_BASE_URL}/mails/search/${encodeURIComponent(query)}`, authHeader());
+  return res.data;
+}
