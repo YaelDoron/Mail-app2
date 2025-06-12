@@ -177,6 +177,29 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(mails);
     }
 
+    function getDraftMails(req, res) {
+    const userId = req.userId;
+    const drafts = Mail.getDraftMails(userId);
+    res.status(200).json(drafts);
+}
+
+function getStarredMails(req, res) {
+    const userId = req.userId;
+    const starred = Mail.getStarredMails(userId);
+    res.status(200).json(starred);
+}
+
+function getMailsByLabel(req, res) {
+    const userId = req.userId;
+    const labelName = req.params.labelName;
+
+    if (!labelName) {
+        return res.status(400).json({ error: 'Missing label name' });
+    }
+
+    const mails = Mail.getMailsByLabel(userId, labelName);
+    res.status(200).json(mails);
+}
 
     module.exports = {
     getUserMails,
@@ -192,5 +215,7 @@ const BlacklistService = require('../services/BlacklistService');
     toggleStarredStatus,
     getAllUserMails,
     getSentMails,
-    getTrashMails
+    getDraftMails,
+    getStarredMails,
+    getMailsByLabel
 };

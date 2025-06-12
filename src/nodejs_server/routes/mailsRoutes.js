@@ -41,4 +41,17 @@ router.route('/sent')
 // אשפה
 router.route('/trash')
     .get(controller.getTrashMails);
+
+// כוכב
+router.route('/star')
+    .get(controller.getStarredMails);    
+
+// טיוטות
+router.route('/draft')
+    .get(controller.getDraftMails);  
+    
+// מיילים של לייבל מסוים    
+router.route('/labels/:labelName')
+    .get(controller.getMailsByLabel);         
+
 module.exports = router;

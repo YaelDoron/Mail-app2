@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchLabels, addLabel } from "../../services/labelsService";
 
-const Sidebar = () => {
+const Sidebar = ({ onComposeClick }) => {
     // State to hold labels fetched from the server
     const [labels, setLabels] = useState([]);
     // State to hold 
@@ -21,7 +21,7 @@ const Sidebar = () => {
             }
         };
         getLabels();
-    }, []);
+}, []);
 
 
     // Handle creating a new label
@@ -50,8 +50,11 @@ const Sidebar = () => {
                 <span className="fw-bold fs-5 text-dark">MailApp</span>
             </div>
 
-            <button className="btn text-dark bg-primary-subtle mb-3 w-100 rounded-4 py-2 text-start fw-bold shadow-sm">
-                <i className="bi bi-pencil-fill me-3"></i> Compose
+            <button
+                className="btn text-dark bg-primary-subtle mb-3 w-100 rounded-4 py-2 text-start fw-bold shadow-sm"
+                onClick={onComposeClick}
+                >
+                 <i className="bi bi-pencil-fill me-3"></i> Compose
             </button>
                 
             <ul className="nav nav-pills flex-column mb-auto">

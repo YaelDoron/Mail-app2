@@ -1,32 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { getSentMails } from "../services/mailsService";
 import MailList from "../components/mail/MailList";
-import MailLayout from "../layouts/MailLayout";
+import { getSentMails } from "../services/mailsService";
 
 const SentPage = () => {
-  const [sentMails, setSentMails] = useState([]);
+  const [mails, setMails] = useState([]);
 
   useEffect(() => {
-    const fetchSent = async () => {
+    const fetchSentMails = async () => {
       try {
-        const mails = await getSentMails();
-        setSentMails(mails);
+        const data = await getSentMails();
+        setMails(data);
       } catch (err) {
-        console.error("שגיאה בשליפת מיילים שנשלחו", err);
+        console.error("Failed to load sent mails:", err);
       }
     };
-
-    fetchSent();
+    fetchSentMails();
   }, []);
 
   return (
-    <MailLayout>
-      {sentMails.length > 0 ? (
-        <MailList mails={sentMails} />
-      ) : (
-        <p className="text-muted">No sent mails found.</p>
-      )}
-    </MailLayout>
+    <div className="container p-3">
+      <h3>Sent</h3>
+      <MailList mails={mails} viewType="Sent" />
+    </div>
   );
 };
 

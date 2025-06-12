@@ -218,6 +218,31 @@ const getTrashMails = (userId) => {
         .sort((a, b) => new Date(b.deletedAt) - new Date(a.deletedAt));
 };
 
+// Get all draft mails
+const getDraftMails = (userId) => {
+    return mails
+        .filter(mail => mail.owner === userId && mail.isDraft && !mail.isDeleted)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+};
+
+// Get all starred mails
+const getStarredMails = (userId) => {
+    return mails
+        .filter(mail => mail.owner === userId && mail.isStarred && !mail.isDeleted)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+};
+
+const getMailsByLabel = (userId, labelName) => {
+    return mails
+        .filter(mail =>
+            mail.owner === userId &&
+            !mail.isDeleted &&
+            !mail.isDraft &&
+            !mail.isSpam &&
+            mail.labels.includes(labelName)
+        )
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+};
 
 module.exports = {
     createMail,
@@ -234,5 +259,8 @@ module.exports = {
     sendDraft,
     getSpamMails,
     getAllMails,
-    getSentMails
+    getSentMails,
+    getDraftMails,
+    getStarredMails,
+    getMailsByLabel
 };

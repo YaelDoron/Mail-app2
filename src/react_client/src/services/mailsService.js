@@ -28,3 +28,51 @@ export const getSentMails = async () => {
   });
   return res.data;
 };
+
+export const getInboxMails = async () => {
+  const token = localStorage.getItem("token");
+  const res = await axios.get(`${API}/inbox`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+};
+
+export const getStarredMails = async () => {
+  const token = localStorage.getItem("token");
+  const res = await axios.get(`${API}/starred`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+};
+
+export const getDraftMails = async () => {
+  const token = localStorage.getItem("token");
+  const res = await axios.get(`${API}/drafts`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+}
+
+export const getSpamMails = async () => {
+  const token = localStorage.getItem("token");
+  const res = await axios.get(`${API}/spam`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+};
+
+export const getGarbageMails = async () => {
+  const token = localStorage.getItem("token");
+  const res = await axios.get(`${API}/garbage`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+};
+
+export const getMailsByLabel = async (labelName) => {
+  const token = localStorage.getItem("token");
+  const res = await axios.get(`${API}/labels/${labelName}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+};
