@@ -1,6 +1,7 @@
 // Create and store user
 const User = require('../models/User');
 const UserService = require('../services/UserService');
+const jwt = require("jsonwebtoken");
 
 
 // Create a new user
@@ -34,7 +35,10 @@ function createUser(req, res) {
 });
 
   //the json returns the new user's id
-  res.status(201).json({ id: newUser.id });
+const SECRET = process.env.JWT_SECRET || "your-secret-key";
+const token = jwt.sign({ userId: newUser.id }, SECRET, { expiresIn: "2h" });
+
+res.status(201).json({ id: newUser.id, token });
 }
 
 // function that gets user by ID
@@ -58,7 +62,18 @@ function getUserById(req, res) {
   });
 }
 
+// פונקציה לשליפת משתמש לפי אימייל
+function getUserByEmail(req, res) {
+  const email = req.params.email;
+  const user = UserService.findUserByEmail(email);
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  res.status(200).json({ id: user.id });
+}
+
 module.exports = {
   createUser,
-  getUserById
+  getUserById,
+  getUserByEmail
 };

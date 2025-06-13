@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const cors = require("cors");
+app.use(cors());
 
 app.use(express.json());
 
@@ -21,6 +23,7 @@ app.use('/api/tokens', tokensRoutes);
 app.use('/api/labels', authMiddleware, labelsRoutes);
 app.use('/api/mails', authMiddleware, mailsRoutes);
 app.use('/api/blacklist', authMiddleware, blacklistRoutes);
+
 
 // 404 error
 app.use((req, res) => {
