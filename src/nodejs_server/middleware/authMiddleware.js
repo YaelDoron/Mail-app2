@@ -7,11 +7,14 @@ function authenticateToken(req, res, next) {
 
   if (!token) return res.sendStatus(401);
 
-  jwt.verify(token, SECRET, (err, user) => {
+  jwt.verify(token, SECRET, (err, decoded) => {
     if (err) return res.sendStatus(403);
-    req.user = user;
+    req.user = decoded;
+    req.userId = decoded.userId;
     next();
   });
+
 }
+
 
 module.exports = authenticateToken;

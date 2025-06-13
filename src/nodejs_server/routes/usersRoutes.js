@@ -1,16 +1,12 @@
-// Defines user-related routes: registration and profile retrieval
 const express = require('express');
 const router = express.Router();
-const { createUser, getUserById, getUserByEmail } = require('../controllers/usersController');
+const controller = require('../controllers/usersController');
+const authMiddleware = require('../middleware/authMiddleware');
 const upload = require("../middleware/multer");
 
-// Register a new user
-router.post('/', upload.single("image"), createUser);
-
-// Get a user profile by ID
-router.get('/:id', getUserById);
-
-// שליפת מזהה לפי כתובת מייל
-router.get('/by-email/:email', getUserByEmail);
+router.post('/', upload.single("image"), controller.createUser);
+router.get('/:id', controller.getUserById);
+router.get('/by-email/:email', controller.getUserByEmail);
+router.put('/image', authMiddleware, upload.single("image"), controller.updateUserImage);
 
 module.exports = router;

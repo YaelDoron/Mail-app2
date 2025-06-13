@@ -53,13 +53,11 @@ function getUserById(req, res) {
   // Return full user profile
   res.status(200).json({
     id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    birthDate: user.birthDate,
-    gender: user.gender,
+    name: `${user.firstName} ${user.lastName}`,
     email: user.email,
-    profilePicture: user.profilePicture
+    image: user.profilePicture || "uploads/default-pic.svg"
   });
+
 }
 
 // פונקציה לשליפת משתמש לפי אימייל
@@ -72,8 +70,37 @@ function getUserByEmail(req, res) {
   res.status(200).json({ id: user.id });
 }
 
+
+function updateUserImage(req, res) {
+  const userId = req.user?.userId;
+  const user = UserService.findUserById(userId);
+  console.log("req.file", req.file);
+
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ error: "No image uploaded" });
+  }
+
+  user.profilePicture = `uploads/${req.file.filename}`;
+
+  console.log("Updated profilePicture:", user.profilePicture);
+
+  res.status(200).json({
+    id: user.id,
+    name: `${user.firstName} ${user.lastName}`,
+    email: user.email,
+    image: user.profilePicture
+  });
+}
+
+
 module.exports = {
   createUser,
   getUserById,
-  getUserByEmail
+  getUserByEmail,
+  updateUserImage
 };

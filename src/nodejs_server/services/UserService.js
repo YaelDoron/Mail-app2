@@ -26,8 +26,13 @@ const validateBirthDate=(birthDate)=> {
   }
   return null; // valid
 }
+function findUserById(id) {
+  return User.getUserById(id);
+}
+
 module.exports = {
   exists,
   findUserByEmail,
-  validateBirthDate
+  validateBirthDate,
+  findUserById
 };

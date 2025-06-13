@@ -9,27 +9,24 @@ import "./Topbar.css";
 
 
 const Topbar = () => {
-  const [user, setUser] = useState({
-    name: "Yael Levi",
-    email: "yael@example.com",
-    image: null
-  });
+  const [user, setUser] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const fileInputRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const data = await getUserInfo();
-        setUser(data);
-      } catch (err) {
-        console.error("שגיאה בשליפת פרטי המשתמש", err);
-      }
-    };
-    fetchUser();
-  }, []);
+  const fetchUser = async () => {
+    try {
+      const data = await getUserInfo();
+      setUser(data);
+    } catch (err) {
+      console.error("שגיאה בשליפת פרטי המשתמש", err);
+      // אפשרות: removeToken(); navigate("/login");
+    }
+  };
+  fetchUser();
+}, []);
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -105,13 +102,15 @@ const Topbar = () => {
       {user && (
         <div className="d-flex align-items-center position-relative">
           <span className="me-2">{user.name}</span>
-          <img
-            src={`http://localhost:3000/${user.image || "default-pic.png"}`}
-            alt="profile"
-            onClick={() => setShowPopup(!showPopup)}
-            className="rounded-circle"
-            style={{ width: "36px", height: "36px", objectFit: "cover" }}
-          />
+          {user.image && (
+            <img
+              src={`http://localhost:3000/${user.image.replace(/\\/g, "/")}?t=${Date.now()}`}
+              alt="profile"
+              onClick={() => setShowPopup(!showPopup)}
+              className="rounded-circle"
+              style={{ width: "36px", height: "36px", objectFit: "cover" }}
+            />
+          )}
         </div>
       )}
 
@@ -124,7 +123,7 @@ const Topbar = () => {
             <p className="text-muted small mb-2">{user.email}</p>
             <div className="position-relative d-inline-block mb-2">
               <img
-                src={`http://localhost:3000/${user.image || "default-pic.png"}`}
+                src={`http://localhost:3000/${typeof user.image === "string" ? user.image.replace(/\\/g, "/") : "uploads/default-pic.svg"}?t=${Date.now()}`}
                 alt="profile"
                 className="rounded-circle"
                 style={{ width: "48px", height: "48px", objectFit: "cover" }}
@@ -150,7 +149,7 @@ const Topbar = () => {
                 onChange={handleImageChange}
               />
             </div>
-            <h6 className="mb-1">Hi, {user.name.split(" ")[0]}!</h6>
+            <h6 className="mb-1">Hi, {user?.name?.split(" ")[0] || "User"}!</h6>
           </div>
           <div
             className="position-absolute"

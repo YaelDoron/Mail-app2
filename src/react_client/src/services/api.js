@@ -39,12 +39,11 @@ export const loginUser = async (credentials) => {
 export const updateUserImage = async (file) => {
   try {
     const formData = new FormData();
-    formData.append("profilePicture", file);
+    formData.append("image", file);
 
     const response = await axios.put(`${API_BASE_URL}/users/image`, formData, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
-        "Content-Type": "multipart/form-data",
       },
     });
 

@@ -23,7 +23,12 @@ export const isLoggedIn = () => {
 export const getUserIdFromToken = () => {
   const token = getToken();
   if (!token) return null;
-  const decoded = jwtDecode(token);
-  return decoded.userId;
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.userId;
+  } catch (err) {
+    console.error("Invalid token", err);
+    return null;
+  }
 };
 

@@ -14,6 +14,7 @@ const mailsRoutes = require('./routes/mailsRoutes');
 const usersRoutes = require('./routes/usersRoutes');
 const blacklistRoutes = require('./routes/blacklistRoutes');
 const tokensRoutes = require('./routes/tokensRoutes');
+const path = require("path");
 
 // Public routes (לא דורשים התחברות)
 app.use('/api/users', usersRoutes);
@@ -23,6 +24,7 @@ app.use('/api/tokens', tokensRoutes);
 app.use('/api/labels', authMiddleware, labelsRoutes);
 app.use('/api/mails', authMiddleware, mailsRoutes);
 app.use('/api/blacklist', authMiddleware, blacklistRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // 404 error
