@@ -40,7 +40,7 @@ function MailItem({ mail, viewType, isSelected, onSelectChange }) {
         console.error("Failed to mark as read", error);
       }
     }
-    navigate(`/mail/${mail.id}`);
+    navigate(`/mailpage/${mail.id}`);
   };
 
   const handleStarClick = async (e) => {

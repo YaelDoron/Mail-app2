@@ -6,11 +6,6 @@ router.route('/')
     .get(controller.getUserMails)
     .post(controller.createMail)
 
-router.route('/:id')
-    .get(controller.getMailById)
-    .patch(controller.updateDraft)
-    .delete(controller.deleteMail)
-
 router.route('/search/:query')
     .get(controller.searchMails)
 
@@ -54,8 +49,6 @@ router.route('/draft')
 router.route('/labels/:labelName')
     .get(controller.getMailsByLabel);         
 
-module.exports = router;
-
 // סימון מייל כנקרא
 router.route('/read/:id')
     .patch(controller.markMailAsRead);
@@ -64,3 +57,8 @@ router.route('/read/:id')
 router.route('/spam/:id')
     .patch(controller.toggleSpamStatus);
 
+router.route('/:id')
+    .get(controller.getMailById)
+    .delete(controller.deleteMail)    
+
+module.exports = router;

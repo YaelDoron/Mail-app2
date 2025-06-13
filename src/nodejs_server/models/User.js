@@ -1,5 +1,5 @@
 let users = []; // In-memory user list
-let nextId = 0; // Counter for user IDs
+let nextId = 1; // Counter for user IDs
 
 // Creates a new user object with all the required registration fields
 const createUser=({ id, firstName, lastName, birthDate, gender, email, password, profilePicture = null})=>  {

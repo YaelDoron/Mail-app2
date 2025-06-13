@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import RecipientsInput from "./RecipientsInput";
 import Editor from "./Editor";
-import { createMail } from "../../services/api"; 
+import { createMail, getUserIdByEmail } from "../../services/api"; 
+import { getToken, getUserIdFromToken } from "../../services/authService";
 
 const ComposeMail = ({ onClose }) => {
+  const token = getToken();
+  const userId = getUserIdFromToken();
   const [recipients, setRecipients] = useState([]);
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
@@ -16,31 +19,30 @@ const ComposeMail = ({ onClose }) => {
     setContent("");
   };
 
-  const getUserIdFromToken = () => {
-    const token = localStorage.getItem("token");
-    if (!token) return null;
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      return payload.userId;
-    } catch (e) {
-      console.error("Invalid token");
-      return null;
-    }
-  };
-
- const handleSend = async () => {
-  const token = localStorage.getItem("token");
-  const userId = getUserIdFromToken();
+const handleSend = async () => {
+  console.log("TOKEN:", token);
+  console.log("USER ID:", userId);
   if (!userId || !token) return;
   if (recipients.length === 0 || content.trim() === "") {
     alert("Please fill in both recipients and content before sending.");
     return;
   }
   try {
+    const toUserIds = await Promise.all(
+      recipients.map(email => getUserIdByEmail(email, token))
+    );
+
+    console.log("Sending mail with data:", {
+  from: userId,
+  to: toUserIds,
+  subject,
+  content,
+  isDraft: false
+});
     await createMail(
       {
         from: userId,
-        to: recipients,
+        to: toUserIds,
         subject,
         content,
         isDraft: false,
@@ -55,17 +57,21 @@ const ComposeMail = ({ onClose }) => {
   }
 };
 
+
 const handleClose = async () => {
-  const token = localStorage.getItem("token");
-  const userId = getUserIdFromToken();
   if (!userId || !token) return;
+
   const hasContent = recipients.length > 0 || subject.trim() || content.trim();
   if (hasContent) {
     try {
+      const toUserIds = await Promise.all(
+        recipients.map(email => getUserIdByEmail(email, token))
+      );
+
       await createMail(
         {
           from: userId,
-          to: recipients,
+          to: toUserIds,
           subject,
           content,
           isDraft: true,
@@ -79,6 +85,7 @@ const handleClose = async () => {
   resetForm();
   onClose();
 };
+
 
   const handleDelete = () => {
     resetForm();

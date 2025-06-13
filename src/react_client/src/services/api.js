@@ -185,6 +185,10 @@ export const fetchLabels = async () => {
   }
 };
 
-
-
-
+export const getUserIdByEmail = async (email, token) => {
+  const res = await axios.get(`${API_BASE_URL}/users/by-email/${email}`, {
+    headers: { Authorization: `Bearer ${getToken()}` 
+    },
+  });
+  return res.data.id;
+};
