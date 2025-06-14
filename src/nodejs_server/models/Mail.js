@@ -254,7 +254,6 @@ const markAsRead = (id, userId) => {
     if (
         mail &&
         mail.owner === userId &&     // שייך למשתמש
-        mail.from !== userId &&      // לא נשלח על ידי המשתמש
         !mail.isDraft &&             // לא טיוטה
         !mail.isDeleted              // לא נמחק
     ) {
