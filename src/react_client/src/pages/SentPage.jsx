@@ -3,7 +3,7 @@ import MailList from "../components/mail/MailList";
 import { getSentMails } from "../services/mailsService";
 
 
-const SentPage = () => {
+const SentPage = ({ refreshTrigger }) => { // ✅ הוספת refreshTrigger
   const [mails, setMails] = useState([]);
 
   useEffect(() => {
@@ -16,11 +16,10 @@ const SentPage = () => {
       }
     };
     fetchSentMails();
-  }, []);
+    }, [refreshTrigger]); // ✅ הוספה לתלות
 
   return (
     <div className="container p-3">
-      <h3>Sent</h3>
       <MailList mails={mails} viewType="Sent" />
     </div>
   );

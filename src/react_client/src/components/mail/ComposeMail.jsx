@@ -4,7 +4,7 @@ import Editor from "./Editor";
 import { createMail, getUserIdByEmail } from "../../services/api"; 
 import { getToken, getUserIdFromToken } from "../../services/authService";
 
-const ComposeMail = ({ onClose }) => {
+const ComposeMail = ({ onClose, onMailSent }) => { // ✅ הוספנו onMailSent
   const token = getToken();
   const userId = getUserIdFromToken();
   const [recipients, setRecipients] = useState([]);
@@ -51,6 +51,7 @@ const handleSend = async () => {
     );
     resetForm();
     onClose();
+    onMailSent?.(); // ✅ נוסף – קריאה ל-trigger מה-layout
   } catch (err) {
     console.error("Failed to send mail:", err);
     alert("Failed to send mail. Please try again.");

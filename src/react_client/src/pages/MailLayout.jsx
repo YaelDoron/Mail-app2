@@ -7,6 +7,9 @@ import "./MailLayout.css";
 const MailLayout = ({ children }) => {
   const [showCompose, setShowCompose] = useState(false);
 
+  // ✅ חדש: טריגר רענון
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // ✅ הוספה
+
   const handleOpenCompose = () => setShowCompose(true);
   const handleCloseCompose = () => setShowCompose(false);
 
@@ -19,11 +22,21 @@ const MailLayout = ({ children }) => {
         <div className="mail-sidebar">
           <Sidebar onComposeClick={handleOpenCompose} />
         </div>
-        <div className="mail-main">{children}</div>
+        <div className="mail-main">
+          {/* ✅ עדכון: מעביר refreshTrigger כ-prop לעמוד */}
+          {React.isValidElement(children)
+            ? React.cloneElement(children, { refreshTrigger }) // ✅ הוספה
+            : children}
+        </div>
       </div>
 
       {/* חלונית כתיבת מייל */}
-      {showCompose && <ComposeMail onClose={handleCloseCompose} />}
+      {showCompose && (
+        <ComposeMail
+          onClose={handleCloseCompose}
+          onMailSent={() => setRefreshTrigger(prev => prev + 1)} // ✅ הוספה
+        />
+      )}
     </div>
   );
 };

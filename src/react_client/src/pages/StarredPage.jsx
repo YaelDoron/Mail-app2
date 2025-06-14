@@ -3,7 +3,7 @@ import MailList from "../components/mail/MailList";
 import { getStarredMails } from "../services/mailsService";
 
 
-const StarredPage = () => {
+const StarredPage = ({ refreshTrigger }) => { // ✅
   const [mails, setMails] = useState([]);
 
   useEffect(() => {
@@ -16,11 +16,10 @@ const StarredPage = () => {
       }
     };
     fetchstarredMails();
-  }, []);
+  }, [refreshTrigger]); // ✅
 
   return (
     <div className="container p-3">
-      <h3>Starred</h3>
       <MailList mails={mails} viewType="Starred" />
     </div>
   );

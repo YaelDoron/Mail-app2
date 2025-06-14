@@ -49,7 +49,8 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
 
     // only if not draft send to recipients
     if (!isDraft) {
-        for (const recipientId of to) {
+    for (const recipientId of to) {
+        if (recipientId !== from) { // הימנע מיצירת כפילויות
             mails.push({
                 id: ++idCounter,
                 from,
@@ -68,6 +69,8 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
             });
         }
     }
+}
+
 
     return senderMail;
 };

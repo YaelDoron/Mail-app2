@@ -149,7 +149,7 @@ const Topbar = () => {
                 onChange={handleImageChange}
               />
             </div>
-            <h6 className="mb-1">Hi, {user?.name?.split(" ")[0] || "User"}!</h6>
+            <h6 className="mb-1">Hi, {user?.firstName || "User"}!</h6>
           </div>
           <div
             className="position-absolute"

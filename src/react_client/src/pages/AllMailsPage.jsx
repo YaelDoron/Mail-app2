@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import MailList from "../components/mail/MailList";
 import { getAllMailsUser } from "../services/mailsService";
 
-const AllMailsPage = () => {
+const AllMailsPage = ({ refreshTrigger }) => { // ✅
   const [mails, setMails] = useState([]);
 
   useEffect(() => {
@@ -15,11 +15,10 @@ const AllMailsPage = () => {
       }
     };
     fetchAllMails();
-  }, []);
+  }, [refreshTrigger]); // ✅
 
   return (
     <div className="container p-3">
-      <h3>All Mail</h3>
       <MailList mails={mails} viewType="All Mail" />
     </div>
   );

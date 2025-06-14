@@ -104,7 +104,7 @@ function MailItem({ mail, viewType, isSelected, onSelectChange }) {
 
       <div className="mail-box-right">
         <span className="mail-time">
-          {formatDate(mail.createdAt)}
+          {formatDate(mail.timestamp)}
         </span>
       </div>
     </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import MailList from "../components/mail/MailList";
 import { getInboxMails } from "../services/mailsService";
 
-const InboxPage = () => {
+const InboxPage = ({ refreshTrigger }) => { // ✅ קיבלנו את ה-prop
   const [mails, setMails] = useState([]);
 
   useEffect(() => {
@@ -15,11 +15,10 @@ const InboxPage = () => {
       }
     };
     fetchInbox();
-  }, []);
+  }, [refreshTrigger]); // ✅ useEffect תלוי ברענון
 
   return (
     <div className="container p-3">
-      <h3>Inbox</h3>
       <MailList mails={mails} viewType="inbox" />
     </div>
   );
