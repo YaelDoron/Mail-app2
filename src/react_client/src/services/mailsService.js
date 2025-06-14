@@ -57,12 +57,6 @@ export const getSpamMails = async () => {
   return res.data;
 };
 
-// Toggle spam status (mark/unmark a mail as spam)
-export const toggleSpamMail = async (id) => {
-  const res = await axios.patch(`${API_BASE_URL}/mails/spam/${id}`, {}, authHeader());
-  return res.data;
-};
-
 // Get all mails moved to trash
 export const getGarbageMails = async () => {
   const res = await axios.get(`${API_BASE_URL}/mails/trash`, authHeader());
@@ -90,10 +84,5 @@ export const getSearchMails = async (query) => {
   const res = await axios.get(`${API_BASE_URL}/mails/search/${encodeURIComponent(query)}`, authHeader());
   return res.data;
 }
-
-// Move mail to trash
-export const deleteMail = async (id) => {
-  return axios.delete(`${API_BASE_URL}/mails/${id}`, authHeader());
-};
 
 
