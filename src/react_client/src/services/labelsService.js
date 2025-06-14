@@ -3,11 +3,25 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 //Fetches all labels from the server, makes a GET request to the /api/labels endpoint
 export const fetchLabels = async () => {
-  const response = await axios.get(`${API_BASE_URL}/labels`);
+  const token = localStorage.getItem("token");
+  const response = await axios.get(`${API_BASE_URL}/labels`
+    , {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
   return response.data;
 };
 //Adds a new label to the server, makes a POST request to the /api/labels endpoint with a label object
 export const addLabel = async (label) => {
-  const response = await axios.post(`${API_BASE_URL}/labels`, label);
+  const token = localStorage.getItem("token");
+  const response = await axios.post(`${API_BASE_URL}/labels`, label,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
   return response.data;
 };

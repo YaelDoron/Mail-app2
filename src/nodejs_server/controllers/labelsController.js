@@ -14,6 +14,10 @@ exports.createLabel = (req, res) => {
   if (!name) {
     return res.status(400).json({ error: 'Name is required' })
   }
+  const existing = Label.getAllLabels(userId).find(l => l.name === name);
+  if (existing) {
+    return res.status(409).json({ error: 'Label already exists' });
+  }
   const newLabel = Label.createLabel(name, userId)
   // Return the location of the new label
   res.status(201).location(`/api/labels/${newLabel.id}`).end()
