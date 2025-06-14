@@ -4,7 +4,7 @@ import "./LabelSelectorModal.css";
 
 function LabelSelectorModal({ onClose, onAssign }) {
   const [labels, setLabels] = useState([]);
-  const [selectedLabel, setSelectedLabel] = useState(null);
+  const [, setSelectedLabel] = useState(null);
 
   useEffect(() => {
     const loadLabels = async () => {

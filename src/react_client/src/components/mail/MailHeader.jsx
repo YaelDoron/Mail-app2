@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dropdown } from "react-bootstrap";
 import {
     FaStar, FaRegStar
 } from "react-icons/fa";
@@ -11,7 +10,6 @@ const MailHeader = ({ mail,sender, onToggleStar, onDelete, onMarkSpam, onLabel }
   const [starred, setStarred] = useState(mail.isStarred || false);
   const [markedSpam, setMarkedSpam] = useState(mail.isSpam || false);
   const navigate = useNavigate();
-  const date = new Date(mail.timestamp);
   const formattedDate = new Date(mail.timestamp).toLocaleString();
   const baseUrl = process.env.REACT_APP_API_BASE_URL?.replace("/api", "") || "";
   const imageUrl = sender?.image

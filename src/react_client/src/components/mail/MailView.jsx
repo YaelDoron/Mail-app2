@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import MailHeader from "./MailHeader";
 import MailBody from "./MailBody";
 import { getUserById } from "../../services/api";
-import { toggleStarMail, toggleSpamMail, deleteMail } from "../../services/mailsService";
+import { toggleStarred, toggleSpam, deleteMail } from "../../services/api";
 import { getUserIdFromToken } from "../../services/authService";
 
 
 const MailView = ({ mail: initialMail }) => {
   const [mail, setMail] = useState(initialMail);
   const [sender, setSender] = useState(null);
-  const [receiver, setReceiver] = useState(null);
+  const [, setReceiver] = useState(null);
+
   const navigate = useNavigate();
   
 
@@ -27,7 +28,7 @@ const MailView = ({ mail: initialMail }) => {
 
   const handleToggleStar = async (id) => {
     try {
-      const updated = await toggleStarMail(id);
+      const updated = await toggleStarred(id);
       setMail(updated);
     } catch (err) {
       console.error("error in marking as starred", err);
@@ -36,7 +37,7 @@ const MailView = ({ mail: initialMail }) => {
 
   const handleMarkSpam = async (id) => {
     try {
-      await toggleSpamMail(id);
+      await toggleSpam(id);
     } catch (err) {
       console.error("Error marking mail as spam", err);
     }
