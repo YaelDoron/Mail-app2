@@ -28,14 +28,21 @@ const Sidebar = ({ onComposeClick }) => {
     const handleCreateLabel = async () => {
         if (!newLabelName.trim()) return;
         try {
-            const created = await addLabel({ name: newLabelName });
-            console.log("Label created:", created);
-            setLabels((prev) => [...prev, created]);
+            // Check for duplicate label
+            if (labels.some(l => l.name === newLabelName.trim())) {
+                alert("A label with that name already exists.");
+                return;
+            }
+            // Send new label to server
+            await addLabel({ name: newLabelName });
+            // Refresh the label list from server
+            const refreshed = await fetchLabels();
+            setLabels(refreshed);
             setNewLabelName("");
             setShowModal(false);
         } catch (err) {
             console.error("Failed to create label:", err);
-                alert("יצירת התווית נכשלה – בדקי את הקונסול.");
+                alert("creating label failed");
 
         }
     };
@@ -43,7 +50,7 @@ const Sidebar = ({ onComposeClick }) => {
 
     return (
     <div className="d-flex flex-column p-3 bg-light" style={{ width: "280px", height: "100vh" }}>
-        {/* כפתור compose - תמיד למעלה */}
+        {/* compose button*/}
         <div style={{ width: "75%", minWidth: "200px" }}>
             <button
                 className="btn text-dark bg-primary-subtle mb-3 w-100 rounded-4 py-2 text-start fw-bold shadow-sm"
@@ -53,7 +60,7 @@ const Sidebar = ({ onComposeClick }) => {
             </button>
         </div>
 
-        {/* תוכן ניתן לגלילה */}
+        {/* Sidebar Links */}
         <div style={{ overflowY: "auto", flexGrow: 1 }}>
             <ul className="nav nav-pills flex-column mb-auto">
                 <li className="nav-item">
@@ -91,6 +98,7 @@ const Sidebar = ({ onComposeClick }) => {
                         <i className="bi bi-trash me-3"></i> garbage
                     </Link>
                 </li>
+                {/* Shortcut to open label creation modal */}
                 <li>
                     <span
                         className="nav-link d-flex justify-content-between align-items-center text-dark"
@@ -101,6 +109,7 @@ const Sidebar = ({ onComposeClick }) => {
                         <i className="bi bi-plus-circle"></i>
                     </span>
                 </li>
+                {/* Label section title with plus icon */}
                 <hr />
                 <li className="nav-item">
                     <div className="d-flex align-items-center justify-content-between px-3 mt-2 mb-1">
@@ -111,7 +120,7 @@ const Sidebar = ({ onComposeClick }) => {
                             onClick={() => setShowModal(true)}
                         ></i>
                     </div>
-
+                    {/* Display user-defined labels */}
                     {labels.map((label) => (
                         <li key={label.id}>
                             <Link to={`/labels/${label.name}`} className="nav-link text-dark">
