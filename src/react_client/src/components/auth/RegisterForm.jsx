@@ -4,6 +4,7 @@ import { RegisterUser } from "../../services/api";
 import RegisterInput from "./RegisterInput";
 import ImageUploader from "./ImageUploader";
 import { useNavigate } from "react-router-dom"; // Used for page navigation after successful registration
+import { saveToken } from "../../services/authService";
 
 const RegisterForm = () => {
     //creates a variable to hold the form answers 
@@ -85,7 +86,7 @@ const RegisterForm = () => {
         const token = response.token; 
 
         if (token) {
-        localStorage.setItem("token", token); // שמירת JWT
+        saveToken(token); // שמירת JWT
         navigate("/login"); 
         } else {
         alert("Registration succeeded but no token was returned.");

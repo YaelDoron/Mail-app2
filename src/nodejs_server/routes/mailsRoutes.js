@@ -62,5 +62,3 @@ router.route('/:id')
     .delete(controller.deleteMail)    
 
 module.exports = router;
-
-
