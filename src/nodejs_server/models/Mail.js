@@ -237,14 +237,14 @@ const getStarredMails = (userId) => {
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 };
 
-const getMailsByLabel = (userId, labelName) => {
+const getMailsByLabel = (userId, labelId) => {
     return mails
         .filter(mail =>
             mail.owner === userId &&
             !mail.isDeleted &&
             !mail.isDraft &&
             !mail.isSpam &&
-            mail.labels.includes(labelName)
+            mail.labels.includes(labelId)
         )
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 };
@@ -254,7 +254,6 @@ const markAsRead = (id, userId) => {
     if (
         mail &&
         mail.owner === userId &&     // שייך למשתמש
-        mail.from !== userId &&      // לא נשלח על ידי המשתמש
         !mail.isDraft &&             // לא טיוטה
         !mail.isDeleted              // לא נמחק
     ) {

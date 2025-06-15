@@ -4,6 +4,7 @@ import { RegisterUser } from "../../services/api";
 import RegisterInput from "./RegisterInput";
 import ImageUploader from "./ImageUploader";
 import { useNavigate } from "react-router-dom"; // Used for page navigation after successful registration
+import { saveToken } from "../../services/authService";
 
 const RegisterForm = () => {
     //creates a variable to hold the form answers 

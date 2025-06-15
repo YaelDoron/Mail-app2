@@ -1,27 +1,111 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import MailHeader from "./MailHeader";
 import MailBody from "./MailBody";
-import { toggleStarMail } from "../../services/mailsService";
+import { getUserById } from "../../services/api";
+import { toggleStarred, toggleSpam, deleteMail, assignLabelsToMail } from "../../services/api";
+import { getUserIdFromToken } from "../../services/authService";
+import {fetchLabels } from "../../services/labelsService";
+import LabelSelectorModal from "../mail/LabelSelectorModal";
+
+
+
 
 const MailView = ({ mail: initialMail }) => {
   const [mail, setMail] = useState(initialMail);
+  const [sender, setSender] = useState(null);
+  const [, setReceiver] = useState(null);
+  const [showLabelModal, setShowLabelModal] = useState(false);
+  const [, setLabels] = useState([]);
+
+  const navigate = useNavigate();
+  
+
+  useEffect(() => {
+  if (mail?.from) {
+    getUserById(mail.from).then(setSender).catch(console.error);
+  }
+  const currentUserId = getUserIdFromToken();
+  const isSent = mail.from === currentUserId;
+  if (isSent && mail.to?.[0]) {
+    getUserById(mail.to[0]).then(setReceiver).catch(console.error);
+  }
+  }, [mail]);
+
+  useEffect(() => {
+    const loadLabels = async () => {
+      try {
+        const result = await fetchLabels();
+        setLabels(result);
+      } catch (err) {
+        console.error("Failed to load labels", err);
+      }
+    };
+    loadLabels();
+  }, []);
+
 
   const handleToggleStar = async (id) => {
     try {
-      const updated = await toggleStarMail(id);
-      setMail(updated); // ← מעדכן את כל המייל לפי מה שהשרת החזיר
+      const updated = await toggleStarred(id);
+      setMail(updated);
     } catch (err) {
-      console.error("שגיאה בסימון כוכב", err);
+      console.error("error in marking as starred", err);
     }
   };
+
+  const handleMarkSpam = async (id) => {
+    try {
+      await toggleSpam(id);
+    } catch (err) {
+      console.error("Error marking mail as spam", err);
+    }
+  };
+
+  const handleMarkDelete = async (id) => {
+    try {
+      await deleteMail(id);
+      navigate(-1);
+    } catch (err) {
+      console.error("Error marking mail as trash", err);
+    }
+  };
+
+  const handleLabelClick = () => {
+    setShowLabelModal(true);
+  };
+
 
   return (
     <div className="flex-grow-1 p-4" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
       <div className="bg-white border rounded shadow-sm p-4"
            style={{ maxWidth: "1000px", margin: "0 auto", minHeight: "calc(100vh - 40px)" }}>
-        <MailHeader mail={mail} onToggleStar={handleToggleStar} />
+        <MailHeader
+          mail={mail}
+          onLabel={handleLabelClick}
+          onToggleStar={handleToggleStar}
+          onMarkSpam={handleMarkSpam}
+          onDelete={handleMarkDelete}
+          sender={sender}
+        />
         <hr />
         <MailBody content={mail.content} />
+        {showLabelModal && (
+          <LabelSelectorModal
+            onClose={() => setShowLabelModal(false)}
+            onAssign={async (labelId) => {
+              const updatedMail = await assignLabelsToMail(mail.id, [labelId]); 
+              setMail(updatedMail);
+              setShowLabelModal(false);
+            }}
+            onCreateNew={() => {
+              setShowLabelModal(false);
+              setTimeout(() => setShowLabelModal(true), 100); // מאפשר פתיחה מחדש ל-Create בתוך LabelSelectorModal
+            }}
+          />
+        )}
+
+
       </div>
     </div>
   );

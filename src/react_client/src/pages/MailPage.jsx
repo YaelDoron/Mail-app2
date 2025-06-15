@@ -2,8 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getMailById } from "../services/mailsService";
 import MailView from "../components/mail/MailView";
-import Topbar from "../components/layout/Topbar";
-import Sidebar from "../components/layout/Sidebar";
+
 
 
 
@@ -23,19 +22,7 @@ useEffect(() => {
         throw new Error("Mail not found");
       }
     } catch (err) {
-      console.warn("בעיה בשליפת מייל:", err);
-      // מייל דמה
-      setMail({
-        id: id,
-        subject: "מייל לדוגמה",
-        senderName: "מפתחת",
-        sender: "dev@example.com",
-        profilePicture: "https://i.pravatar.cc/150?img=45",
-        date: new Date().toISOString(),
-        content: "ככה ייראה מייל בודד בעתיד.",
-        isStarred: false,
-        labels: ["בדיקה"]
-      });
+      console.warn("error in Mail retrieval", err);
     }
   };
 

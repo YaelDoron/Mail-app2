@@ -61,4 +61,6 @@ router.route('/:id')
     .get(controller.getMailById)
     .delete(controller.deleteMail)    
 
+router.post('/by-label', controller.getMailsByLabelById);
+
 module.exports = router;
