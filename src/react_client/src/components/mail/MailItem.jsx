@@ -12,7 +12,7 @@ function MailItem({ mail, viewType, isSelected, onSelectChange }) {
   useEffect(() => {
     const fetchName = async () => {
       try {
-        if (viewType === "sent") {
+        if (viewType === "sent" || viewType === "draft") {
           const names = await Promise.all(
             mail.to.map(async (id) => {
               const user = await getUserById(id);

@@ -19,7 +19,7 @@ const SpamPage = ({ refreshTrigger }) => { // ✅
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="Spam" />
+      <MailList mails={mails} viewType="spam" />
     </div>
   );
 };

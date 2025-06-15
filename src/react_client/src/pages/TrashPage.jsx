@@ -19,7 +19,7 @@ const TrashPage = ({ refreshTrigger }) => { // ✅
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="Trash" />
+      <MailList mails={mails} viewType="trash" />
     </div>
   );
 };

@@ -20,7 +20,7 @@ const StarredPage = ({ refreshTrigger }) => { // ✅
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="Starred" />
+      <MailList mails={mails} viewType="starred" />
     </div>
   );
 };

@@ -19,7 +19,7 @@ const DraftsPage = ({ refreshTrigger }) => { // ✅
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="Drafts" />
+      <MailList mails={mails} viewType="draft" />
     </div>
   );
 };

@@ -20,7 +20,7 @@ const SentPage = ({ refreshTrigger }) => { // ✅ הוספת refreshTrigger
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="Sent" />
+      <MailList mails={mails} viewType="sent" />
     </div>
   );
 };
