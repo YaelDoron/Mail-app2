@@ -18,7 +18,7 @@ const BlacklistService = require('../services/BlacklistService');
         }
 
         // Authorization check: only sender or recipient can access the mail
-        if (mail.from !== userId && mail.to !== userId) {
+        if (mail.from !== userId && !mail.to.includes(userId)) {
             return res.status(403).json({ error: 'Access denied' });
         }
         res.status(200).json(mail);
