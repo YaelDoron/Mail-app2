@@ -80,7 +80,7 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
 const getUserMails = (userId) => {
     const relevant = mails.filter(mail =>
         mail.owner === userId &&
-        mail.to === userId &&
+        mail.to.includes(userId) &&
         !mail.isDraft &&
         !mail.isSpam &&
         !mail.isDeleted
