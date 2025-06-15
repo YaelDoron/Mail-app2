@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-    FaStar, FaRegStar
-} from "react-icons/fa";
 
 
 
@@ -118,7 +115,7 @@ const MailHeader = ({ mail,sender, onToggleStar, onDelete, onMarkSpam, onLabel }
             style={{ cursor: "pointer", color: starred ? "gold" : "gray" }}
             title="Star"
           >
-            {starred ? <FaStar /> : <FaRegStar />}
+            <i className={`bi ${starred ? "bi-star-fill text-warning" : "bi-star text-secondary"}`}></i>
           </span>
         </div>
       </div>

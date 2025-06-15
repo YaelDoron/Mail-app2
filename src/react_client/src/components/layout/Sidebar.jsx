@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchLabels, addLabel } from "../../services/labelsService";
+import CreateLabelModal from "../mail/CreateLabelModal";
 
 const Sidebar = ({ onComposeClick }) => {
     // State to hold labels fetched from the server
     const [labels, setLabels] = useState([]);
     // State to hold 
     const [showModal, setShowModal] = useState(false);
-    const [newLabelName, setNewLabelName] = useState("");
 
     // Fetch labels once when the component mounts
     useEffect(() => {
@@ -21,31 +21,17 @@ const Sidebar = ({ onComposeClick }) => {
             }
         };
         getLabels();
-}, []);
+    }, []);
 
+    useEffect(() => {
+        const handleLabelCreated = async () => {
+            const data = await fetchLabels();
+            setLabels(data);
+        };
 
-    // Handle creating a new label
-    const handleCreateLabel = async () => {
-        if (!newLabelName.trim()) return;
-        try {
-            // Check for duplicate label
-            if (labels.some(l => l.name === newLabelName.trim())) {
-                alert("A label with that name already exists.");
-                return;
-            }
-            // Send new label to server
-            await addLabel({ name: newLabelName });
-            // Refresh the label list from server
-            const refreshed = await fetchLabels();
-            setLabels(refreshed);
-            setNewLabelName("");
-            setShowModal(false);
-        } catch (err) {
-            console.error("Failed to create label:", err);
-                alert("creating label failed");
-
-        }
-    };
+        window.addEventListener("label-created", handleLabelCreated);
+        return () => window.removeEventListener("label-created", handleLabelCreated);
+    }, []);
 
 
     return (
@@ -120,53 +106,29 @@ const Sidebar = ({ onComposeClick }) => {
                             onClick={() => setShowModal(true)}
                         ></i>
                     </div>
-                    {/* Display user-defined labels */}
-                    {labels.map((label) => (
-                        <li key={label.id}>
-                            <Link to={`/labels/${label.name}`} className="nav-link text-dark">
-                                <i className="bi bi-tag me-3"></i> {label.name}
-                            </Link>
-                        </li>
-                    ))}
                 </li>
+                {labels.map((label) => (
+                    <li className="nav-item" key={label.id}>
+                        <Link to={`/labels/${label.name}`} className="nav-link text-dark">
+                        <i className="bi bi-tag me-3"></i> {label.name}
+                        </Link>
+                    </li>
+                ))}
             </ul>
         </div>
 
         {/* Modal for label creation */}
         {showModal && (
-            <div className="modal d-block" tabIndex="-1" style={{
-                background: "rgba(0, 0, 0, 0.5)",
-                position: "fixed",
-                top: 0, left: 0, right: 0, bottom: 0,
-                zIndex: 1050
-            }}>
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content p-4">
-                        <h5 className="mb-3">New label</h5>
-
-                        <label className="form-label">Please enter a new label name:</label>
-                        <input
-                            className="form-control mb-4"
-                            placeholder="Label name"
-                            value={newLabelName}
-                            onChange={(e) => setNewLabelName(e.target.value)}
-                        />
-
-                        <div className="d-flex justify-content-end">
-                            <button className="btn btn-link me-2" onClick={() => setShowModal(false)}>
-                                Cancel
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                disabled={!newLabelName.trim()}
-                                onClick={handleCreateLabel}
-                            >
-                                Create
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <CreateLabelModal
+                onClose={() => setShowModal(false)}
+                onCreate={async (name) => {
+                await addLabel({ name });
+                const refreshed = await fetchLabels();
+                setLabels(refreshed);
+                setShowModal(false);
+                }}
+                existingLabels={labels}
+            />
         )}
     </div>
 );

@@ -181,25 +181,37 @@ const BlacklistService = require('../services/BlacklistService');
     const userId = req.user.userId;
     const drafts = Mail.getDraftMails(userId);
     res.status(200).json(drafts);
-}
-
-function getStarredMails(req, res) {
-    const userId = req.user.userId;
-    const starred = Mail.getStarredMails(userId);
-    res.status(200).json(starred);
-}
-
-function getMailsByLabel(req, res) {
-    const userId = req.user.userId;
-    const labelName = req.params.labelName;
-
-    if (!labelName) {
-        return res.status(400).json({ error: 'Missing label name' });
     }
 
-    const mails = Mail.getMailsByLabel(userId, labelName);
+    function getStarredMails(req, res) {
+        const userId = req.user.userId;
+        const starred = Mail.getStarredMails(userId);
+        res.status(200).json(starred);
+    }
+
+    function getMailsByLabel(req, res) {
+        const userId = req.user.userId;
+        const labelName = req.params.labelName;
+
+        if (!labelName) {
+            return res.status(400).json({ error: 'Missing label name' });
+        }
+
+        const mails = Mail.getMailsByLabel(userId, labelName);
+        res.status(200).json(mails);
+    }
+
+    function getMailsByLabelById(req, res) {
+    const userId = req.user.userId;
+    const { labelId } = req.body;
+
+    if (!labelId) {
+        return res.status(400).json({ error: "Missing labelId" });
+    }
+
+    const mails = Mail.getMailsByLabel(userId, labelId); // משתמשים במזהה
     res.status(200).json(mails);
-}
+    }
 
     function markMailAsRead(req, res) {
         const userId = req.user.userId;
@@ -230,6 +242,7 @@ function getMailsByLabel(req, res) {
     getDraftMails,
     getStarredMails,
     getMailsByLabel,
+    getMailsByLabelById,
     getTrashMails,
     markMailAsRead
 };

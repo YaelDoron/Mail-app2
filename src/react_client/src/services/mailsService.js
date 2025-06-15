@@ -70,10 +70,12 @@ export const getAllMailsUser = async () => {
 };
 
 // Get all mails that belong to a specific label
-export const getMailsByLabel = async (labelName) => {
+export const getMailsByLabel = async (labelId) => {
   const token = localStorage.getItem("token");
-  const res = await axios.get(`${API_BASE_URL}/mails/labels/${labelName}`
-  , {
+  const res = await axios.post(
+    `${API_BASE_URL}/mails/by-label`,
+    { labelId }, 
+  {
     headers: { Authorization: `Bearer ${token}` }
   });
   return res.data;
@@ -85,4 +87,12 @@ export const getSearchMails = async (query) => {
   return res.data;
 }
 
+// Get label details by ID
+export const getLabelById = async (labelId) => {
+  const token = getToken();
+  const res = await axios.get(`${API_BASE_URL}/labels/${labelId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return res.data;
+};
 

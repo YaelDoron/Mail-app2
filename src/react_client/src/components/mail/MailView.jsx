@@ -3,14 +3,20 @@ import { useNavigate } from "react-router-dom";
 import MailHeader from "./MailHeader";
 import MailBody from "./MailBody";
 import { getUserById } from "../../services/api";
-import { toggleStarred, toggleSpam, deleteMail } from "../../services/api";
+import { toggleStarred, toggleSpam, deleteMail, assignLabelsToMail } from "../../services/api";
 import { getUserIdFromToken } from "../../services/authService";
+import {fetchLabels } from "../../services/labelsService";
+import LabelSelectorModal from "../mail/LabelSelectorModal";
+
+
 
 
 const MailView = ({ mail: initialMail }) => {
   const [mail, setMail] = useState(initialMail);
   const [sender, setSender] = useState(null);
   const [, setReceiver] = useState(null);
+  const [showLabelModal, setShowLabelModal] = useState(false);
+  const [, setLabels] = useState([]);
 
   const navigate = useNavigate();
   
@@ -25,6 +31,19 @@ const MailView = ({ mail: initialMail }) => {
     getUserById(mail.to[0]).then(setReceiver).catch(console.error);
   }
   }, [mail]);
+
+  useEffect(() => {
+    const loadLabels = async () => {
+      try {
+        const result = await fetchLabels();
+        setLabels(result);
+      } catch (err) {
+        console.error("Failed to load labels", err);
+      }
+    };
+    loadLabels();
+  }, []);
+
 
   const handleToggleStar = async (id) => {
     try {
@@ -52,6 +71,10 @@ const MailView = ({ mail: initialMail }) => {
     }
   };
 
+  const handleLabelClick = () => {
+    setShowLabelModal(true);
+  };
+
 
   return (
     <div className="flex-grow-1 p-4" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -59,6 +82,7 @@ const MailView = ({ mail: initialMail }) => {
            style={{ maxWidth: "1000px", margin: "0 auto", minHeight: "calc(100vh - 40px)" }}>
         <MailHeader
           mail={mail}
+          onLabel={handleLabelClick}
           onToggleStar={handleToggleStar}
           onMarkSpam={handleMarkSpam}
           onDelete={handleMarkDelete}
@@ -66,6 +90,22 @@ const MailView = ({ mail: initialMail }) => {
         />
         <hr />
         <MailBody content={mail.content} />
+        {showLabelModal && (
+          <LabelSelectorModal
+            onClose={() => setShowLabelModal(false)}
+            onAssign={async (labelId) => {
+              const updatedMail = await assignLabelsToMail(mail.id, [labelId]); 
+              setMail(updatedMail);
+              setShowLabelModal(false);
+            }}
+            onCreateNew={() => {
+              setShowLabelModal(false);
+              setTimeout(() => setShowLabelModal(true), 100); // מאפשר פתיחה מחדש ל-Create בתוך LabelSelectorModal
+            }}
+          />
+        )}
+
+
       </div>
     </div>
   );
