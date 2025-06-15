@@ -92,7 +92,8 @@ function updateUserImage(req, res) {
 
   res.status(200).json({
     id: user.id,
-    name: `${user.firstName} ${user.lastName}`,
+    firstName: `${user.firstName}`,
+    lastName: `${user.lastName}`,
     email: user.email,
     image: user.profilePicture
   });
