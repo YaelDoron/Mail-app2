@@ -19,7 +19,7 @@ function MailItem({ mail, viewType, isSelected, onSelectChange }) {
               return `${user.firstName} ${user.lastName}`;
             })
           );
-          setDisplayName(names.join(", "));
+          setDisplayName("to: " + names.join(", "));
         } else {
           const user = await getUserById(mail.from);
           setDisplayName(`${user.firstName} ${user.lastName}`);
