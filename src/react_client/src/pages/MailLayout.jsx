@@ -15,9 +15,7 @@ const MailLayout = ({ children }) => {
 
   return (
     <div className="mail-layout">
-      <div className="mail-topbar">
         <Topbar />
-      </div>
       <div className="mail-body">
         <div className="mail-sidebar">
           <Sidebar onComposeClick={handleOpenCompose} />

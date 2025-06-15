@@ -32,18 +32,12 @@ const handleSend = async () => {
       recipients.map(email => getUserIdByEmail(email, token))
     );
 
-    console.log("Sending mail with data:", {
-  from: userId,
-  to: toUserIds,
-  subject,
-  content,
-  isDraft: false
-});
+    const finalSubject = subject.trim() || "(no subject)";
     await createMail(
       {
         from: userId,
         to: toUserIds,
-        subject,
+        subject: finalSubject,
         content,
         isDraft: false,
       },
@@ -69,11 +63,12 @@ const handleClose = async () => {
         recipients.map(email => getUserIdByEmail(email, token))
       );
 
+      const finalSubject = subject.trim() || "(no subject)";
       await createMail(
         {
           from: userId,
           to: toUserIds,
-          subject,
+          subject: finalSubject,
           content,
           isDraft: true,
         },
@@ -119,22 +114,38 @@ const handleClose = async () => {
       >
         <strong style={{ fontSize: "1rem" }}>New Message</strong>
         <div style={{ display: "flex", gap: "8px" }}>
-          <button
+         <button
             className="btn btn-sm p-1"
             title={isMinimized ? "Expand" : "Minimize"}
-            onClick={() => setIsMinimized(!isMinimized)}
+            onClick={() => {
+              if (isMinimized) {
+              setIsMinimized(false); 
+              } else {
+              setIsExpanded(false);  
+              setIsMinimized(true);  
+              }
+            }}
             style={{ fontSize: "1.25rem" }}
           >
-            <b>{isMinimized ? "-" : "_"}</b>
+           <b>{isMinimized ? "-" : "_"}</b>
           </button>
+
           <button
             className="btn btn-sm p-1"
             title={isExpanded ? "Restore" : "Expand"}
-            onClick={() => setIsExpanded(!isExpanded)}
-            style={{ fontSize: "1.25rem" }}
+            onClick={() => {
+              if (isMinimized) {
+              setIsMinimized(false);  
+              setIsExpanded(true);     // תפתח ישר למצב מורחב
+              } else {
+              setIsExpanded(prev => !prev); // רגיל: Toggle בין רגיל למורחב
+              }
+            }}
+           style={{ fontSize: "1.25rem" }}
           >
-            <b>{isExpanded ? "⇲" : "⤢"}</b>
+           <b>{isExpanded ? "⇲" : "⤢"}</b>
           </button>
+
           <button
             className="btn btn-sm p-1"
             title="Close"
