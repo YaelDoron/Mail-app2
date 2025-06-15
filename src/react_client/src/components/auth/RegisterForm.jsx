@@ -86,7 +86,6 @@ const RegisterForm = () => {
         const token = response.token; 
 
         if (token) {
-        saveToken(token); // שמירת JWT
         navigate("/login"); 
         } else {
         alert("Registration succeeded but no token was returned.");

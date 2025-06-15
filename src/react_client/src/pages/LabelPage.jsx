@@ -4,7 +4,7 @@ import MailList from "../components/mail/MailList";
 import { getMailsByLabel } from "../services/mailsService";
 import { getLabelById } from "../services/mailsService";
 
-const LabelPage = () => {
+const LabelPage = ({ refreshTrigger }) => {
 // We will get the label name from the URL
   const { labelId } = useParams();
   const [mails, setMails] = useState([]);
@@ -27,15 +27,18 @@ const LabelPage = () => {
       }
     };
 
-    fetchMailsAndLabel ();
-  }, [labelId]);
+    fetchMailsAndLabel();
+  }, [labelName, refreshTrigger]);
+
 
   if (loading) return <p>Reload mails...</p>;
 
   return (
     <div>
+
       <h4 className="px-4 my-3">Label: {labelName}</h4>
       <MailList mails={mails} viewType="label" />
+
     </div>
   );
 };

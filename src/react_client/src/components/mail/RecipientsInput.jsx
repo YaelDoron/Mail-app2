@@ -97,7 +97,21 @@ const RecipientsInput = ({ recipients, setRecipients }) => {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
+        onBlur={() => {
+  setIsFocused(false);
+
+  const trimmed = inputValue.trim();
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+
+  if (trimmed && isValidEmail && !recipients.includes(trimmed)) {
+    setRecipients([...recipients, trimmed]);
+    setInputValue("");
+    setError(false);
+  } else if (trimmed && !isValidEmail) {
+    setError(true);
+  }
+}}
+
         style={{
           border: "none",
           outline: "none",
