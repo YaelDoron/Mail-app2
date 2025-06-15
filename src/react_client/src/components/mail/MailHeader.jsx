@@ -1,9 +1,28 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+function getToLine(mail, currentUserId, recipients = []) {
+  if (!mail || !Array.isArray(mail.to)) return "";
+
+  if (mail.from === currentUserId) {
+    if (mail.to.length === 1 && mail.to[0] === currentUserId) {
+      return "to me";
+    } else {
+      return "to " + mail.to.map(id => {
+        if (id === currentUserId) return "me";
+        const user = recipients.find(u => u.id === id);
+        return user
+          ? `${user.firstName} ${user.lastName} <${user.email}>`
+          : `user ${id}`;
+      }).join(", ");
+    }
+  } else {
+    return "to me";
+  }
+}
 
 
-const MailHeader = ({ mail,sender, onToggleStar, onDelete, onMarkSpam, onLabel }) => {
+const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMarkSpam, onLabel }) => {
   const [starred, setStarred] = useState(mail.isStarred || false);
   const [markedSpam, setMarkedSpam] = useState(mail.isSpam || false);
   const navigate = useNavigate();
@@ -14,9 +33,10 @@ const MailHeader = ({ mail,sender, onToggleStar, onDelete, onMarkSpam, onLabel }
       ? sender.image
       : `${baseUrl}/${sender.image}`
     : null;
+  const currentUserId = mail.owner;
+  const toLine = getToLine(mail, currentUserId, Array.isArray(recipients) ? recipients : []);
 
 
-  
 
   const handleStarToggle = () => {
     setStarred(!starred);
@@ -103,7 +123,7 @@ const MailHeader = ({ mail,sender, onToggleStar, onDelete, onMarkSpam, onLabel }
           <div>
             <div className="fw-bold">{sender ? `${sender.firstName} ${sender.lastName}` : mail.senderName}{" "}
               &lt;{sender?.email}&gt;</div>
-            <div className="text-muted small">to me</div>
+            <div className="text-muted small">{toLine}</div>
           </div>
         </div>
 
