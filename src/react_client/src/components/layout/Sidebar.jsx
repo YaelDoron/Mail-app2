@@ -51,75 +51,75 @@ const Sidebar = ({ onComposeClick }) => {
         </div>
 
         {/* Sidebar Links */}
-        <div style={{ overflowY: "auto", flexGrow: 1 }}>
-            <ul className="nav nav-pills flex-column mb-auto">
-                <li className="nav-item">
-                    <Link to="/inbox" className={`nav-link ${isActive("/inbox") ? "active" : ""}`}>
-                        <i className="bi bi-inbox me-3"></i> Inbox
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/starred" className={`nav-link ${isActive("/starred") ? "active" : ""}`}>
-                        <i className="bi bi-star me-3"></i> Starred
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/sent" className={`nav-link ${isActive("/sent") ? "active" : ""}`}>
-                        <i className="bi bi-send me-3"></i> Sent
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/drafts" className={`nav-link ${isActive("/drafts") ? "active" : ""}`}>
-                        <i className="bi bi-file-earmark-text me-3"></i> Drafts
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/AllMails" className={`nav-link ${isActive("/AllMails") ? "active" : ""}`}>
-                        <i className="bi bi-envelope-open me-3"></i> All mail
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/spam" className={`nav-link ${isActive("/spam") ? "active" : ""}`}>
-                        <i className="bi bi-exclamation-octagon me-3"></i> Spam
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/trash" className={`nav-link ${isActive("/trash") ? "active" : ""}`}>
-                        <i className="bi bi-trash me-3"></i> Trash
-                    </Link>
-                </li>
-                {/* Shortcut to open label creation modal */}
-                <li>
-                    <span
-                        className="nav-link d-flex justify-content-between align-items-center text-dark"
+        
+        <ul className="nav nav-pills flex-column mb-auto">
+            <li className="nav-item">
+                <Link to="/inbox" className={`nav-link ${isActive("/inbox") ? "active" : ""}`}>
+                    <i className="bi bi-inbox me-3"></i> Inbox
+                </Link>
+            </li>
+            <li>
+                <Link to="/starred" className={`nav-link ${isActive("/starred") ? "active" : ""}`}>
+                    <i className="bi bi-star me-3"></i> Starred
+                </Link>
+            </li>
+            <li>
+                <Link to="/sent" className={`nav-link ${isActive("/sent") ? "active" : ""}`}>
+                    <i className="bi bi-send me-3"></i> Sent
+                </Link>
+            </li>
+            <li>
+                <Link to="/drafts" className={`nav-link ${isActive("/drafts") ? "active" : ""}`}>
+                    <i className="bi bi-file-earmark-text me-3"></i> Drafts
+                </Link>
+            </li>
+            <li>
+                <Link to="/AllMails" className={`nav-link ${isActive("/AllMails") ? "active" : ""}`}>
+                    <i className="bi bi-envelope-open me-3"></i> All mail
+                </Link>
+            </li>
+            <li>
+                <Link to="/spam" className={`nav-link ${isActive("/spam") ? "active" : ""}`}>
+                    <i className="bi bi-exclamation-octagon me-3"></i> Spam
+                </Link>
+            </li>
+            <li>
+                <Link to="/trash" className={`nav-link ${isActive("/trash") ? "active" : ""}`}>
+                    <i className="bi bi-trash me-3"></i> Trash
+                </Link>
+            </li>
+            {/* Shortcut to open label creation modal */}
+            <li>
+                <span
+                    className="nav-link d-flex justify-content-between align-items-center text-dark"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setShowModal(true)}
+                >
+                    New label
+                    <i className="bi bi-plus-circle"></i>
+                </span>
+            </li>
+            {/* Label section title with plus icon */}
+            <hr />
+            <li className="nav-item">
+                <div className="d-flex align-items-center justify-content-between px-3 mt-2 mb-1">
+                    <span className="text-muted fw-bold">Labels</span>
+                    <i
+                        className="bi bi-plus-circle"
                         style={{ cursor: "pointer" }}
                         onClick={() => setShowModal(true)}
-                    >
-                        New label
-                        <i className="bi bi-plus-circle"></i>
-                    </span>
+                    ></i>
+                </div>
+            </li>
+            {labels.map((label) => (
+                <li className="nav-item" key={label.id}>
+                    <Link to={`/labels/${label.id}`} className={`nav-link ${location.pathname === `/labels/${label.id}` ? "active" : ""}`}>
+                    <i className="bi bi-tag me-3"></i> {label.name}
+                    </Link>
                 </li>
-                {/* Label section title with plus icon */}
-                <hr />
-                <li className="nav-item">
-                    <div className="d-flex align-items-center justify-content-between px-3 mt-2 mb-1">
-                        <span className="text-muted fw-bold">Labels</span>
-                        <i
-                            className="bi bi-plus-circle"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => setShowModal(true)}
-                        ></i>
-                    </div>
-                </li>
-                {labels.map((label) => (
-                    <li className="nav-item" key={label.id}>
-                        <Link to={`/labels/${label.id}`} className={`nav-link ${location.pathname === `/labels/${label.id}` ? "active" : ""}`}>
-                        <i className="bi bi-tag me-3"></i> {label.name}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
+            ))}
+        </ul>
+
 
         {/* Modal for label creation */}
         {showModal && (

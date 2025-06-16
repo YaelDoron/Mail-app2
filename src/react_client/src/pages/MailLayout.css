@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
 }
 
 /* טופ בר עליון */
@@ -23,6 +24,7 @@
   display: flex;
   flex: 1;
   height: calc(100vh - 60px); /* מתחשב בגובה הטופבר */
+  overflow: hidden;
 }
 
 /* סיידבר */
@@ -32,6 +34,7 @@
   border-right: 1px solid #ddd;
   padding: 1rem 0.5rem;
   overflow-y: auto;
+  height: calc(100vh - 60px);
 }
 
 /* תוכן מרכזי (רשימת מיילים, תצוגת מייל וכו') */
