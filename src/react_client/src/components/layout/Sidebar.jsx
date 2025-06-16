@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchLabels, addLabel } from "../../services/labelsService";
 import CreateLabelModal from "../mail/CreateLabelModal";
+import { useLocation } from "react-router-dom";
+import './Sidebar.css';
 
 const Sidebar = ({ onComposeClick }) => {
     // State to hold labels fetched from the server
     const [labels, setLabels] = useState([]);
     // State to hold 
     const [showModal, setShowModal] = useState(false);
+    const location = useLocation();
 
     // Fetch labels once when the component mounts
     useEffect(() => {
@@ -33,6 +36,7 @@ const Sidebar = ({ onComposeClick }) => {
         return () => window.removeEventListener("label-created", handleLabelCreated);
     }, []);
 
+    const isActive = (path) => location.pathname === path;
 
     return (
     <div className="d-flex flex-column p-3 bg-light" style={{ width: "280px", height: "100vh" }}>
@@ -50,38 +54,38 @@ const Sidebar = ({ onComposeClick }) => {
         <div style={{ overflowY: "auto", flexGrow: 1 }}>
             <ul className="nav nav-pills flex-column mb-auto">
                 <li className="nav-item">
-                    <Link to="/inbox" className="nav-link text-dark">
+                    <Link to="/inbox" className={`nav-link ${isActive("/inbox") ? "active" : ""}`}>
                         <i className="bi bi-inbox me-3"></i> Inbox
                     </Link>
                 </li>
                 <li>
-                    <Link to="/starred" className="nav-link text-dark">
+                    <Link to="/starred" className={`nav-link ${isActive("/starred") ? "active" : ""}`}>
                         <i className="bi bi-star me-3"></i> Starred
                     </Link>
                 </li>
                 <li>
-                    <Link to="/sent" className="nav-link text-dark">
+                    <Link to="/sent" className={`nav-link ${isActive("/sent") ? "active" : ""}`}>
                         <i className="bi bi-send me-3"></i> Sent
                     </Link>
                 </li>
                 <li>
-                    <Link to="/drafts" className="nav-link text-dark">
+                    <Link to="/drafts" className={`nav-link ${isActive("/drafts") ? "active" : ""}`}>
                         <i className="bi bi-file-earmark-text me-3"></i> Drafts
                     </Link>
                 </li>
                 <li>
-                    <Link to="/AllMails" className="nav-link text-dark">
+                    <Link to="/AllMails" className={`nav-link ${isActive("/AllMails") ? "active" : ""}`}>
                         <i className="bi bi-envelope-open me-3"></i> All mail
                     </Link>
                 </li>
                 <li>
-                    <Link to="/spam" className="nav-link text-dark">
+                    <Link to="/spam" className={`nav-link ${isActive("/spam") ? "active" : ""}`}>
                         <i className="bi bi-exclamation-octagon me-3"></i> Spam
                     </Link>
                 </li>
                 <li>
-                    <Link to="/trash" className="nav-link text-dark">
-                        <i className="bi bi-trash me-3"></i> garbage
+                    <Link to="/trash" className={`nav-link ${isActive("/trash") ? "active" : ""}`}>
+                        <i className="bi bi-trash me-3"></i> Trash
                     </Link>
                 </li>
                 {/* Shortcut to open label creation modal */}
@@ -109,7 +113,7 @@ const Sidebar = ({ onComposeClick }) => {
                 </li>
                 {labels.map((label) => (
                     <li className="nav-item" key={label.id}>
-                        <Link to={`/labels/${label.id}`} className="nav-link text-dark">
+                        <Link to={`/labels/${label.id}`} className={`nav-link ${location.pathname === `/labels/${label.id}` ? "active" : ""}`}>
                         <i className="bi bi-tag me-3"></i> {label.name}
                         </Link>
                     </li>
