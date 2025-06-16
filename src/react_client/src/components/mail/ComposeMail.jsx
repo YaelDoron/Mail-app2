@@ -80,6 +80,7 @@ const handleClose = async () => {
   }
   resetForm();
   onClose();
+  onMailSent?.();
 };
 
 

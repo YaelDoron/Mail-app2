@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { markMailAsRead, toggleStarred, getUserById } from "../../services/api";
 import "./MailItem.css";
 
-function MailItem({ mail, viewType, isSelected, onSelectChange }) {
-  const [isRead, setIsRead] = useState(mail.isRead || false);
+function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh }) {
+  const isRead = mail.isRead || false;
   const [isStarred, setIsStarred] = useState(mail.isStarred || false);
   const [displayName, setDisplayName] = useState("");
   const navigate = useNavigate();
@@ -35,7 +35,6 @@ function MailItem({ mail, viewType, isSelected, onSelectChange }) {
     if (!isRead && viewType !== "sent" && !mail.isDraft) {
       try {
         await markMailAsRead(mail.id);
-        setIsRead(true);
       } catch (error) {
         console.error("Failed to mark as read", error);
       }
@@ -51,6 +50,7 @@ function MailItem({ mail, viewType, isSelected, onSelectChange }) {
     } catch (error) {
       console.error("Failed to toggle star", error);
     }
+    onRefresh?.();
   };
 
   const handleCheckboxClick = (e) => {

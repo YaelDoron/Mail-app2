@@ -4,7 +4,7 @@ import MailItem from "./MailItem";
 import "./MailList.css";
 import LabelSelectorModal from "./LabelSelectorModal";
 
-function MailList({ mails, viewType }) {
+function MailList({ mails, viewType, onRefresh }) { // ✅ הוספת onRefresh
   const [selectedIds, setSelectedIds] = useState([]);
   const [showLabelModal, setShowLabelModal] = useState(false);
 
@@ -19,6 +19,7 @@ function MailList({ mails, viewType }) {
       await markMailAsRead(id);
     }
     setSelectedIds([]);
+    onRefresh?.(); // ✅ טריגר רענון
   };
 
   const handleMarkSpam = async () => {
@@ -26,6 +27,7 @@ function MailList({ mails, viewType }) {
       await toggleSpam(id);
     }
     setSelectedIds([]);
+    onRefresh?.(); // ✅ טריגר רענון
   };
 
   const handleDelete = async () => {
@@ -33,6 +35,7 @@ function MailList({ mails, viewType }) {
       await deleteMail(id);
     }
     setSelectedIds([]);
+    onRefresh?.(); // ✅ טריגר רענון
   };
 
   const handleAssignLabel = async (labelId) => {
@@ -81,6 +84,7 @@ function MailList({ mails, viewType }) {
         viewType={viewType}
         isSelected={selectedIds.includes(mail.id)}
         onSelectChange={handleSelectChange}
+        onRefresh={onRefresh}
       />
     ))}
   </div>

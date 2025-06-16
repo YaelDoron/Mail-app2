@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import MailList from "../components/mail/MailList";
 import { getSpamMails } from "../services/mailsService";
 
-const SpamPage = ({ refreshTrigger }) => { // ✅
+const SpamPage = ({ refreshTrigger, triggerRefresh }) => { // ✅
   const [mails, setMails] = useState([]);
 
   useEffect(() => {
     const fetchSpam = async () => {
       try {
         const data = await getSpamMails();
-        setMails(data);
+        setMails(data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
       } catch (err) {
         console.error("Failed to load Spam:", err);
       }
@@ -19,7 +19,7 @@ const SpamPage = ({ refreshTrigger }) => { // ✅
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="spam" />
+      <MailList mails={mails} viewType="spam" onRefresh={triggerRefresh}/>
     </div>
   );
 };

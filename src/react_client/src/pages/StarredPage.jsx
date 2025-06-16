@@ -3,14 +3,14 @@ import MailList from "../components/mail/MailList";
 import { getStarredMails } from "../services/mailsService";
 
 
-const StarredPage = ({ refreshTrigger }) => { // ✅
+const StarredPage = ({ refreshTrigger, triggerRefresh }) => { // ✅
   const [mails, setMails] = useState([]);
 
   useEffect(() => {
     const fetchstarredMails = async () => {
       try {
         const data = await getStarredMails();
-        setMails(data);
+        setMails(data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
       } catch (err) {
         console.error("Failed to load starred mails:", err);
       }
@@ -20,7 +20,7 @@ const StarredPage = ({ refreshTrigger }) => { // ✅
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="starred" />
+      <MailList mails={mails} viewType="starred" onRefresh={triggerRefresh}/>
     </div>
   );
 };

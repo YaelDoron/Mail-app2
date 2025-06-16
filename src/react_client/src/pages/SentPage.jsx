@@ -3,14 +3,14 @@ import MailList from "../components/mail/MailList";
 import { getSentMails } from "../services/mailsService";
 
 
-const SentPage = ({ refreshTrigger }) => { // ✅ הוספת refreshTrigger
+const SentPage = ({ refreshTrigger, triggerRefresh }) => { // ✅ הוספת refreshTrigger
   const [mails, setMails] = useState([]);
 
   useEffect(() => {
     const fetchSentMails = async () => {
       try {
         const data = await getSentMails();
-        setMails(data);
+        setMails(data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
       } catch (err) {
         console.error("Failed to load sent mails:", err);
       }
@@ -20,7 +20,7 @@ const SentPage = ({ refreshTrigger }) => { // ✅ הוספת refreshTrigger
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="sent" />
+      <MailList mails={mails} viewType="sent" onRefresh={triggerRefresh}/>
     </div>
   );
 };

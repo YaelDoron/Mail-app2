@@ -21,18 +21,20 @@ const MailLayout = ({ children }) => {
           <Sidebar onComposeClick={handleOpenCompose} />
         </div>
         <div className="mail-main">
-          {/* ✅ עדכון: מעביר refreshTrigger כ-prop לעמוד */}
+          {/* ✅ מעביר גם triggerRefresh בנוסף ל-refreshTrigger */}
           {React.isValidElement(children)
-            ? React.cloneElement(children, { refreshTrigger }) // ✅ הוספה
+            ? React.cloneElement(children, {
+                refreshTrigger,
+                triggerRefresh: () => setRefreshTrigger((prev) => prev + 1), // ✅
+              })
             : children}
         </div>
       </div>
 
-      {/* חלונית כתיבת מייל */}
       {showCompose && (
         <ComposeMail
           onClose={handleCloseCompose}
-          onMailSent={() => setRefreshTrigger(prev => prev + 1)} // ✅ הוספה
+          onMailSent={() => setRefreshTrigger((prev) => prev + 1)} // ✅ זה כבר היה
         />
       )}
     </div>
