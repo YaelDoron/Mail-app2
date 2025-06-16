@@ -3,9 +3,12 @@ import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
 import ComposeMail from "../components/mail/ComposeMail"; // ודא שהנתיב נכון
 import "./MailLayout.css";
+import { useTheme } from "../components/layout/ThemeSwitcher";
+
 
 const MailLayout = ({ children }) => {
   const [showCompose, setShowCompose] = useState(false);
+  const { theme } = useTheme();
 
   // ✅ חדש: טריגר רענון
   const [refreshTrigger, setRefreshTrigger] = useState(0); // ✅ הוספה
@@ -14,7 +17,7 @@ const MailLayout = ({ children }) => {
   const handleCloseCompose = () => setShowCompose(false);
 
   return (
-    <div className="mail-layout">
+    <div className={`mail-layout ${theme}`}>
         <Topbar />
       <div className="mail-body">
         <div className="mail-sidebar">

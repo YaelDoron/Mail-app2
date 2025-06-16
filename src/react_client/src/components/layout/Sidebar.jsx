@@ -39,7 +39,7 @@ const Sidebar = ({ onComposeClick }) => {
     const isActive = (path) => location.pathname === path;
 
     return (
-    <div className="d-flex flex-column p-3 bg-light" style={{ width: "280px", height: "100vh" }}>
+    <div className="sidebar d-flex flex-column p-3" style={{ width: "280px", height: "100vh" }}>
         {/* compose button*/}
         <div style={{ width: "75%", minWidth: "200px" }}>
             <button
@@ -91,7 +91,7 @@ const Sidebar = ({ onComposeClick }) => {
             {/* Shortcut to open label creation modal */}
             <li>
                 <span
-                    className="nav-link d-flex justify-content-between align-items-center text-dark"
+                    className="nav-link d-flex justify-content-between align-items-center"
                     style={{ cursor: "pointer" }}
                     onClick={() => setShowModal(true)}
                 >
@@ -103,7 +103,7 @@ const Sidebar = ({ onComposeClick }) => {
             <hr />
             <li className="nav-item">
                 <div className="d-flex align-items-center justify-content-between px-3 mt-2 mb-1">
-                    <span className="text-muted fw-bold">Labels</span>
+                    <span className="label-title fw-bold">Labels</span>
                     <i
                         className="bi bi-plus-circle"
                         style={{ cursor: "pointer" }}

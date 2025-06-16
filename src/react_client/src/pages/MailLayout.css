@@ -4,19 +4,8 @@
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-}
-
-/* טופ בר עליון */
-.mail-topbar {
-  height: 60px;
-  background-color: #f1f3f4;
-  border-bottom: 1px solid #ddd;
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  font-weight: bold;
-  z-index: 1000;
-  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* גוף התצוגה מתחת לטופבר */
@@ -25,6 +14,8 @@
   flex: 1;
   height: calc(100vh - 60px); /* מתחשב בגובה הטופבר */
   overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 /* סיידבר */
@@ -35,11 +26,62 @@
   padding: 1rem 0.5rem;
   overflow-y: auto;
   height: calc(100vh - 60px);
+  margin: 0;
+  padding: 0;
 }
 
 /* תוכן מרכזי (רשימת מיילים, תצוגת מייל וכו') */
 .mail-main {
   flex-grow: 1;
-  padding: 1rem 1.5rem;
+  padding: 0;
   overflow-y: auto;
+  margin: 0;
 }
+
+:root {
+  --bg-color: #ffffff;
+  --read-bg-color: #f2f6fc;
+  --hover-bg-color: #eaf1fb;
+  --text-color: #202124;
+  --subtext-color: #5f6368;
+  --accent-color: #1a73e8;
+  --border-color: #ddd;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1e1e1e;
+  --read-bg-color: #2a2a2a;
+  --hover-bg-color: #333333;
+  --text-color: #ffffff;
+  --subtext-color: #aaaaaa;
+  --accent-color: #8ab4f8;
+  --border-color: #444;
+}
+
+.mail-layout {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+:root {
+  --topbar-bg: #f1f3f4;
+}
+[data-theme="dark"] {
+  --topbar-bg: #202124;
+}
+
+.mail-body {
+  background-color: var(--bg-color);
+}
+
+.mail-sidebar {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.mail-main {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+

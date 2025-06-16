@@ -15,6 +15,7 @@ import SearchResultsPage from "./pages/SearchResultsPage";
 import LabelPage from "./pages/LabelPage";
 import MailItem from "./components/mail/MailItem"
 import MailList from "./components/mail/MailList";
+import { ThemeProvider } from "./components/layout/ThemeSwitcher"; 
 
 
 const TestMailItem = () => {
@@ -122,6 +123,7 @@ const TestMailList = () => {
 
 function App() {
   return (
+    <ThemeProvider>
       <Routes>
         <Route path="/mailpage" element={<MailPage />} />
         <Route path="/mailpage/:id" element={<MailLayout><MailPage /></MailLayout>} />
@@ -141,8 +143,8 @@ function App() {
         <Route path="/test" element={<TestMailItem />} />
         <Route path="/testlist" element={<TestMailList />} />
         <Route path="/search/:query" element={<MailLayout><SearchResultsPage /></MailLayout>} />
-
       </Routes>
+    </ThemeProvider>  
   );
 }
 

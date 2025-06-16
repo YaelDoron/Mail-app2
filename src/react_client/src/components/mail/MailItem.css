@@ -2,24 +2,24 @@
   display: flex;
   align-items: center;
   padding: 10px 16px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   transition: background-color 0.2s ease;
   font-family: Arial, sans-serif;
 }
 
 .mail-box.unread {
-  background-color: white;
+  background-color: var(--mail-unread-bg);
   font-weight: bold;
 }
 
 .mail-box.read {
-  background-color: #f2f6fc;
+  background-color: var(--background);
   font-weight: normal;
 }
 
 .mail-box:hover {
-  background-color: #eaf1fb;
+  background-color: var(--background);
 }
 
 .mail-box-left {
@@ -77,12 +77,12 @@
 
 .subject {
   font-size: 14px;
-  color: #202124;
+  color: var(--text-color);;
   display: inline;
 }
 
 .preview {
-  color: #5f6368;
+  color: var(--secondary-text);
   margin-left: 4px;
   font-weight: normal;
   font-size: 14px;
@@ -95,6 +95,6 @@
   align-items: center;     /* ✅ מיישר לגובה המרכז */
   justify-content: flex-end;
   font-size: 12px;
-  color: #5f6368;
+  color: var(--secondary-text);
 }
 

@@ -1,14 +1,78 @@
 .logout-button {
   background-color: transparent;
+  color: var(--text-color) !important;
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .logout-button:hover {
-  background-color: #f1f3f4;
+  background-color: var(--hover-bg-color);
+  color: var(--text-color) !important;
 }
 
 .logout-button:active {
-  background-color: #e0e0e0;
+  background-color: var(--active-bg-color);
+  color: var(--text-color) !important;
 }
+
+.topbar {
+  background-color: var(--topbar-bg);
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search-input {
+  height: 36px;
+  background-color: var(--search-bg);
+  color: var(--text-color);
+  box-shadow: none;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--placeholder-color);
+}
+
+.profile-popup {
+  background-color: var(--popup-bg);
+  color: var(--text-color);
+}
+
+.profile-popup p,
+.profile-popup h6 {
+  margin: 0;
+}
+
+.profile-popup .text-muted {
+  color: var(--popup-muted-text);
+}
+
+.popup-email {
+  color: var(--popup-muted-text);
+  font-size: 0.85rem;
+}
+
+.camera-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: var(--camera-bg);
+  border-radius: 50%;
+  padding: 4px;
+  cursor: pointer;
+  font-size: 20px;
+  color: black; 
+}
+
+.profile-button {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background-color: var(--popup-bg);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
