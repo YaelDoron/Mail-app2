@@ -93,9 +93,13 @@ const getUserMails = (userId) => {
 const assignLabels = (id, userId, labels) => {
     const mail = getMailById(id);
     if (mail && mail.owner === userId && !mail.isDeleted) {
-        mail.labels = labels;
+        for (const label of labels) {
+            if (!mail.labels.includes(label)) {
+                mail.labels.push(label);
+            }
+        }
         return mail;
-    }
+    }    
     return null;
 };
 

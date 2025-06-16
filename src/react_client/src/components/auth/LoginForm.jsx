@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { loginUser } from "../../services/api";
-import { saveToken } from "../../services/authService";
+import { removeToken, saveToken } from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
@@ -27,6 +27,7 @@ function LoginForm() {
 
     try {
       const data = await loginUser({ email, password });
+      removeToken();
       saveToken(data.token);
       navigate("/inbox");
     } catch (err) {

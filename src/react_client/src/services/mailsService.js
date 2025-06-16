@@ -71,7 +71,7 @@ export const getAllMailsUser = async () => {
 
 // Get all mails that belong to a specific label
 export const getMailsByLabel = async (labelId) => {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   const res = await axios.post(
     `${API_BASE_URL}/mails/by-label`,
     { labelId }, 

@@ -28,7 +28,7 @@ const LabelPage = ({ refreshTrigger }) => {
     };
 
     fetchMailsAndLabel();
-  }, [labelName, refreshTrigger]);
+  }, [labelId, refreshTrigger]);
 
 
   if (loading) return <p>Reload mails...</p>;
