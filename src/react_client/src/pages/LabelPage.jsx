@@ -35,8 +35,6 @@ const LabelPage = ({ refreshTrigger }) => {
 
   return (
     <div>
-
-      <h4 className="px-4 my-3">Label: {labelName}</h4>
       <MailList mails={mails} viewType="label" />
 
     </div>

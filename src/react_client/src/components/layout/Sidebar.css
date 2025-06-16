@@ -1,0 +1,21 @@
+.nav-link {
+  color: #000 !important;
+  padding: 10px 20px;
+  margin: 4px 8px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 20px;
+  display: block; 
+  transition: background-color 0.2s ease;
+}
+
+.nav-link.active {
+  background-color: #d2e3fc !important;
+  font-weight: 600;
+  color: #000 !important;
+}
+
+.nav-link:hover {
+  color: #000 !important;
+}
