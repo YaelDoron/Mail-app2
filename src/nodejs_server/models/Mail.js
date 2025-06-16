@@ -263,6 +263,16 @@ const markAsRead = (id, userId) => {
     }
     return null;
 };
+const restoreFromTrash = (id, userId) => {
+  const mail = getMailById(id);
+  if (mail && mail.owner === userId && mail.isDeleted) {
+    mail.isDeleted = false;
+    mail.deletedAt = null;
+    return mail;
+  }
+  return null;
+};
+
 
 
 
@@ -285,5 +295,6 @@ module.exports = {
     getDraftMails,
     getStarredMails,
     getMailsByLabel,
-    markAsRead
+    markAsRead,
+    restoreFromTrash
 };

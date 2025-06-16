@@ -95,4 +95,12 @@ export const getLabelById = async (labelId) => {
   });
   return res.data;
 };
+export const getDeletedMailById = async (id) => {
+  const response = await axios.get(`${API_BASE_URL}/mails/trash/${id}`, authHeader());
+  return response.data;
+};
+export const restoreMail = async (id) => {
+  const res = await axios.patch(`${API_BASE_URL}/mails/restore/${id}`, {}, authHeader());
+  return res.data;
+};
 

@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate,useParams  } from "react-router-dom";
+import { useNavigate  } from "react-router-dom";
 import MailHeader from "./MailHeader";
 import MailBody from "./MailBody";
 import { toggleStarred, toggleSpam, deleteMail, assignLabelsToMail,getUserById } from "../../services/api";
-import {getMailById} from "../../services/mailsService";
 import { getUserIdFromToken } from "../../services/authService";
 import {fetchLabels } from "../../services/labelsService";
 import LabelSelectorModal from "../mail/LabelSelectorModal";
+import { restoreMail } from "../../services/mailsService"; 
 
 
-
-
-const MailView = ({ mail: initialMail }) => {
-  const [mail, setMail] = useState(null);
+const MailView = ({ mail: initialMail, viewType }) => {
+  const [mail, setMail] = useState(initialMail);
   const [sender, setSender] = useState(null);
   const [, setReceiver] = useState(null);
   const [showLabelModal, setShowLabelModal] = useState(false);
   const [, setLabels] = useState([]);
   const [recipients, setRecipients] = useState([]);
-  const { id } = useParams();
-
   const navigate = useNavigate();
   
 
@@ -28,6 +24,7 @@ const MailView = ({ mail: initialMail }) => {
 
     const currentUserId = getUserIdFromToken();
     const isSent = mail.from === currentUserId;
+   
 
     if (mail.from) {
       getUserById(mail.from).then(setSender).catch(console.error);
@@ -50,17 +47,6 @@ const MailView = ({ mail: initialMail }) => {
     loadLabels();
   }, []);
 
-  useEffect(() => {
-    const fetchMail = async () => {
-      try {
-        const data = await getMailById(id);
-        setMail(data);
-      } catch (err) {
-        console.error("Failed to fetch mail:", err);
-      }
-    };
-    fetchMail();
-  }, [id]);
 
   useEffect(() => {
     if (mail?.to?.length) {
@@ -100,10 +86,20 @@ const MailView = ({ mail: initialMail }) => {
     setShowLabelModal(true);
   };
 
+  const handleRestore = async (id) => {
+    try {
+      await restoreMail(id);
+      navigate(-1); // חזרה לעמוד הקודם אחרי השחזור
+    } catch (err) {
+      console.error("Error restoring mail", err);
+    }
+  };
+
+
   
   if (!mail) {
   return <p className="text-center mt-5">Loading...</p>;
-  }
+}
 
   return (
     <div className="flex-grow-1 p-4" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
@@ -117,6 +113,8 @@ const MailView = ({ mail: initialMail }) => {
           onDelete={handleMarkDelete}
           sender={sender}
           recipients={recipients}
+          onRestore={handleRestore}
+          viewType={viewType}
         />
         <hr />
         <MailBody content={mail.content} />

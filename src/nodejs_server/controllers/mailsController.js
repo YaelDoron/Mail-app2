@@ -222,8 +222,29 @@ const BlacklistService = require('../services/BlacklistService');
             return res.status(403).json({ error: 'Unable to mark mail as read' });
         }
 
-        res.status(204).end(); // אין צורך להחזיר גוף
+        res.status(204).end();
     }
+    function getDeletedMailById(req, res) {
+        const id = parseInt(req.params.id);
+        const userId = req.user.userId;
+        const mail = Mail.getMailById(id);
+        if (!mail || !mail.isDeleted) {
+            return res.status(404).json({ error: 'Mail not found in trash' });
+        }
+        if (mail.from !== userId && !mail.to.includes(userId)) {
+            return res.status(403).json({ error: 'Access denied' });
+        }
+        res.status(200).json(mail);
+    }
+    function restoreMail(req, res) {
+        const userId = req.user.userId;
+        const id = parseInt(req.params.id);
+        const restored = Mail.restoreFromTrash(id, userId);
+        if (!restored) return res.status(403).json({ error: "Cannot restore mail" });
+        res.status(200).json(restored);
+    }
+
+
 
     module.exports = {
     getUserMails,
@@ -244,5 +265,7 @@ const BlacklistService = require('../services/BlacklistService');
     getMailsByLabel,
     getMailsByLabelById,
     getTrashMails,
-    markMailAsRead
+    markMailAsRead,
+    getDeletedMailById,
+    restoreMail
 };
