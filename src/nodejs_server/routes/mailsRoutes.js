@@ -37,6 +37,9 @@ router.route('/sent')
 router.route('/trash')
     .get(controller.getTrashMails);
 
+router.get('/trash/:id', controller.getDeletedMailById);
+
+
 // כוכב
 router.route('/star')
     .get(controller.getStarredMails);    
@@ -62,5 +65,7 @@ router.route('/:id')
     .delete(controller.deleteMail)    
 
 router.post('/by-label', controller.getMailsByLabelById);
+
+router.patch('/restore/:id', controller.restoreMail);
 
 module.exports = router;

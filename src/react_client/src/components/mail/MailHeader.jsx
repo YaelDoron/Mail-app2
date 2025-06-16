@@ -22,7 +22,7 @@ function getToLine(mail, currentUserId, recipients = []) {
 }
 
 
-const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMarkSpam, onLabel }) => {
+const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMarkSpam, onLabel,viewType , onRestore}) => {
   const [starred, setStarred] = useState(mail.isStarred || false);
   const [markedSpam, setMarkedSpam] = useState(mail.isSpam || false);
   const navigate = useNavigate();
@@ -77,9 +77,35 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
             <i className="bi bi-exclamation-octagon me-2"></i>
           </span>
 
-          <span onClick={() => onDelete?.(mail.id)} style={{ cursor: "pointer" }} title="Delete">
-            <i className="bi bi-trash"></i>
-          </span>
+          {viewType === "trash" ? (
+            <button
+              onClick={() => onRestore?.(mail.id)}
+              title="Restore"
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer"
+              }}
+            >
+              <i className="bi bi-arrow-counterclockwise"></i>
+            </button>
+
+          ) : (
+            <button
+              onClick={() => onDelete?.(mail.id)}
+              title="Delete"
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer"
+              }}
+            >
+              <i className="bi bi-trash"></i>
+            </button>
+
+          )}
 
           <span onClick={() => onLabel?.(mail.id)} style={{ cursor: "pointer" }} title="Label as">
             <i className="bi bi-tag"></i>
