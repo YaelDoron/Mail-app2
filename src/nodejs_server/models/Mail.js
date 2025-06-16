@@ -139,6 +139,7 @@ const sendDraft = (id, userId) => {
     draft.timestamp = new Date();
 
     for (const recipientId of draft.to) {
+        if (recipientId === draft.owner) continue;
         mails.push({
             id: ++idCounter,
             from: draft.from,
