@@ -39,11 +39,14 @@ function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh, onEdi
         console.error("Failed to mark as read", error);
       }
     }
+
     if (mail.isDraft) {
         onEditDraft?.(mail); // ✅ מציג את הטיוטה לעריכה
         return;
       }
-    navigate(`/mailpage/${mail.id}`);
+
+    navigate(`/mailpage/${mail.id}`, { state: { viewType } });
+
   };
 
   const handleStarClick = async (e) => {

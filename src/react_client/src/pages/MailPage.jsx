@@ -1,21 +1,25 @@
-import { useParams } from "react-router-dom";
+import { useParams,useLocation  } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getMailById } from "../services/mailsService";
+import { getMailById, getDeletedMailById } from "../services/mailsService";
 import MailView from "../components/mail/MailView";
-
-
-
 
 
 const MailPage = () => {
   const { id } = useParams();
   const [mail, setMail] = useState(null);
+  const location = useLocation();
+  const viewType = location.state?.viewType;
 
 
 useEffect(() => {
+  console.log("📨 MailPage - id:", id, "viewType:", viewType);
   const fetchMail = async () => {
     try {
-      const data = await getMailById(id);
+      const data =
+      viewType === "trash"
+        ? await getDeletedMailById(id)
+        : await getMailById(id);
+
       if (data) {
         setMail(data);
       } else {
@@ -27,12 +31,12 @@ useEffect(() => {
   };
 
   fetchMail();
-}, [id]);
+}, [id,viewType]);
 
   if (!mail) return <p>Loading...</p>;
 
   return (
-      <MailView mail={mail} />
+      <MailView mail={mail} viewType={viewType}/>
   );
 };
 

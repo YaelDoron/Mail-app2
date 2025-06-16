@@ -125,6 +125,7 @@ function App() {
       <Routes>
         <Route path="/mailpage" element={<MailPage />} />
         <Route path="/mailpage/:id" element={<MailLayout><MailPage /></MailLayout>} />
+        <Route path="/mailpage/:id" element={<MailLayout><MailPage viewType="trash" /></MailLayout>} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={<Navigate to="/login" />} />
