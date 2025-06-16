@@ -4,7 +4,7 @@ import MailItem from "./MailItem";
 import "./MailList.css";
 import LabelSelectorModal from "./LabelSelectorModal";
 
-function MailList({ mails, viewType, onRefresh }) { // ✅ הוספת onRefresh
+function MailList({ mails, viewType, onRefresh, onEditDraft }) { // ✅ הוספת onRefresh
   const [selectedIds, setSelectedIds] = useState([]);
   const [showLabelModal, setShowLabelModal] = useState(false);
 
@@ -85,6 +85,7 @@ function MailList({ mails, viewType, onRefresh }) { // ✅ הוספת onRefresh
         isSelected={selectedIds.includes(mail.id)}
         onSelectChange={handleSelectChange}
         onRefresh={onRefresh}
+        onEditDraft={onEditDraft}
       />
     ))}
   </div>

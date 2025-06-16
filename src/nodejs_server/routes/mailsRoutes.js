@@ -62,6 +62,7 @@ router.route('/spam/:id')
 
 router.route('/:id')
     .get(controller.getMailById)
+    .patch(controller.updateDraft)
     .delete(controller.deleteMail)    
 
 router.post('/by-label', controller.getMailsByLabelById);
