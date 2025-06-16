@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { markMailAsRead, toggleStarred, getUserById } from "../../services/api";
 import "./MailItem.css";
 
-function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh }) {
+function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh, onEditDraft}) {
   const isRead = mail.isRead || false;
   const [isStarred, setIsStarred] = useState(mail.isStarred || false);
   const [displayName, setDisplayName] = useState("");
@@ -39,6 +39,10 @@ function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh }) {
         console.error("Failed to mark as read", error);
       }
     }
+    if (mail.isDraft) {
+        onEditDraft?.(mail); // ✅ מציג את הטיוטה לעריכה
+        return;
+      }
     navigate(`/mailpage/${mail.id}`);
   };
 

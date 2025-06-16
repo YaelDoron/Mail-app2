@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import MailList from "../components/mail/MailList";
 import { getDraftMails } from "../services/mailsService";
+import ComposeMail from "../components/mail/ComposeMail"; // ✅ ודא קיים
+
 
 const DraftsPage = ({ refreshTrigger, triggerRefresh }) => { // ✅
   const [mails, setMails] = useState([]);
+  const [editDraft, setEditDraft] = useState(null); // ✅ טיוטה לעריכה
+
 
   useEffect(() => {
     const fetchDrafts = async () => {
@@ -19,7 +23,19 @@ const DraftsPage = ({ refreshTrigger, triggerRefresh }) => { // ✅
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="draft" onRefresh={triggerRefresh}/>
+      <MailList
+        mails={mails}
+        viewType="draft"
+        onRefresh={triggerRefresh}
+        onEditDraft={setEditDraft} // ✅ הוספה
+      />
+      {editDraft && (
+        <ComposeMail
+          draft={editDraft} // ✅ שליחת הטיוטה לתוך הקומפוזר
+          onClose={() => setEditDraft(null)}
+          onMailSent={triggerRefresh}
+        />
+      )}
     </div>
   );
 };

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RecipientsInput from "./RecipientsInput";
 import Editor from "./Editor";
-import { createMail, getUserIdByEmail } from "../../services/api"; 
+import { createMail, getUserIdByEmail, getUserById, sendDraft, updateDraft, deleteMail } from "../../services/api"; 
 import { getToken, getUserIdFromToken } from "../../services/authService";
 
-const ComposeMail = ({ onClose, onMailSent }) => { // ✅ הוספנו onMailSent
+const ComposeMail = ({ onClose, onMailSent, draft = null }) => { // ✅ הוספנו onMailSent
   const token = getToken();
   const userId = getUserIdFromToken();
   const [recipients, setRecipients] = useState([]);
@@ -13,6 +13,24 @@ const ComposeMail = ({ onClose, onMailSent }) => { // ✅ הוספנו onMailSen
   const [isMinimized, setIsMinimized] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // ✅ טוען תוכן טיוטה אם קיים
+  useEffect(() => {
+    if (draft) {
+      const loadRecipients = async () => {
+        const emails = await Promise.all(
+          draft.to.map(async (id) => {
+            const user = await getUserById(id); // ✅ שימוש בפונקציה הקיימת
+            return user.email;
+          })
+        );
+        setRecipients(emails);
+        setSubject(draft.subject || "");
+        setContent(draft.content || "");
+      };
+      loadRecipients();
+    }
+  }, [draft]);
+
   const resetForm = () => {
     setRecipients([]);
     setSubject("");
@@ -20,8 +38,6 @@ const ComposeMail = ({ onClose, onMailSent }) => { // ✅ הוספנו onMailSen
   };
 
 const handleSend = async () => {
-  console.log("TOKEN:", token);
-  console.log("USER ID:", userId);
   if (!userId || !token) return;
   if (recipients.length === 0 || content.trim() === "") {
     alert("Please fill in both recipients and content before sending.");
@@ -33,16 +49,27 @@ const handleSend = async () => {
     );
 
     const finalSubject = subject.trim() || "(no subject)";
-    await createMail(
-      {
-        from: userId,
-        to: toUserIds,
-        subject: finalSubject,
-        content,
-        isDraft: false,
-      },
-      token
-    );
+
+    // ✅ אם זו טיוטה – שלח אותה
+    if (draft) {
+        await updateDraft(draft.id, {
+          to: toUserIds,
+          subject: finalSubject,
+          content,
+        });
+        await sendDraft(draft.id, token);
+      } else {
+        await createMail(
+          {
+            from: userId,
+            to: toUserIds,
+            subject: finalSubject,
+            content,
+            isDraft: false,
+          },
+          token
+        );
+      }
     resetForm();
     onClose();
     onMailSent?.(); // ✅ נוסף – קריאה ל-trigger מה-layout
@@ -64,19 +91,27 @@ const handleClose = async () => {
       );
 
       const finalSubject = subject.trim() || "(no subject)";
-      await createMail(
-        {
-          from: userId,
-          to: toUserIds,
-          subject: finalSubject,
-          content,
-          isDraft: true,
-        },
-        token
-      );
-    } catch (err) {
-      console.error("Failed to save draft:", err);
-    }
+      if (draft) {
+          await updateDraft(draft.id, {
+            to: toUserIds,
+            subject: finalSubject,
+            content,
+          });
+        } else {
+          await createMail(
+            {
+              from: userId,
+              to: toUserIds,
+              subject: finalSubject,
+              content,
+              isDraft: true,
+            },
+            token
+          );
+        }
+      } catch (err) {
+        console.error("Failed to save draft:", err);
+      }
   }
   resetForm();
   onClose();
@@ -84,10 +119,19 @@ const handleClose = async () => {
 };
 
 
-  const handleDelete = () => {
-    resetForm();
-    onClose();
-  };
+  const handleDelete = async () => {
+  try {
+    if (draft?.id) {
+      await deleteMail(draft.id); // ✅ מחיקת טיוטה מהשרת
+    }
+  } catch (err) {
+    console.error("Failed to delete draft:", err);
+  }
+
+  resetForm();
+  onClose();
+  onMailSent?.(); // ✅ מרענן את הרשימה
+};
 
   return (
     <div

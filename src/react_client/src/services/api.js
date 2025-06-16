@@ -191,3 +191,21 @@ export const getUserIdByEmail = async (email, token) => {
   });
   return res.data.id;
 };
+
+// עדכון טיוטה
+export const updateDraft = async (id, updates) => {
+  await axios.patch(`${API_BASE_URL}/mails/${id}`, updates, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  });
+};
+
+// שליחת טיוטה
+export const sendDraft = async (id) => {
+  await axios.post(`${API_BASE_URL}/mails/send/${id}`, {}, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  });
+};
