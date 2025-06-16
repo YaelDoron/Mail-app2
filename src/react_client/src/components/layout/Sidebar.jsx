@@ -109,7 +109,7 @@ const Sidebar = ({ onComposeClick }) => {
                 </li>
                 {labels.map((label) => (
                     <li className="nav-item" key={label.id}>
-                        <Link to={`/labels/${label.name}`} className="nav-link text-dark">
+                        <Link to={`/labels/${label.id}`} className="nav-link text-dark">
                         <i className="bi bi-tag me-3"></i> {label.name}
                         </Link>
                     </li>

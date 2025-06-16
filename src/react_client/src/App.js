@@ -135,7 +135,7 @@ function App() {
         <Route path="/drafts" element={<MailLayout><DraftsPage /></MailLayout>} />
         <Route path="/spam" element={<MailLayout><SpamPage /></MailLayout>} />
         <Route path="/Trash" element={<MailLayout><TrashPage /></MailLayout>} />
-        <Route path="/labels/:labelName" element={<MailLayout><LabelPage /></MailLayout>} />
+        <Route path="/labels/:labelId" element={<MailLayout><LabelPage /></MailLayout>} />
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/test" element={<TestMailItem />} />
         <Route path="/testlist" element={<TestMailList />} />
