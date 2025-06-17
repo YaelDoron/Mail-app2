@@ -35,7 +35,8 @@ const check = async (subject, content) => {
   for (const url of urls) {
     try {
       const res = await sendToServer('GET', url);
-      if (res === 'true' || res === 'true true' || res.includes('true')) {
+      console.log(">>> Checking URL:", url, "| Server response:", res); //debug
+      if (res.includes('true true')) {
         return true;  // URL is blacklisted
       }
     } catch (error) {
@@ -54,7 +55,9 @@ const add = async (url) => {
 
 // Removes a URL from the blacklist via the TCP server
 const remove = async (url) => {
-  const result = await sendToServer('DELETE', url);
+  const decodedUrl = decodeURIComponent(url);
+  const result = await sendToServer('DELETE', decodedUrl);
+  console.log(">>> Removed from blacklist:", url, "| Result:", result); //debug
   return result;
 };
 
@@ -77,5 +80,6 @@ const extractUrls = (text) => {
 module.exports = {
   check,
   add,
-  remove
+  remove,
+  extractUrls
 };

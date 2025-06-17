@@ -35,6 +35,7 @@ const BlacklistService = require('../services/BlacklistService');
 
     try {
         const isBlocked = await BlacklistService.check(subject, content);
+        console.log(">> Checking spam status, isBlocked:", isBlocked);
         const newMail = Mail.createMail(from, to, subject, content, isBlocked, isDraft);
         res.status(201)
     .location(`/api/mails/${newMail.id}`)
@@ -108,18 +109,49 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(updated);
     }
 
-        // Toggle spam status
-    function toggleSpamStatus(req, res) {
-        const userId = req.user.userId;
-        const id = parseInt(req.params.id);
+    // Toggle spam status
+    async function toggleSpamStatus(req, res) {
+    const userId = req.user.userId;
+    const id = parseInt(req.params.id);
 
-        const updated = Mail.toggleSpam(id, userId);
-        if (!updated) {
-            return res.status(403).json({ error: 'Unable to update spam status' });
-        }
-
-        res.status(200).json(updated);
+    const mail = Mail.getMailById(id);
+    if (!mail || mail.owner !== userId || mail.isDeleted) {
+        return res.status(403).json({ error: 'Unable to update spam status' });
     }
+
+    const updated = Mail.toggleSpam(id, userId); // 🔄 עדכון קודם
+
+    const urls = [
+        ...BlacklistService.extractUrls(mail.subject),
+        ...BlacklistService.extractUrls(mail.content)
+    ];
+
+    if (updated.isSpam) {
+        // ✚ אם עכשיו זה ספאם – הוסף ל-blacklist
+        for (const url of urls) {
+            try {
+                await BlacklistService.add(url);
+                console.log(">> Added to blacklist:", url);
+            } catch (err) {
+                console.error(`Error adding URL to blacklist: ${url}`, err.message);
+            }
+        }
+    } else {
+        // ✖️ אם הוסר מספאם – הסר מהרשימה
+        for (const url of urls) {
+            try {
+                await BlacklistService.remove(url);
+                console.log(">> Removed from blacklist:", url);
+            } catch (err) {
+                console.error(`Error removing URL from blacklist: ${url}`, err.message);
+            }
+        }
+    }
+
+    res.status(200).json(updated);
+}
+
+
 
         // Send a draft
     function sendDraftMail(req, res) {
