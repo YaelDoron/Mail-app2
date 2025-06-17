@@ -102,7 +102,14 @@ const MailView = ({ mail: initialMail, viewType }) => {
 }
 
   return (
-    <div className="flex-grow-1 p-4" style={{ minHeight: "100vh", backgroundColor: "#f8f9fa" }}>
+    <div
+      className="flex-grow-1 p-4"
+      style={{
+      minHeight: "100vh",
+      backgroundColor: "#ffffff",  
+     color: "#000000"             
+     }}
+    >
       <div className="bg-white border rounded shadow-sm p-4"
            style={{ maxWidth: "1000px", margin: "0 auto", minHeight: "calc(100vh - 40px)" }}>
         <MailHeader

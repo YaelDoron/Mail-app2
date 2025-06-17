@@ -5,8 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { removeToken } from "../../services/authService";
 import { FiLogOut } from "react-icons/fi";
 import "./Topbar.css";
-
-
+import { useTheme } from "./ThemeSwitcher";
 
 const Topbar = () => {
   const [user, setUser] = useState(null);
@@ -14,6 +13,7 @@ const Topbar = () => {
   const fileInputRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
   const fetchUser = async () => {
@@ -41,7 +41,7 @@ const Topbar = () => {
   };
 
   return (
-    <div className="d-flex justify-content-between align-items-center px-4 py-2 border-bottom bg-light position-relative w-100">
+    <div className="topbar d-flex justify-content-between align-items-center px-4 py-2 position-relative w-100">
       <div><img
           src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r5.png"
           alt="Google Logo"
@@ -69,15 +69,7 @@ const Topbar = () => {
               }
             }}
             placeholder="Search mail"
-            className="form-control rounded-pill ps-5 pe-4 border-0"
-            style={{
-              height: "36px",
-              backgroundColor: "#f1f3f4",
-              boxShadow: "none",
-              outline: "none"
-            }}
-            onFocus={(e) => e.target.style.backgroundColor = "white"}
-            onBlur={(e) => e.target.style.backgroundColor = "#f1f3f4"}
+            className="form-control rounded-pill ps-5 pe-4 border-0 search-input"
           />
           {searchQuery && (
             <span
@@ -99,6 +91,10 @@ const Topbar = () => {
         </div>
       </div>
 
+      <button className="theme-toggle-btn" onClick={toggleTheme}>
+        {theme === "light" ? "Dark" : "Light"}
+      </button>
+
       {user && (
         <div className="d-flex align-items-center position-relative">
           <span className="me-2">{user.name}</span>
@@ -107,8 +103,7 @@ const Topbar = () => {
               src={`http://localhost:3000/${user.image.replace(/\\/g, "/")}?t=${Date.now()}`}
               alt="profile"
               onClick={() => setShowPopup(!showPopup)}
-              className="rounded-circle"
-              style={{ width: "36px", height: "36px", objectFit: "cover" }}
+              className="profile-button"
             />
           )}
         </div>
@@ -116,11 +111,11 @@ const Topbar = () => {
 
       {showPopup && user && (
         <div
-          className="position-absolute bg-white border rounded shadow p-3"
+          className="position-absolute profile-popup border rounded shadow p-3"
           style={{ top: "110%", right: 0, width: "240px", zIndex: 1000 }}
         >
           <div className="text-center position-relative">
-            <p className="text-muted small mb-2">{user.email}</p>
+            <p className="popup-email small mb-2">{user.email}</p>
             <div className="position-relative d-inline-block mb-2">
               <img
                 src={`http://localhost:3000/${typeof user.image === "string" ? user.image.replace(/\\/g, "/") : "uploads/default-pic.svg"}?t=${Date.now()}`}
@@ -130,16 +125,7 @@ const Topbar = () => {
               />
               <FaCamera
                 onClick={() => fileInputRef.current.click()}
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  right: 0,
-                  background: "white",
-                  borderRadius: "50%",
-                  padding: "4px",
-                  cursor: "pointer",
-                  fontSize: "20px"
-                }}
+                className="camera-icon"
               />
               <input
                 ref={fileInputRef}
