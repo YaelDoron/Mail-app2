@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+// Helper function to generate the "To: ..." line
 function getToLine(mail, currentUserId, recipients = []) {
   if (!mail || !Array.isArray(mail.to)) return "";
 
@@ -27,6 +29,7 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
   const [markedSpam, setMarkedSpam] = useState(mail.isSpam || false);
   const navigate = useNavigate();
   const formattedDate = new Date(mail.timestamp).toLocaleString();
+  // Build sender image URL
   const baseUrl = process.env.REACT_APP_API_BASE_URL?.replace("/api", "") || "";
   const imageUrl = sender?.image
     ? sender.image.startsWith("http")
@@ -37,12 +40,13 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
   const toLine = getToLine(mail, currentUserId, Array.isArray(recipients) ? recipients : []);
 
 
-
+  // Toggle star state visually and notify parent
   const handleStarToggle = () => {
     setStarred(!starred);
     onToggleStar && onToggleStar(mail.id, !starred);
   };
 
+  // Handle spam toggle and return to previous screen
   const handleMarkSpamClick = () => {
     if (onMarkSpam) {
       onMarkSpam(mail.id);
@@ -66,17 +70,21 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
             <i className="bi bi-arrow-left"></i>
           </span>
 
-          <span
-            onClick={handleMarkSpamClick}
-            style={{
-              cursor: "pointer",
-              color: markedSpam || mail.isSpam ? "red" : "inherit"
-            }}
-            title={mail.isSpam ? "Not spam" : "Report spam"}
-          >
-            <i className="bi bi-exclamation-octagon me-2"></i>
-          </span>
+          {/* Spam toggle – not shown in Trash or Sent views */}
+          {viewType !== "trash" && viewType !== "sent" &&(
+            <span
+              onClick={handleMarkSpamClick}
+              style={{
+                cursor: "pointer",
+                color: markedSpam || mail.isSpam ? "red" : "inherit"
+              }}
+              title={mail.isSpam ? "Not spam" : "Report spam"}
+            >
+              <i className="bi bi-exclamation-octagon me-2"></i>
+            </span>
+          )}
 
+          {/* Delete or Restore depending on Trash view */}
           {viewType === "trash" ? (
             <button
               onClick={() => onRestore?.(mail.id)}
@@ -107,9 +115,13 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
 
           )}
 
-          <span onClick={() => onLabel?.(mail.id)} style={{ cursor: "pointer" }} title="Label as">
-            <i className="bi bi-tag"></i>
-          </span>
+           {/* Label button – only for normal mails */}
+          {viewType !== "spam" && viewType !== "trash" && viewType !== "sent" && (
+            <span onClick={() => onLabel?.(mail.id)} style={{ cursor: "pointer" }} title="Label as">
+              <i className="bi bi-tag"></i>
+            </span>
+          )}
+
         </div>
       </div>
 
@@ -132,7 +144,6 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
             style={{ width: "50px", height: "50px", objectFit: "cover" }}
           />
 
-
           ) : (
             <div className="rounded-circle bg-secondary-subtle text-dark d-flex align-items-center justify-content-center me-3"
               style={{
@@ -145,7 +156,7 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
             </div>
           )}
 
-
+          {/* Sender name and "to:..." line */}
           <div>
             <div className="fw-bold">{sender ? `${sender.firstName} ${sender.lastName}` : mail.senderName}{" "}
               &lt;{sender?.email}&gt;</div>
@@ -153,16 +164,20 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
           </div>
         </div>
 
+        {/* Date and star toggle – not shown in spam or trash */}
         <div className="d-flex align-items-center gap-3">
           <span className="text-muted small">{formattedDate}</span>
 
-          <span
-            onClick={handleStarToggle}
-            style={{ cursor: "pointer", color: starred ? "gold" : "gray" }}
-            title="Star"
-          >
-            <i className={`bi ${starred ? "bi-star-fill text-warning" : "bi-star text-secondary"}`}></i>
-          </span>
+          {viewType !== "spam" && viewType !== "trash" && (
+            <span
+              onClick={handleStarToggle}
+              style={{ cursor: "pointer", color: starred ? "gold" : "gray" }}
+              title="Star"
+            >
+              <i className={`bi ${starred ? "bi-star-fill text-warning" : "bi-star text-secondary"}`}></i>
+            </span>
+          )}
+
         </div>
       </div>
     </div>
