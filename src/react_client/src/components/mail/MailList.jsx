@@ -1,43 +1,51 @@
 import React, { useState } from "react";
+import { useNavigate  } from "react-router-dom";
 import { markMailAsRead, toggleSpam, deleteMail, assignLabelsToMail } from "../../services/api";
+import { restoreMail } from "../../services/mailsService";
 import MailItem from "./MailItem";
 import "./MailList.css";
 import LabelSelectorModal from "./LabelSelectorModal";
 
-function MailList({ mails, viewType, onRefresh, onEditDraft }) { // ✅ הוספת onRefresh
+function MailList({ mails, viewType, onRefresh, onEditDraft }) {
   const [selectedIds, setSelectedIds] = useState([]);
   const [showLabelModal, setShowLabelModal] = useState(false);
-
+  const navigate = useNavigate();
+  
+  // Handles checkbox selection for each mail
   const handleSelectChange = (id, selected) => {
     setSelectedIds((prev) =>
       selected ? [...prev, id] : prev.filter((x) => x !== id)
     );
   };
 
+  // Marks selected mails as read
   const handleMarkAsRead = async () => {
     for (const id of selectedIds) {
       await markMailAsRead(id);
     }
     setSelectedIds([]);
-    onRefresh?.(); // ✅ טריגר רענון
+    onRefresh?.();
   };
 
+  // Toggles spam status (used for marking or unmarking spam)
   const handleMarkSpam = async () => {
     for (const id of selectedIds) {
       await toggleSpam(id);
     }
     setSelectedIds([]);
-    onRefresh?.(); // ✅ טריגר רענון
+    onRefresh?.();
   };
 
+  // Moves selected mails to trash
   const handleDelete = async () => {
     for (const id of selectedIds) {
       await deleteMail(id);
     }
     setSelectedIds([]);
-    onRefresh?.(); // ✅ טריגר רענון
+    onRefresh?.();
   };
 
+  // Assigns a label to selected mails
   const handleAssignLabel = async (labelId) => {
     for (const id of selectedIds) {
       await assignLabelsToMail(id, [labelId]);
@@ -46,29 +54,65 @@ function MailList({ mails, viewType, onRefresh, onEditDraft }) { // ✅ הוספ
     setShowLabelModal(false);
   };
 
+  // Restores mails from trash and navigates back
+  const handleRestore = async () => {
+    try {
+      for (const id of selectedIds) {
+        await restoreMail(id);
+      }
+      setSelectedIds([]);
+      navigate(-1); // Go back after restore
+    } catch (err) {
+      console.error("Error restoring mail", err);
+    }
+  };
+
+
   return (
   <div>
     {selectedIds.length > 0 && (
       <div className="mail-toolbar">
-        <button className="icon-button" onClick={handleDelete} title="Delete">
-          <i className="bi bi-trash3"></i>
-        </button>
+        {viewType === "trash" ? (
+          <button className="icon-button" onClick={handleRestore} title="Restore">
+            <i className="bi bi-arrow-counterclockwise"></i>
+          </button>
+        ) : (
+          <button className="icon-button" onClick={handleDelete} title="Delete">
+            <i className="bi bi-trash3"></i>
+          </button>
+        )}
+
+        {/* Mark as read always available */}
         <button className="icon-button" onClick={handleMarkAsRead} title="Mark as read">
           <i className="bi bi-envelope-open"></i>
         </button>
-        <button className="icon-button" onClick={handleMarkSpam} title="Report spam">
-          <i className="bi bi-exclamation-octagon"></i>
-        </button>
-        <button
-          className="icon-button"
-          onClick={() => setShowLabelModal(true)}
-          title="Label"
-        >
-          <i className="bi bi-folder-symlink"></i>
-        </button>
+
+        {/* Show spam button only if not in trash or sent */}
+        {viewType !== "trash" && viewType !== "sent" && (
+          <button
+            className="icon-button"
+            onClick={handleMarkSpam}
+            title={viewType === "spam" ? "Not spam" : "Report spam"}
+          >
+            <i className="bi bi-exclamation-octagon"></i>
+          </button>
+        )}
+
+        {/* Show label only if not in spam or trash */}
+        {(viewType !== "spam" && viewType !== "trash") && (
+          <button
+            className="icon-button"
+            onClick={() => setShowLabelModal(true)}
+            title="Label"
+          >
+            <i className="bi bi-folder-symlink"></i>
+          </button>
+        )}
+
       </div>
     )}
 
+    {/* Label modal for assigning labels */}
     {showLabelModal && (
       <LabelSelectorModal
         onClose={() => setShowLabelModal(false)}
@@ -77,6 +121,7 @@ function MailList({ mails, viewType, onRefresh, onEditDraft }) { // ✅ הוספ
       />
     )}
 
+    {/* Render list of mails */}
     {mails.map((mail) => (
       <MailItem
         key={mail.id}

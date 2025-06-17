@@ -95,10 +95,14 @@ export const getLabelById = async (labelId) => {
   });
   return res.data;
 };
+
+// Get a deleted mail by ID (from trash)
 export const getDeletedMailById = async (id) => {
   const response = await axios.get(`${API_BASE_URL}/mails/trash/${id}`, authHeader());
   return response.data;
 };
+
+// Restore a mail from trash back to inbox
 export const restoreMail = async (id) => {
   const res = await axios.patch(`${API_BASE_URL}/mails/restore/${id}`, {}, authHeader());
   return res.data;
