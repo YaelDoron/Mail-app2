@@ -1,4 +1,4 @@
-const HOST = "172.28.0.2";  // IP address of the TCP server (Exercise 2)
+const HOST = "server";  // IP address of the TCP server (Exercise 2)
 const net = require('net'); // Node.js core module for TCP sockets
 
 // Sends a command (GET / POST / DELETE) to the TCP server
