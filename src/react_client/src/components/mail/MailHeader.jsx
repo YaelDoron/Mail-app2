@@ -70,8 +70,8 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
             <i className="bi bi-arrow-left"></i>
           </span>
 
-          {/* Spam toggle – not shown in Trash or Sent views */}
-          {viewType !== "trash" && viewType !== "sent" &&(
+          {/* Spam toggle – not shown in Trash drafts or Sent views */}
+          {viewType !== "trash" && viewType !== "sent" && viewType !== "draft" &&(
             <span
               onClick={handleMarkSpamClick}
               style={{
@@ -116,7 +116,7 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
           )}
 
            {/* Label button – only for normal mails */}
-          {viewType !== "spam" && viewType !== "trash" && viewType !== "sent" && (
+          {viewType !== "spam" && viewType !== "trash" && viewType !== "sent" && viewType !== "draft" && (
             <span onClick={() => onLabel?.(mail.id)} style={{ cursor: "pointer" }} title="Label as">
               <i className="bi bi-tag"></i>
             </span>
@@ -168,7 +168,7 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
         <div className="d-flex align-items-center gap-3">
           <span className="text-muted small">{formattedDate}</span>
 
-          {viewType !== "spam" && viewType !== "trash" && (
+          {viewType !== "spam" && viewType !== "trash" && viewType !== "draft" &&(
             <span
               onClick={handleStarToggle}
               style={{ cursor: "pointer", color: starred ? "gold" : "gray" }}

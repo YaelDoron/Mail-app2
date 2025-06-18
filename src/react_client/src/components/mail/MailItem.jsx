@@ -93,8 +93,8 @@ function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh, onEdi
           />
         </div>
 
-        {/* Star only in non-spam and non-trash views */}
-        {viewType !== "spam" && viewType !== "trash" && (
+        {/* Star only in non-spam non-draft and non-trash views */}
+        {viewType !== "spam" && viewType !== "trash" &&  viewType !== "draft" &&(
           <div
             className={`star-icon ${isStarred ? "starred" : ""}`}
             onClick={handleStarClick}

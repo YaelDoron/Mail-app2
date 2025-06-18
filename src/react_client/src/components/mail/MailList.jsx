@@ -87,7 +87,7 @@ function MailList({ mails, viewType, onRefresh, onEditDraft }) {
           <i className="bi bi-envelope-open"></i>
         </button>
 
-        {/* Show spam button only if not in trash or sent  */}
+        {/* Show spam button only if not in trash, draft or sent  */}
         {viewType !== "trash" && viewType !== "sent" && viewType !== "draft" &&(
           <button
             className="icon-button"
@@ -98,7 +98,7 @@ function MailList({ mails, viewType, onRefresh, onEditDraft }) {
           </button>
         )}
 
-        {/* Show label only if not in spam or trash */}
+        {/* Show label only if not in spam, draft or trash */}
         {viewType !== "spam" && viewType !== "trash" && viewType !== "draft" && (
           <button
             className="icon-button"
