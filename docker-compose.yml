@@ -12,16 +12,31 @@ services:
       appnet:
         ipv4_address: 172.28.0.2
 
-  client:
+  nodejs-server:
     build:
       context: ./src/nodejs_server
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3000:3000"  # חזרה לפורט 3000
+    environment:
+      - PORT=3000
     restart: always
     networks:
-      - appnet  
+      - appnet
 
+  react-client:
+    build:
+      context: ./src/react_client
+      dockerfile: Dockerfile.react
+    ports:
+      - "3001:3001"  
+    restart: always
+    networks:
+      - appnet
+    #depends_on:
+      #- nodejs-server
+      #- server
+  
 networks:
   appnet:
     driver: bridge  

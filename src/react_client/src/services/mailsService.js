@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getToken } from "./authService";
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:3000/api";
 
 // Helper function to generate Authorization header using JWT token
 const authHeader = () => ({
