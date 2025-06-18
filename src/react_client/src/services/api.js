@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getToken, getUserIdFromToken } from "./authService"; 
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:3000/api";
 
 // Function to register a user with file upload
 export const RegisterUser = async (userData) => {
@@ -209,3 +209,21 @@ export const sendDraft = async (id) => {
     }
   });
 };
+
+export const unassignLabelFromMail = async (mailId, labelId) => {
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}/mails/unassign-label/${mailId}`,
+      { labelId }, 
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to unassign label from mail", error);
+  }
+};
+

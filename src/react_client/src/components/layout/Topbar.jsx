@@ -90,11 +90,14 @@ const Topbar = () => {
           )}
         </div>
       </div>
-
-      <button className="theme-toggle-btn" onClick={toggleTheme}>
-        {theme === "light" ? "Dark" : "Light"}
-      </button>
-
+     <label className="theme-switch">
+      <input
+      type="checkbox"
+      checked={theme === "dark"}
+      onChange={toggleTheme}
+      />
+      <span className="slider"></span>
+    </label>
       {user && (
         <div className="d-flex align-items-center position-relative">
           <span className="me-2">{user.name}</span>
@@ -157,7 +160,7 @@ const Topbar = () => {
           navigate("/login");
        }}
         className="logout-button d-flex align-items-center justify-content-center gap-2 w-100 border-0 px-3 py-2 rounded"
->
+      >
         <FiLogOut />
        <span>Sign out</span>
     </button>

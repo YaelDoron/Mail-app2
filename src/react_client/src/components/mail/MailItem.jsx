@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { markMailAsRead, toggleStarred, getUserById } from "../../services/api";
 import "./MailItem.css";
 
-function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh, onEditDraft}) {
+function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh, onEditDraft, selectedLabelId }) {
   const isRead = mail.isRead || false;
   const [isStarred, setIsStarred] = useState(mail.isStarred || false);
   const [displayName, setDisplayName] = useState("");
@@ -93,8 +93,8 @@ function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh, onEdi
           />
         </div>
 
-        {/* Star only in non-spam and non-trash views */}
-        {viewType !== "spam" && viewType !== "trash" && (
+        {/* Star only in non-spam non-draft and non-trash views */}
+        {viewType !== "spam" && viewType !== "trash" &&  viewType !== "draft" &&(
           <div
             className={`star-icon ${isStarred ? "starred" : ""}`}
             onClick={handleStarClick}

@@ -69,4 +69,8 @@ router.post('/by-label', controller.getMailsByLabelById);
 
 router.patch('/restore/:id', controller.restoreMail);
 
+// הוצאת מייל מתווית
+router.patch('/unassign-label/:id', controller.removeLabelFromMail);
+
+
 module.exports = router;
