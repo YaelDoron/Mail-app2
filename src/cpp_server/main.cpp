@@ -8,7 +8,6 @@
 using namespace std;
 
 /**
- * @brief Entry point of the server application.
  * 
  * Expected command-line arguments:
  *   argv[1] - Port number (e.g. 12345)
@@ -35,6 +34,6 @@ int main(int argc, char* argv[]) {
     }
 
     // Initialize and start the TCP server
-    Server server(port, seeds);
+    Server server(port, filterSize, seeds);
     return server.start();
 }

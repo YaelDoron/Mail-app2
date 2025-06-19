@@ -100,11 +100,13 @@ function MailList({ mails, viewType, onRefresh, onEditDraft, selectedLabelId }) 
           </button>
         )}
 
-        {/* Mark as read always available */}
-        <button className="icon-button" onClick={handleMarkAsRead} title="Mark as read">
-          <i className="bi bi-envelope-open"></i>
-        </button>
-
+        {/* Mark as read available when not in drafts and sent*/}
+        {viewType !== "drats" && viewType !== "sent" &&(
+          <button className="icon-button" onClick={handleMarkAsRead} title="Mark as read">
+            <i className="bi bi-envelope-open"></i>
+          </button>
+        )}
+        
         {/* Show spam button only if not in trash, draft or sent  */}
         {viewType !== "trash" && viewType !== "sent" && viewType !== "draft" &&(
           <button

@@ -15,86 +15,91 @@ using std::vector;
 
 #define MAX_CLIENTS 1
 
-// ✅ בנאי: מקבל פורט אמיתי (לא מקובע), גודל פילטר וזרעים
-Server::Server(int port, const vector<int>& seeds)
+//creating the server with the given arguments and uninitialized server socket 
+Server::Server(int port, int filterSize, const vector<int>& seeds)
     : port(port),
       serverSocket(-1),
-      filter(1000, seeds, std::hash<std::string>()),
+      filter(filterSize, seeds, std::hash<std::string>()),
       store("data/urls.txt")
+
 {
     vector<bool> loadedBits;
     LoadFromFilter loader("data/bloom.txt", loadedBits);
     loader.execute();
-
     if (!loadedBits.empty()) {
         filter.setFilter(loadedBits);
     }
-
     store.load();
 }
 
+
+// Starts the server: creates the socket, binds it to the given port, listens for a single client,
+// and passes the connection to a handler.
 int Server::start() {
+    // Creating the server's TCP socket
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket < 0) {
-        perror("Socket creation failed");
+        close(serverSocket);
         return -1;
     }
 
-    // מאפשר הפעלה מחדש של השרת מיידית בלי שגיאת "Address already in use"
-    int opt = 1;
-    setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
-
+    // Setting up the address struct
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin));
     sin.sin_family = AF_INET;
     sin.sin_addr.s_addr = INADDR_ANY;
-    sin.sin_port = htons(port); // ✅ שימוש בפורט מהמשתמש
+    sin.sin_port = htons(port);
 
+    // Binding the socket to the chosen port
     if (bind(serverSocket, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
-        perror("Bind failed");
         close(serverSocket);
         return -1;
     }
 
+    // Start listening
     if (listen(serverSocket, MAX_CLIENTS) < 0) {
-        perror("Listen failed");
         close(serverSocket);
         return -1;
     }
-
-    std::cout << "[Server] Listening on port " << port << std::endl;
 
     while (true) {
         struct sockaddr_in client_sin;
-        socklen_t addr_len = sizeof(client_sin);
+        unsigned int addr_len = sizeof(client_sin);
+
         int client_sock = accept(serverSocket, (struct sockaddr *) &client_sin, &addr_len);
         if (client_sock < 0) {
-            perror("Accept failed");
             continue;
         }
-
+        // Create a new thread to handle the client independently
         std::thread t([this, client_sock]() {
-            this->handleClient(client_sock);
-        });
-        t.detach();
+        this->handleClient(client_sock);
+    });
+    // Detach the thread so it runs in the background without blocking
+    t.detach();
     }
 
     close(serverSocket);
     return 0;
 }
-
+// Handles communication with a single client over an open socket.
+// Isolated for future scalability to support multiple clients concurrently.
 void Server::handleClient(int client_sock) {
-    char buffer[4096] = {0};
-
+    // Receive a message from the client
+    char buffer[4096]={0};
     while (true) {
-        int read_bytes = recv(client_sock, buffer, sizeof(buffer), 0);
+        int expected_data_len = sizeof(buffer);
+        int read_bytes = recv(client_sock, buffer, expected_data_len, 0);
+        // If a message was received, we send the response to the client
         if (read_bytes == 0) {
-            break;
-        } else if (read_bytes < 0) {
-            continue;
+        // connection is closed
+        break;
         }
-
+        else if (read_bytes < 0) {
+        continue;
+        }
         std::string command(buffer);
+
+        // Lock the files to ensure thread-safe access
         std::lock_guard<std::mutex> lock(dataMutex);
 
         CommandParser parser(filter, store);
@@ -102,6 +107,6 @@ void Server::handleClient(int client_sock) {
         send(client_sock, response.c_str(), response.length(), 0);
         memset(buffer, 0, sizeof(buffer));
     }
-
+    // Close sockets
     close(client_sock);
 }

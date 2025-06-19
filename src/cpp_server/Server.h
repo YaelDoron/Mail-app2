@@ -21,7 +21,7 @@ public:
      * @param port Port number for the server to listen on
      * @param seeds Hash function seeds for the Bloom Filter
      */
-    Server(int port, const std::vector<int>& seeds);
+    Server(int port, int filterSize, const std::vector<int>& seeds);
 
     /**
      * @brief Starts the server and listens for incoming connections.
