@@ -42,11 +42,12 @@ function LoginForm() {
   return (
     <div className="gmail-login-box">
       <div className="gmail-login-left">
-        <img
-          src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r5.png"
-          alt="Google Logo"
-          className="gmail-logo"
-        />
+        <div className="app-logo fw-bold fs-5 text-dark d-flex align-items-center gap-2">
+          <i className="fw-bold fs-5 text-dark"></i>
+          <span>
+            Mail<span style={{ color: "#e91e63" }}>Snap</span>
+          </span>
+        </div>
         <h2 className="gmail-login-title">
           {step === "email" ? "Sign in" : "Welcome"}
         </h2>

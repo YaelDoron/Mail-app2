@@ -24,6 +24,13 @@ const validateBirthDate=(birthDate)=> {
   if (isNaN(date.getTime())) {
     return "Birth date is not a valid calendar date";
   }
+  const minDate = new Date("1905-01-01");
+  const maxDate = new Date("2012-01-01");
+
+  if (date < minDate || date > maxDate) {
+    return "You don’t meet the age requirement to create an account";
+  }
+  
   return null; // valid
 }
 function findUserById(id) {

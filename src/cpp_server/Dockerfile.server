@@ -27,4 +27,3 @@ WORKDIR /usr/src/project/build
 RUN cmake .. && make
 
 # Set the entry point of the container to the compiled server executable
-ENTRYPOINT ["./Server"]

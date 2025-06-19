@@ -11,15 +11,18 @@ const ImageUploader = ({ handleImageUpload, preview, clearImage }) => {
   };
 
   return (
-    <div className="image-uploader">
-      <label htmlFor="image">Upload Profile Picture:</label>
-      <input
+     <div className="image-uploader">
+      <label htmlFor="file-upload" className="custom-file-upload">  
+        Upload Profile Picture
+      </label>
+      <input 
+        id="file-upload"
         type="file"
-        id="image"
         accept="image/*"
         ref={fileInputRef}
         onChange={handleImageUpload}
-      />
+        style={{ display: "none" }}
+      />      
 
       {preview && (
         <div className="image-preview-container">

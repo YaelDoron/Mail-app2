@@ -23,6 +23,7 @@ function createUser(req, res) {
     return res.status(400).json({ error: birthDateError });
   }
 
+
   // Create a new user object using the model's factory function
   const newUser = User.createUser({
   firstName,
