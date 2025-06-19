@@ -7,25 +7,34 @@
 
 using namespace std;
 
+/**
+ * @brief Entry point of the server application.
+ * 
+ * Expected command-line arguments:
+ *   argv[1] - Port number (e.g. 12345)
+ *   argv[2] - Bloom Filter size
+ *   argv[3+] - Hash seeds for the Bloom Filter
+ */
 int main(int argc, char* argv[]) {
     if (argc < 4) {
-    // Require at least port, filterSize, and one seed
+        cerr << "Usage: " << argv[0] << " <port> <filterSize> <seed1> [seed2] ..." << endl;
         return 1;
     }
 
     int port = std::atoi(argv[1]);
     int filterSize = std::atoi(argv[2]);
+
     if (port <= 0 || port > 65535) {
-    // Invalid port number
+        cerr << "Error: Invalid port number." << endl;
         return 1;
-}
+    }
 
     vector<int> seeds;
-    for (int i = 3 ; i < argc; ++i) {
-    // Collect seed values for Bloom Filter
-        seeds.push_back(atoi(argv[i]));
+    for (int i = 3; i < argc; ++i) {
+        seeds.push_back(std::atoi(argv[i]));
     }
-    // Initialize and start the server
-    Server server(filterSize, seeds);
+
+    // Initialize and start the TCP server
+    Server server(port, seeds);
     return server.start();
 }

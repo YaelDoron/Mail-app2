@@ -1,4 +1,5 @@
-const HOST = "server";  // IP address of the TCP server (Exercise 2)
+//const HOST = "server";  // IP address of the TCP server (Exercise 2)
+const HOST= "172.28.0.2"
 const net = require('net'); // Node.js core module for TCP sockets
 
 // Sends a command (GET / POST / DELETE) to the TCP server
@@ -7,7 +8,7 @@ const sendToServer = (command, url) => {
     const client = new net.Socket();
     let response = '';
     // Connect to the server on port 12345
-    client.connect(12345, HOST, () => {
+    client.connect(3800, HOST, () => {
       client.write(`${command} ${url}\n`);
     });
 
