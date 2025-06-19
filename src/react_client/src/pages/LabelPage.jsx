@@ -31,11 +31,11 @@ const LabelPage = ({ refreshTrigger }) => {
   }, [labelId, refreshTrigger]);
 
 
-  if (loading) return <p>Reload mails...</p>;
+  if (loading) return null;
 
   return (
-    <div>
-      <MailList mails={mails} viewType="label" />
+    <div className="container p-3">
+      <MailList mails={mails} viewType="label" selectedLabelId={parseInt(labelId)} />
 
     </div>
   );

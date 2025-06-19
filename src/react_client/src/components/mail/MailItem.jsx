@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { markMailAsRead, toggleStarred, getUserById } from "../../services/api";
 import "./MailItem.css";
 
-function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh, onEditDraft}) {
+function MailItem({ mail, viewType, isSelected, onSelectChange, onRefresh, onEditDraft, selectedLabelId }) {
   const isRead = mail.isRead || false;
   const [isStarred, setIsStarred] = useState(mail.isStarred || false);
   const [displayName, setDisplayName] = useState("");

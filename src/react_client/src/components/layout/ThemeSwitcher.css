@@ -55,7 +55,7 @@ body {
   --mail-unread-bg: white;
   --text-color: #000000;
   --secondary-text: #555555;
-  --mail-read-bg: #f2f6fc;
+  --mail-read-bg: #eeeeee;
   --popup-bg: #fff;
   --border-color: #ccc;
   --popup-bg: #ffffff;
@@ -78,12 +78,45 @@ body {
   --border-color: #2a2a2a;
   --scrollbar-track: #1e1e1e;  
   --scrollbar-thumb: #555;
-  --mail-unread-bg: #1e1e1e;;
+  --mail-unread-bg: #313131;
   --text-color: #f5f5f5;
   --secondary-text: #aaaaaa;
-  --mail-read-bg: #1e1e1e;
+  --mail-read-bg: #161616;
   --popup-bg: #2b2b2b;
   --border-color: #444;
   --popup-bg: #2b2b2b;
   --border-color: #444;
 }
+
+[data-theme="dark"] .compose-modal {
+  background-color: white !important;
+  color: black !important;
+}
+
+[data-theme="dark"] .compose-modal input,
+[data-theme="dark"] .compose-modal textarea {
+  background-color: white !important;
+  color: black !important;
+}
+
+.mail-view-wrapper {
+  min-height: 100vh;
+  padding: 2rem;
+  box-sizing: border-box;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.mail-view-container {
+  background-color: white;
+  color: black;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+

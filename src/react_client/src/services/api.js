@@ -209,3 +209,21 @@ export const sendDraft = async (id) => {
     }
   });
 };
+
+export const unassignLabelFromMail = async (mailId, labelId) => {
+  try {
+    const response = await axios.patch(
+      `${API_BASE_URL}/mails/unassign-label/${mailId}`,
+      { labelId }, 
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to unassign label from mail", error);
+  }
+};
+

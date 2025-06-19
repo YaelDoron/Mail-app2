@@ -106,19 +106,12 @@ const MailView = ({ mail: initialMail, viewType }) => {
 
   
   if (!mail) {
-  return <p className="text-center mt-5">Loading...</p>;
+  return null;
 }
 
   return (
-    <div
-      className="flex-grow-1 p-4"
-      style={{
-      minHeight: "100vh",
-      backgroundColor: "#ffffff",  
-     color: "#000000"             
-     }}
-    >
-      <div className="bg-white border rounded shadow-sm p-4"
+    <div className="mail-view-wrapper">
+      <div className="mail-view-container"
            style={{ maxWidth: "1000px", margin: "0 auto", minHeight: "calc(100vh - 40px)" }}>
 
          {/* Mail header section with all mail actions */}
