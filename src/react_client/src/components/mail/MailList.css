@@ -32,4 +32,18 @@
   background-color: var(--popup-bg);
 }
 
+.remove-label-btn {
+  background: none;
+  border: none;
+  color: var(--secondary-text);
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+.remove-label-btn:hover {
+  color: red;
+}
+
+
 

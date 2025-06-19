@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate  } from "react-router-dom";
-import { markMailAsRead, toggleSpam, deleteMail, assignLabelsToMail } from "../../services/api";
+import { markMailAsRead, toggleSpam, deleteMail, assignLabelsToMail, unassignLabelFromMail } from "../../services/api";
 import { restoreMail } from "../../services/mailsService";
 import MailItem from "./MailItem";
 import "./MailList.css";
 import LabelSelectorModal from "./LabelSelectorModal";
 
-function MailList({ mails, viewType, onRefresh, onEditDraft }) {
+function MailList({ mails, viewType, onRefresh, onEditDraft, selectedLabelId }) {
   const [selectedIds, setSelectedIds] = useState([]);
   const [showLabelModal, setShowLabelModal] = useState(false);
   const navigate = useNavigate();
@@ -53,6 +53,19 @@ function MailList({ mails, viewType, onRefresh, onEditDraft }) {
     setSelectedIds([]);
     setShowLabelModal(false);
   };
+ 
+  // Remove mail from label
+  const handleRemoveLabel = async () => {
+  try {
+    for (const id of selectedIds) {
+      await unassignLabelFromMail(id, selectedLabelId);
+    }
+    setSelectedIds([]);
+    onRefresh?.();
+  } catch (err) {
+    console.error("Error removing label", err);
+  }
+};
 
   // Restores mails from trash and navigates back
   const handleRestore = async () => {
@@ -72,6 +85,11 @@ function MailList({ mails, viewType, onRefresh, onEditDraft }) {
   <div>
     {selectedIds.length > 0 && (
       <div className="mail-toolbar">
+        {viewType === "label" && (
+          <button className="icon-button" onClick={handleRemoveLabel} title="Remove from label">
+            <i className="bi bi-x-lg"></i>
+          </button>
+        )}
         {viewType === "trash" ? (
           <button className="icon-button" onClick={handleRestore} title="Restore">
             <i className="bi bi-arrow-counterclockwise"></i>

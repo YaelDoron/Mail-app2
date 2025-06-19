@@ -103,6 +103,17 @@ const assignLabels = (id, userId, labels) => {
     return null;
 };
 
+// Remove label from a mail
+const removeLabelFromMail = (id, userId, labelId) => {
+    const mail = getMailById(id);
+    if (mail && mail.owner === userId && !mail.isDeleted) {
+        mail.labels = mail.labels.filter(label => label !== labelId);
+        return mail;
+    }
+    return null;
+};
+
+
 // Toggle spam status
 const toggleSpam = (id, userId) => {
     const mail = getMailById(id);
@@ -279,8 +290,6 @@ const restoreFromTrash = (id, userId) => {
 };
 
 
-
-
 module.exports = {
     createMail,
     getMailById,
@@ -301,5 +310,6 @@ module.exports = {
     getStarredMails,
     getMailsByLabel,
     markAsRead,
-    restoreFromTrash
+    restoreFromTrash,
+    removeLabelFromMail
 };

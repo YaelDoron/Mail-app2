@@ -14,7 +14,7 @@
 }
 
 .mail-box.read {
-  background-color: var(--background);
+  background-color: var(--mail-read-bg);
   font-weight: normal;
 }
 

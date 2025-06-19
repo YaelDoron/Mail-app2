@@ -135,7 +135,7 @@ const handleClose = async () => {
 
   return (
     <div
-      className="shadow bg-white border"
+      className="compose-modal shadow bg-white border"
       style={{
         position: "fixed",
         bottom: isExpanded ? "50%" : "0",

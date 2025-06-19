@@ -3,6 +3,7 @@ import { loginUser } from "../../services/api";
 import { removeToken, saveToken } from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
+import { useTheme } from "../layout/ThemeSwitcher"; 
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [step, setStep] = useState("email");
   const navigate = useNavigate();
+  const { setTheme } = useTheme();
 
   const handleNext = () => {
     if (!email.includes("@")) {
@@ -29,6 +31,8 @@ function LoginForm() {
       const data = await loginUser({ email, password });
       removeToken();
       saveToken(data.token);
+      localStorage.setItem("theme", "light");
+      setTheme("light"); 
       navigate("/inbox");
     } catch (err) {
       setError(err.error || "Login failed. Please try again.");

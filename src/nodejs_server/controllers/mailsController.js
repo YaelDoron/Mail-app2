@@ -109,6 +109,22 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(updated);
     }
 
+    function removeLabelFromMail(req, res) {
+        const userId = req.user.userId;
+        const id = parseInt(req.params.id);
+        const { labelId } = req.body;
+
+        if (!labelId) {
+            return res.status(400).json({ error: 'Missing labelId in body' });
+        }
+        const updated = Mail.removeLabelFromMail(id, userId, labelId);
+        if (!updated) {
+            return res.status(403).json({ error: 'Unable to remove label' });
+        }
+        res.status(200).json(updated);
+    }
+
+
     // Toggle spam status
     async function toggleSpamStatus(req, res) {
     const userId = req.user.userId;
@@ -277,7 +293,6 @@ const BlacklistService = require('../services/BlacklistService');
     }
 
 
-
     module.exports = {
     getUserMails,
     getMailById,
@@ -299,5 +314,6 @@ const BlacklistService = require('../services/BlacklistService');
     getTrashMails,
     markMailAsRead,
     getDeletedMailById,
-    restoreMail
+    restoreMail,
+    removeLabelFromMail
 };

@@ -33,7 +33,7 @@ useEffect(() => {
   fetchMail();
 }, [id,viewType]);
 
-  if (!mail) return <p>Loading...</p>;
+  if (!mail) return null;
 
   return (
       <MailView mail={mail} viewType={viewType}/>
