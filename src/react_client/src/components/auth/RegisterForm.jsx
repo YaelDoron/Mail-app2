@@ -37,8 +37,19 @@ const RegisterForm = () => {
 
     if ((field === "firstName" || field === "lastName" || field === "gender" || field === "birthDate") && !value?.trim()) {
       error = `${field} is required.`;
-
     }
+
+    if (field === "birthDate") {
+        const date = new Date(value);
+        const minValidDate = new Date("1905-01-01");
+        const maxValidDate = new Date();
+        maxValidDate.setFullYear(maxValidDate.getFullYear() - 13); // מגביל לגיל 13
+
+        if (date < minValidDate || date > maxValidDate) {
+        error = "Must be at least 13 years old";
+        }
+    }
+
     if (field === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
       error = "Please enter a valid email address.";
     }
@@ -59,40 +70,132 @@ const RegisterForm = () => {
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     validateField(field, value);
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const fields = ["firstName", "lastName", "birthDate", "gender", "email", "password", "confirmPassword"];
-    fields.forEach((field) => {
-      validateField(field, formData[field]);
-    });
-
-    if (Object.values(errors).some((err) => err)) return;
-
-    try {
-      const response = await RegisterUser(formData);
-      const token = response.token;
-
-      if (token) {
-        navigate("/login");
-      } else {
-        alert("Registration succeeded but no token was returned.");
-      }
-    } catch (error) {
-      const fieldErrors = {};
-      const serverError = error?.response?.data;
-
-      if (serverError?.error === "invalid_birth_date") {
-        fieldErrors.birthDate = serverError.message;
-      } else {
-        alert(serverError?.message || "An unexpected error occurred.");
-      }
-
-      setErrors(fieldErrors);
+    if (field === "password") {
+        validateField("confirmPassword", formData.confirmPassword);
     }
   };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const fields = [
+    "firstName",
+    "lastName",
+    "birthDate",
+    "gender",
+    "email",
+    "password",
+    "confirmPassword",
+  ];
+
+  const newErrors = {};
+
+  fields.forEach((field) => {
+    const value = formData[field];
+    let error = "";
+
+    if ((field === "firstName" || field === "lastName" || field === "gender" || field === "birthDate") && !value?.trim()) {
+      error = `${field} is required.`;
+    }
+
+    if (field === "birthDate") {
+      const date = new Date(value);
+      const minValidDate = new Date("1905-01-01");
+      const maxValidDate = new Date();
+      maxValidDate.setFullYear(maxValidDate.getFullYear() - 13);
+      if (date < minValidDate || date > maxValidDate) {
+        error = "Must be at least 13 years old";
+      }
+    }
+
+    if (field === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      error = "Please enter a valid email address.";
+    }
+
+    if (field === "password" && value.length < 8) {
+      error = "Password must be at least 8 characters long.";
+    }
+
+    if (field === "confirmPassword" && value !== formData.password) {
+      error = "Passwords do not match.";
+    }
+
+    if (error) {
+      newErrors[field] = error;
+    }
+  });
+
+  setErrors(newErrors);
+
+  const hasErrors = Object.keys(newErrors).length > 0;
+  if (hasErrors) {
+    const firstErrorField = Object.keys(newErrors)[0];
+    let alertMessage = "Missing required fields";
+
+    switch (firstErrorField) {
+      case "firstName":
+        alertMessage = "First name is required";
+        break;
+      case "lastName":
+         alertMessage = "Last name is required";
+         break;
+      case "birthDate":
+        alertMessage = "You don’t meet the age requirement to create an account";
+        break;
+      case "gender":
+        alertMessage = "Please select a gender";
+        break;
+      case "email":
+        alertMessage = newErrors.email.includes("exists")
+          ? "This email is already registered"
+          : "Please enter a valid email address";
+        break;
+      case "password":
+        alertMessage = newErrors.password;
+        break;
+      case "confirmPassword":
+        alertMessage = "Passwords do not match";
+        break;
+    }
+
+    alert(alertMessage);
+    return;
+  }
+
+  try {
+    const response = await RegisterUser(formData);
+    navigate("/login");
+  } catch (error) {
+  const response = error?.response;
+  const message = typeof error === "string" ? error : error?.message || "Unknown error";
+
+  const fieldErrors = {};
+
+  if (message) {
+    if (
+      response?.status === 409 ||
+      message === "Email address already exists" ||
+      (typeof message === "string" && message.toLowerCase().includes("email"))
+    ) {
+      fieldErrors.email = "Email already exists";
+      alert("This email is already registered");
+    } else if (message.includes("age requirement") || message.includes("Must be at least 13")) {
+      fieldErrors.birthDate = "Must be at least 13 years old";
+      alert("You don’t meet the age requirement to create an account");
+    } else if (message === "Gender is required") {
+      fieldErrors.gender = "Please select a gender";
+      alert("Please select a gender");
+    } else {
+      alert(message);
+    }
+
+    setErrors((prev) => ({ ...prev, ...fieldErrors }));
+  } else {
+    alert("An unexpected error occurred.");
+  }
+}
+};
 
   return (
     <form className="register-form" onSubmit={handleSubmit}>
@@ -171,7 +274,7 @@ const RegisterForm = () => {
       <div>
         <label className="field-label">Email<span className="required-star">*</span></label>
         <RegisterInput
-          type="email"
+          type="text"
           placeholder="Email"
           value={formData.email}
           onChange={(value) => handleChange("email", value)}

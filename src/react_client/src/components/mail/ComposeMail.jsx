@@ -39,8 +39,8 @@ const ComposeMail = ({ onClose, onMailSent, draft = null }) => { // ✅ הוספ
 
 const handleSend = async () => {
   if (!userId || !token) return;
-  if (recipients.length === 0 || content.trim() === "") {
-    alert("Please fill in both recipients and content before sending.");
+  if (recipients.length === 0) {
+    alert("Please fill recipients before sending.");
     return;
   }
   try {
@@ -49,13 +49,14 @@ const handleSend = async () => {
     );
 
     const finalSubject = subject.trim() || "(no subject)";
+    const finalContent = content.trim() || " ";
 
     // ✅ אם זו טיוטה – שלח אותה
     if (draft) {
         await updateDraft(draft.id, {
           to: toUserIds,
           subject: finalSubject,
-          content,
+          content: finalContent,
         });
         await sendDraft(draft.id, token);
       } else {
@@ -64,7 +65,7 @@ const handleSend = async () => {
             from: userId,
             to: toUserIds,
             subject: finalSubject,
-            content,
+            content: finalContent,
             isDraft: false,
           },
           token
@@ -91,6 +92,8 @@ const handleClose = async () => {
       );
 
       const finalSubject = subject.trim() || "(no subject)";
+      const finaltContent= content.trim() || " ";
+
       if (draft) {
           await updateDraft(draft.id, {
             to: toUserIds,
@@ -103,7 +106,7 @@ const handleClose = async () => {
               from: userId,
               to: toUserIds,
               subject: finalSubject,
-              content,
+              content: finaltContent,
               isDraft: true,
             },
             token

@@ -19,7 +19,7 @@ export const RegisterUser = async (userData) => {
 
     return response.data;
   } catch (error) {
-    throw error.response?.data || error.message;
+    throw error.response?.data?.error || error.message;
   }
 };
 
