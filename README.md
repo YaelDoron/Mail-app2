@@ -76,24 +76,26 @@ Users can sign up and log in securely using JWTs. Registration includes uploadin
 
 ## Run with Docker
 
-# Step 1: Clone the repo
+Step 1: Clone the repo
 
-# Step 2: Start all services
+Step 2: Start all services:
 ```bash
 docker-compose up --build
 ```
 
-# (Optional) If you encounter issues with leftover containers, run:
+(Optional) If you encounter issues with leftover containers, run:
 ```bash
 docker-compose down --remove-orphans
 ```
 
-# React client:     http://localhost:3001
-# Node.js server:   http://localhost:3000
-# C++ spam server:  TCP on port 3800
+React client:     http://localhost:3001
+Node.js server:   http://localhost:3000
+C++ spam server:  TCP on port 3800
 
 Sample Users
+
 Email: demo1@example.com / Password: 123456
+
 Email: demo2@example.com / Password: 123456
 
 
