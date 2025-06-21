@@ -22,11 +22,13 @@ MailSnap is a full-featured email web application inspired by Gmail. It offers a
 - User registration with image upload  
 - JWT-based authentication  
 - Compose, send, receive, and draft emails
+- Drafts: if a user closes the compose window, the email is saved as a draft and can be edited/sent later
 - Mark emails as read (read emails shown with a light gray background)
 - Search through emails by subject or content
 - Star/unstar emails  
 - Custom labels (create, assign, remove)  
-- Report or unreport emails as spam - detection via C++ Bloom Filter server  
+- Spam detection via C++ Bloom Filter server:
+  - When an email is marked as spam, all future emails containing the same links (URLs) will also be flagged automatically  
 - Trash and restore functionality  
 - Dark/Light mode toggle  
 - Responsive UI using React
