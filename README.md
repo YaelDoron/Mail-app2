@@ -69,6 +69,17 @@ Users can sign up and log in securely using JWTs. Registration includes uploadin
 ---
 
 
+### Dark Mode Support
+
+MailSnap includes a Dark/Light mode toggle, conveniently located at the top right corner. Switch between themes instantly for comfortable viewing.
+
+|   Light Mode |   Dark Mode |
+|--------------|-------------|
+| ![Light Mode](https://github.com/user-attachments/assets/825b3e97-6371-4dae-8285-ffc5d67ce37d) | ![Dark Mode](https://github.com/user-attachments/assets/3b0b9a0b-061a-4bf1-8434-3f5ec2f49179) |
+
+---
+
+
 ## Technologies
 
 | Layer        | Stack                      |
