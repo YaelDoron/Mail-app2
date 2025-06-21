@@ -82,21 +82,36 @@ Step 2: Start all services:
 ```bash
 docker-compose up --build
 ```
+Step 3: Open the app in your browser:
+```bash
+http://localhost:3001
+```
 
-(Optional) If you encounter issues with leftover containers, run:
+Optional - If you encounter issues with leftover containers, run:
 ```bash
 docker-compose down --remove-orphans
 ```
 
-React client:     http://localhost:3001
-Node.js server:   http://localhost:3000
-C++ spam server:  TCP on port 3800
+### Available Services & Endpoints
 
-Sample Users
+| Service           | Address                        |
+|-------------------|--------------------------------|
+| React Client      | http://localhost:3001          |
+| Node.js Server    | http://localhost:3000          |
+| C++ Spam Server   | TCP on port 3800               |
 
-Email: demo1@example.com / Password: 123456
 
-Email: demo2@example.com / Password: 123456
+### Sample Users
+
+| Email                  | Password  |
+|------------------------|-----------|
+| demo1@example.com      | 12345678  |
+| demo2@example.com      | 12345678  |
+ד
+> **Note:** In the screenshots, we used gmail.com addresses as examples,   
+> but any valid email provider (e.g., Outlook, Yahoo, etc.) would work just as well.
+
+
 
 
 
