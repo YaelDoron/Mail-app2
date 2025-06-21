@@ -2,8 +2,18 @@ ex3 is in branch: Exercise-3
 # MailSnap – Gmail-like Mail Application
 MailSnap is a full-featured email web application inspired by Gmail. It offers a modern, responsive UI, custom labels, spam detection, dark mode, and secure authentication – all built using a full-stack architecture and microservices.
 
-![MailSnap Inbox](screenshots/inbox.png)
-![MailSnap Mail View](screenshots/mailview.png)
+<table>
+  <tr>
+    <td align="center"><strong>Inbox</strong></td>
+    <td align="center"><strong>Mail View</strong></td>
+    <td align="center"><strong>Compose</strong></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/633454d3-30c6-4a45-ba63-47a8ae54ff18" width="250"/></td>
+    <td><img src="https://github.com/user-attachments/assets/870a2945-ea03-4a0d-b43a-cfab07594b19" width="250"/></td>
+    <td><img src="https://github.com/user-attachments/assets/f68e8497-f788-40f9-a57f-32130bc31497" width="250"/></td>
+  </tr>
+</table>
 
 ---
 
@@ -47,7 +57,6 @@ Users can sign up and log in securely using JWTs. Registration includes uploadin
 
 ### Login flow
 
-#### **Screenshots:**
 
 | Sign Up                                    |
 |--------------------------------------------|
