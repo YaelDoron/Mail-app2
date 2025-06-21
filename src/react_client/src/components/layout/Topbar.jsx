@@ -44,7 +44,8 @@ const Topbar = () => {
     <div className="topbar d-flex justify-content-between align-items-center px-4 py-2 position-relative w-100">
       <div className="app-logo fw-bold fs-5 text-dark d-flex align-items-center gap-2">
         <span>
-          Mail<span style={{ color: "#e91e63" }}>Snap</span>
+          <span style={{ color: "#444444" }}>Mail</span>
+          <span style={{ color: "#e91e63" }}>Snap</span>
         </span>
       </div>
 
