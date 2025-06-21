@@ -1,4 +1,5 @@
-# MailSnap – Gmail-like Mail Application         ex3 is in branch: Exercise-3
+ex3 is in branch: Exercise-3
+# MailSnap – Gmail-like Mail Application
 MailSnap is a full-featured email web application inspired by Gmail. It offers a modern, responsive UI, custom labels, spam detection, dark mode, and secure authentication – all built using a full-stack architecture and microservices.
 
 ![MailSnap Inbox](screenshots/inbox.png)
@@ -10,9 +11,12 @@ MailSnap is a full-featured email web application inspired by Gmail. It offers a
 
 - User registration with image upload  
 - JWT-based authentication  
-- Compose, send, receive, and draft emails  
+- Compose, send, receive, and draft emails
+- Mark emails as read (read emails shown with a light gray background)
+- Search through emails by subject or content
+- Star/unstar emails  
 - Custom labels (create, assign, remove)  
-- Spam detection via C++ Bloom Filter server  
+- Report or unreport emails as spam - detection via C++ Bloom Filter server  
 - Trash and restore functionality  
 - Dark/Light mode toggle  
 - Responsive UI using React
@@ -31,23 +35,27 @@ Users can sign up and log in securely using JWTs. Registration includes uploadin
 
 - The form includes validation for:
 
-First name & last name
+     * First name & last name
 
-Birth date (min. year 1905, max. age under 13 not allowed)
+     * Birth date (min. year 1905, max. age under 13 not allowed)
 
-Gender
+     * Gender
 
-Email (valid format)
+     * Email must be in valid format (e.g., user@gmail.com)
 
-Password & password confirmation
+     * Password & password confirmation
 
+### Login flow
 
+#### **Screenshots:**
 
-- **Sign Up Screen:**  
-  ![Register](screenshots/register.png)
+| Login – Step 1 (Email Input)               | Login – Step 2 (Password Input)            |
+|--------------------------------------------|--------------------------------------------|
+| ![Login Step 1](screenshots/login-email.png) | ![Login Step 2](screenshots/login-password.png) |
 
-- **Login Screen:**  
-  ![Login](screenshots/login.png)
+| Sign Up                                    |
+|--------------------------------------------|
+| ![Register](screenshots/register.png)      |
 
 ---
 
@@ -57,9 +65,9 @@ Password & password confirmation
 | Layer        | Stack                      |
 |--------------|----------------------------|
 | Frontend     | React + Bootstrap          |
-| Backend      | Node.js + Express + MongoDB |
-| Spam Filter  | C++ server with Bloom Filter |
-| Communication | REST API + TCP             |
+| Backend      | Node.js + Express          |
+| Spam Filter  | C++ server                 |
+| Communication| REST API + TCP             |
 | Auth         | JSON Web Tokens (JWT)      |
 | DevOps       | Docker + Docker Compose    |
 
@@ -68,13 +76,17 @@ Password & password confirmation
 
 ## Run with Docker
 
-```bash
 # Step 1: Clone the repo
-git clone https://github.com/yourusername/MailSnap.git
-cd MailSnap
 
 # Step 2: Start all services
+```bash
 docker-compose up --build
+```
+
+# (Optional) If you encounter issues with leftover containers, run:
+```bash
+docker-compose down --remove-orphans
+```
 
 # React client:     http://localhost:3001
 # Node.js server:   http://localhost:3000
