@@ -49,13 +49,13 @@ Users can sign up and log in securely using JWTs. Registration includes uploadin
 
 #### **Screenshots:**
 
-| Login – Step 1 (Email Input)               | Login – Step 2 (Password Input)            |
-|--------------------------------------------|--------------------------------------------|
-| ![Login Step 1](https://github.com/user-attachments/assets/9c4b77b3-e0ef-48ad-b90e-b0e5c8dea39f) | ![Login Step 2](https://github.com/user-attachments/assets/377ec100-6e11-4bca-89aa-3545843c2bf4) |
-
 | Sign Up                                    |
 |--------------------------------------------|
 | ![Register](https://github.com/user-attachments/assets/ac31b692-8b09-4cac-868e-a70c2dd76938)      |
+
+| Login – Step 1 (Email Input)               | Login – Step 2 (Password Input)            |
+|--------------------------------------------|--------------------------------------------|
+| ![Login Step 1](https://github.com/user-attachments/assets/9c4b77b3-e0ef-48ad-b90e-b0e5c8dea39f) | ![Login Step 2](https://github.com/user-attachments/assets/377ec100-6e11-4bca-89aa-3545843c2bf4) |
 
 ---
 
