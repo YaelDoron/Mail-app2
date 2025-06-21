@@ -30,6 +30,7 @@ MailSnap is a full-featured email web application inspired by Gmail. It offers a
 - Spam detection via C++ Bloom Filter server:
   - When an email is marked as spam, all future emails containing the same links (URLs) will also be flagged automatically  
 - Trash and restore functionality  
+  - Emails moved to Trash will be automatically deleted after 30 days  
 - Dark/Light mode toggle  
 - Responsive UI using React
 
