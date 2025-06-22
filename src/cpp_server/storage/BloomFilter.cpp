@@ -58,7 +58,6 @@ const vector<bool>& BloomFilter::getFilter() const {
     return filter; 
 }
 
-
 const vector<int>& BloomFilter::gethashRep() const {
     return hashRep; 
 }

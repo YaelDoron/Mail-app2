@@ -1,3 +1,4 @@
+/* Login box container */
 .gmail-login-box {
   background: white;
   display: flex;
@@ -11,6 +12,7 @@
   gap: 2rem;
 }
 
+/* Left side with logo and title */
 .gmail-login-left {
   flex: 1;
   display: flex;
@@ -22,6 +24,7 @@
   gap: 0.75rem;
 }
 
+/* Right side with the login form */
 .gmail-login-right {
   flex: 1;
   display: flex;
@@ -31,16 +34,14 @@
   padding-bottom: 1rem;
 }
 
-.gmail-logo {
-  height: 40px;
-}
-
+/* "Sign in" or "Welcome" title */
 .gmail-login-title {
   font-size: 2rem;
   color: #202124;
   font-weight: 500;
 }
 
+/* Email display box after user enters email */
 .gmail-email-display {
   display: flex;
   align-items: center;
@@ -49,20 +50,23 @@
   border: 1px solid #dadce0;
   border-radius: 20px;
   font-size: 0.9rem;
-  background-color: white; /* ✅ רקע לבן – תואם Gmail */
+  background-color: white; 
   color: #202124;
 }
 
+/* Icon next to email */
 .gmail-user-icon {
   font-size: 1.1rem;
 }
 
+/* Subtext instructions */
 .gmail-subtext {
   font-size: 0.875rem;
   color: #5f6368;
   margin: 1rem 0 0.25rem;
 }
 
+/* Input field */
 .gmail-login-input {
   width: 100%;
   padding: 14px 12px;
@@ -74,11 +78,13 @@
   margin-top: 0.75rem;
 }
 
+/* Highlight input on focus */
 .gmail-login-input:focus {
   border: 1px solid #1a73e8;
   box-shadow: 0 0 0 1px #1a73e8;
 }
 
+/* Show password checkbox */
 .gmail-show-password {
   display: flex;
   align-items: center;
@@ -89,10 +95,12 @@
   cursor: pointer;
 }
 
+/* Button container pushes buttons to the bottom */
 .gmail-button-container {
   margin-top: auto;
 }
 
+/* Button row for "Next" and "Create account" */
 .gmail-button-row {
   display: flex;
   justify-content: flex-end;
@@ -101,6 +109,7 @@
   margin-top: 2rem;
 }
 
+/* Main action button */
 .gmail-next-button {
   background-color: #1a73e8;
   color: white;
@@ -116,6 +125,7 @@
   background-color: #185abc;
 }
 
+/* Create account link-style button */
 .gmail-create-account {
   background-color: transparent;
   color: #1a73e8;
@@ -131,13 +141,14 @@
   background-color: rgba(26, 115, 232, 0.08);
 }
 
+/* Error message styling */
 .gmail-login-error {
   color: red;
   font-size: 0.875rem;
   margin-top: 1rem;
 }
 
-/* רספונסיביות */
+/* Responsive layout for smaller screens */
 @media (max-width: 768px) {
   .gmail-login-box {
     flex-direction: row;
@@ -176,4 +187,10 @@
     min-width: 100px;
     white-space: nowrap;
   }
+
+  /* Pink color for "Snap" in logo */
+  .mailsnap-pink {
+  color: #e91e63;
+}
+
 }

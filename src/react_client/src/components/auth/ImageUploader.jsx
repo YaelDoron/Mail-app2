@@ -1,8 +1,10 @@
 import React, { useRef } from "react";
+import "./ImageUploader.css";
 
 const ImageUploader = ({ handleImageUpload, preview, clearImage }) => {
   const fileInputRef = useRef();
 
+  // Handle remove button click: clear preview and reset input
   const onRemoveClick = () => {
     clearImage(); 
     if (fileInputRef.current) {
@@ -12,9 +14,12 @@ const ImageUploader = ({ handleImageUpload, preview, clearImage }) => {
 
   return (
      <div className="image-uploader">
+      {/* Label styled as a custom button to trigger file input */}
       <label htmlFor="file-upload" className="custom-file-upload">  
         Upload Profile Picture
       </label>
+
+      {/* Hidden file input element */}
       <input 
         id="file-upload"
         type="file"
@@ -24,33 +29,18 @@ const ImageUploader = ({ handleImageUpload, preview, clearImage }) => {
         style={{ display: "none" }}
       />      
 
+      {/* Show preview and remove button if an image was selected */}
       {preview && (
         <div className="image-preview-container">
           <img
             src={preview}
             alt="Preview"
             className="image-preview"
-            style={{
-              width: "100px",
-              height: "100px",
-              objectFit: "cover",
-              marginTop: "10px",
-              borderRadius: "50%",
-              border: "1px solid #ccc",
-            }}
           />
           <button
             type="button"
             onClick={onRemoveClick}
-            style={{
-              marginTop: "8px",
-              backgroundColor: "#f44336",
-              color: "white",
-              border: "none",
-              padding: "5px 10px",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
+            className="remove-button"
           >
             Remove
           </button>

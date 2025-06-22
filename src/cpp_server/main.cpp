@@ -10,7 +10,7 @@ using namespace std;
 /**
  * 
  * Expected command-line arguments:
- *   argv[1] - Port number (e.g. 12345)
+ *   argv[1] - Port number
  *   argv[2] - Bloom Filter size
  *   argv[3+] - Hash seeds for the Bloom Filter
  */

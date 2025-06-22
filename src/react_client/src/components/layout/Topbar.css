@@ -1,3 +1,4 @@
+/* Button used for logging out - styled as text with hover/active background changes */
 .logout-button {
   background-color: transparent;
   color: var(--text-color) !important;
@@ -16,12 +17,14 @@
   color: var(--text-color) !important;
 }
 
+/* Top navigation bar styling */
 .topbar {
   background-color: var(--topbar-bg);
   color: var(--text-color);
   border-bottom: 1px solid var(--border-color);
 }
 
+/* Input field for search bar */
 .search-input {
   height: 36px;
   background-color: var(--search-bg);
@@ -30,10 +33,12 @@
   outline: none;
 }
 
+/* Placeholder text style inside the search input */
 .search-input::placeholder {
   color: var(--placeholder-color);
 }
 
+/* Popup shown when profile is clicked */
 .profile-popup {
   background-color: var(--popup-bg);
   color: var(--text-color);
@@ -48,11 +53,13 @@
   color: var(--popup-muted-text);
 }
 
+/* Style for email text inside the profile popup */
 .popup-email {
   color: var(--popup-muted-text);
   font-size: 0.85rem;
 }
 
+/* Camera icon shown on profile picture - for upload/change */
 .camera-icon {
   position: absolute;
   bottom: 0;
@@ -65,6 +72,7 @@
   color: black; 
 }
 
+/* Profile picture button (avatar) in the topbar */
 .profile-button {
   width: 36px;
   height: 36px;
@@ -76,6 +84,7 @@
   transition: background-color 0.2s ease;
 }
 
+/* Container for the dark/light theme toggle switch */
 .theme-switch {
   position: relative;
   display: inline-block;
@@ -129,4 +138,62 @@ input:checked + .slider::before {
   font-size: 14px;
   color: white;
   pointer-events: none;
+}
+
+/* "Mail" part of logo – neutral gray */
+.logo-gray {
+  color: #444444;
+}
+
+/* "Snap" part of logo – accent pink */
+.logo-pink {
+  color: #e91e63;
+}
+
+/* Wrapper for the search input and icons; limits width and positions relative for absolute children */
+.search-container {
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+}
+
+/* Styles the magnifying glass icon inside the search input*/
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.clear-search {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  color: #888;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.profile-popup-box {
+  top: 110%;
+  right: 0;
+  width: 240px;
+  z-index: 1000;
+}
+/* Styling for the user's profile image inside the popup – rounded and fitted */
+.popup-profile-img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+}
+
+/* Position and style of the "X" button to close the profile popup */
+.popup-close {
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 16px;
 }

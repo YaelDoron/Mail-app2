@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getMailById, getDeletedMailById } from "../services/mailsService";
 import MailView from "../components/mail/MailView";
 
-
+// Page for displaying a single mail
 const MailPage = () => {
   const { id } = useParams();
   const [mail, setMail] = useState(null);
@@ -12,13 +12,13 @@ const MailPage = () => {
 
 
 useEffect(() => {
-  console.log("📨 MailPage - id:", id, "viewType:", viewType);
+  // Fetch the mail from server
   const fetchMail = async () => {
     try {
       const data =
       viewType === "trash"
-        ? await getDeletedMailById(id)
-        : await getMailById(id);
+        ? await getDeletedMailById(id) // Fetch from trash
+        : await getMailById(id); // Fetch from inbox/sent
 
       if (data) {
         setMail(data);
@@ -29,13 +29,14 @@ useEffect(() => {
       console.warn("error in Mail retrieval", err);
     }
   };
-
+  // Call fetch function on mount or when id/viewType changes
   fetchMail();
 }, [id,viewType]);
 
   if (!mail) return null;
 
   return (
+      // Render the mail in the view component
       <MailView mail={mail} viewType={viewType}/>
   );
 };

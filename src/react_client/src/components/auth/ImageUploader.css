@@ -1,0 +1,41 @@
+/* Container for the image uploader */
+.image-uploader {
+  margin-bottom: 1rem;
+}
+
+/* Style for the file upload label/button */
+.custom-file-upload {
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Container for the image preview */
+.image-preview-container {
+  margin-top: 10px;
+}
+
+/* Preview image styling */
+.image-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+}
+
+/* Remove button below the image */
+.remove-button {
+  margin-top: 8px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}

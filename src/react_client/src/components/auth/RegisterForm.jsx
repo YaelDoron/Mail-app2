@@ -5,6 +5,7 @@ import RegisterInput from "./RegisterInput";
 import ImageUploader from "./ImageUploader";
 import { useNavigate } from "react-router-dom";
 
+// Registration form component
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -21,17 +22,20 @@ const RegisterForm = () => {
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
 
+  // Handles file selection and sets image preview
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setFormData((prev) => ({ ...prev, image: file }));
     setPreview(file ? URL.createObjectURL(file) : null);
   };
 
+  // Clears the selected image
   const clearImage = () => {
     setFormData((prev) => ({ ...prev, image: null }));
     setPreview(null);
   };
 
+  // Validates a specific field based on type
   const validateField = (field, value) => {
     let error = "";
 
@@ -39,23 +43,26 @@ const RegisterForm = () => {
       error = `${field} is required.`;
     }
 
+    // Validate age (minimum 13 years old)
     if (field === "birthDate") {
         const date = new Date(value);
         const minValidDate = new Date("1905-01-01");
         const maxValidDate = new Date();
-        maxValidDate.setFullYear(maxValidDate.getFullYear() - 13); // מגביל לגיל 13
+        maxValidDate.setFullYear(maxValidDate.getFullYear() - 13); 
 
         if (date < minValidDate || date > maxValidDate) {
         error = "Must be at least 13 years old";
         }
     }
-
+    // Validate email format
     if (field === "email" && !/^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(value)) {
       error = "Email must end with @mailsnap.com";
     }
+    // Validate password length
     if (field === "password" && value.length < 8) {
       error = "Password must be at least 8 characters long.";
     }
+    // Confirm password match
     if (field === "confirmPassword" && value !== formData.password) {
       error = "Passwords do not match.";
     }
@@ -67,15 +74,18 @@ const RegisterForm = () => {
     validateField(field, formData[field]);
   };
 
+  // Called when a field value changes
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     validateField(field, value);
 
+    // Also validate confirmPassword again if password changes
     if (field === "password") {
         validateField("confirmPassword", formData.confirmPassword);
     }
   };
 
+// Handles form submission
 const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -91,6 +101,7 @@ const handleSubmit = async (e) => {
 
   const newErrors = {};
 
+  // Run validation for all fields
   fields.forEach((field) => {
     const value = formData[field];
     let error = "";
@@ -129,6 +140,7 @@ const handleSubmit = async (e) => {
   setErrors(newErrors);
 
   const hasErrors = Object.keys(newErrors).length > 0;
+  // Show alert based on the first error field
   if (hasErrors) {
     const firstErrorField = Object.keys(newErrors)[0];
     let alertMessage = "Missing required fields";
@@ -165,8 +177,9 @@ const handleSubmit = async (e) => {
 
   try {
     const response = await RegisterUser(formData);
-    navigate("/login");
+    navigate("/login"); // Redirect to login after success
   } catch (error) {
+  // Handle errors from server
   const response = error?.response;
   const message = typeof error === "string" ? error : error?.message || "Unknown error";
 
@@ -197,12 +210,14 @@ const handleSubmit = async (e) => {
 }
 };
 
+  // JSX structure of the form
   return (
     <form className="register-form" onSubmit={handleSubmit}>
       <h1>Sign Up</h1>
 
+      {/* First and Last Name */}
       <div className="name-fields">
-        <div style={{ flex: 1 }}>
+        <div className="flex-1">
           <label className="field-label">First Name<span className="required-star">*</span></label>
           <RegisterInput
             type="text"
@@ -217,7 +232,7 @@ const handleSubmit = async (e) => {
           </div>
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div className="flex-1">
           <label className="field-label">Last Name<span className="required-star">*</span></label>
           <RegisterInput
             type="text"
@@ -233,6 +248,7 @@ const handleSubmit = async (e) => {
         </div>
       </div>
 
+     {/* Birthdate and Gender */}
     <div className="birth-gender-fields">
       <div>
         <label className="field-label">Birth Date<span className="required-star">*</span></label>
@@ -270,7 +286,7 @@ const handleSubmit = async (e) => {
     </div>
 
 
-
+      {/* Email Field */}
       <div>
         <label className="field-label">Email<span className="required-star">*</span></label>
         <RegisterInput
@@ -286,9 +302,9 @@ const handleSubmit = async (e) => {
         </div>
       </div>
 
-
+      {/* Password and Confirm Password */}
       <div className="password-fields">
-        <div style={{ flex: 1 }}>
+        <div className="flex-1">
           <label className="field-label">Password<span className="required-star">*</span> <small>(min 8 characters)</small></label>
           <RegisterInput
             type="password"
@@ -303,7 +319,7 @@ const handleSubmit = async (e) => {
           </div>
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div className="flex-1">
           <label className="field-label">Confirm Password<span className="required-star">*</span></label>
           <RegisterInput
             type="password"
@@ -319,12 +335,13 @@ const handleSubmit = async (e) => {
         </div>
       </div>
 
+       {/* Image Upload Section */}
       <ImageUploader
         handleImageUpload={handleImageUpload}
         preview={preview}
         clearImage={clearImage}
       />
-
+      {/* Submit Button */}
       <button type="submit" className="submit-button">Create Account</button>
     </form>
   );

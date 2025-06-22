@@ -1,4 +1,4 @@
-/* עוטף כללי של הלייאאוט */
+/*  General layout wrapper for the app*/
 .mail-layout {
   display: flex;
   flex-direction: column;
@@ -8,17 +8,17 @@
   padding: 0;
 }
 
-/* גוף התצוגה מתחת לטופבר */
+/* Mail body under the topbar*/
 .mail-body {
   display: flex;
   flex: 1;
-  height: calc(100vh - 60px); /* מתחשב בגובה הטופבר */
+  height: calc(100vh - 60px);
   overflow: hidden;
   margin: 0;
   padding: 0;
 }
 
-/* סיידבר */
+/* Sidebar section */
 .mail-sidebar {
   width: 280px;
   background-color: #f8f9fa;
@@ -30,7 +30,7 @@
   padding: 0;
 }
 
-/* תוכן מרכזי (רשימת מיילים, תצוגת מייל וכו') */
+/* Main content area */
 .mail-main {
   flex-grow: 1;
   padding: 0;

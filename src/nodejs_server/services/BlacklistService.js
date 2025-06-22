@@ -1,6 +1,6 @@
-// const HOST = "server";  // IP address of the TCP server (Exercise 2)
+// IP address of the TCP server
 const HOST= "172.28.0.2"
-const net = require('net'); // Node.js core module for TCP sockets
+const net = require('net');
 
 // Sends a command (GET / POST / DELETE) to the TCP server
 const sendToServer = (command, url) => {
@@ -14,7 +14,7 @@ const sendToServer = (command, url) => {
 
     client.on('data', (data) => {
       response += data.toString();
-      client.destroy(); // סוגרים אחרי קבלת תשובה
+      client.destroy(); 
       resolve(response.trim());
     });
 
@@ -36,13 +36,11 @@ const check = async (subject, content) => {
   for (const url of urls) {
     try {
       const res = await sendToServer('GET', url);
-      console.log(">>> Checking URL:", url, "| Server response:", res); //debug
       if (res.includes('true true')) {
         return true;  // URL is blacklisted
       }
     } catch (error) {
       console.error(`>> Error checking URL ${url}:`, error);
-      // Continue checking other URLs even if one fails
     }
   }
   return false;  // No blacklisted URLs found
@@ -58,11 +56,10 @@ const add = async (url) => {
 const remove = async (url) => {
   const decodedUrl = decodeURIComponent(url);
   const result = await sendToServer('DELETE', decodedUrl);
-  console.log(">>> Removed from blacklist:", url, "| Result:", result); //debug
   return result;
 };
 
-// Extracts URLs from a given text (e.g., subject or content)
+// Extracts URLs from a given text
 const extractUrls = (text) => {
   const urlRegex = /https?:\/\/[^\s]+/g;
   const matches = text.match(urlRegex) || [];
@@ -73,7 +70,7 @@ const extractUrls = (text) => {
       return decodeURIComponent(url);
     } catch (e) {
       console.warn("Failed to decode URL:", url, e.message);
-      return url; // // Fallback to original URL if decoding fails
+      return url; // Fallback to original URL if decoding fails
     }
   });
 };

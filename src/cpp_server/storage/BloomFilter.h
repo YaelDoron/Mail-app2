@@ -37,5 +37,5 @@ public:
 
 };
 
-#endif // BLOOMFILTER_H
+#endif
 

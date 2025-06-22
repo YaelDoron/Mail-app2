@@ -29,16 +29,18 @@ void UrlStore::save() const {
     out.close();
 }
 
+// Checks if a given URL exists in the set
 bool UrlStore::contains(const string& url) const {
     return urls.find(url) != urls.end();
 }
 
-
+// Adds a new URL to the set and saves to file
 void UrlStore::add(const string& url) {
     urls.insert(url);
     save();
 }
 
+// Removes a URL from the set and saves to file
 bool UrlStore::remove(const std::string& url) {
     if (urls.erase(url)) { // removes the url if it's in urlstore
         save(); // overwrite the file with updated set

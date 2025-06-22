@@ -2,75 +2,79 @@ const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/mailsController')
 
+// Base routes for mails
 router.route('/')
     .get(controller.getUserMails)
     .post(controller.createMail)
 
+// Search mails by query string
 router.route('/search/:query')
     .get(controller.searchMails)
 
-// ספאם
+// Get all spam mails
 router.route('/spam')
     .get(controller.getSpamMails);
 
-// דואר מסומן בכוכב
+// Toggle starred status for a specific mail
 router.route('/star/:id')
     .patch(controller.toggleStarredStatus);
 
-// שליחת טיוטה
+// Send a draft mail
 router.route('/send/:id')
     .post(controller.sendDraftMail);
 
-// תיוג
+// Assign labels to a specific mail
 router.route('/labels/:id')
     .patch(controller.assignLabelsToMail);
 
-// כל הדואר
+// Get all mails (inbox + sent)
 router.route('/all')
     .get(controller.getAllUserMails);
 
-// דואר שנשלח
+// Get all sent mails
 router.route('/sent')
     .get(controller.getSentMails);
 
-// אשפה
+// Get all mails in the trash
 router.route('/trash')
     .get(controller.getTrashMails);
 
+// Get a specific deleted mail by ID
 router.get('/trash/:id', controller.getDeletedMailById);
 
-
-// כוכב
+// Get all starred mails
 router.route('/star')
     .get(controller.getStarredMails);    
 
-// טיוטות
+// Get all drafts
 router.route('/draft')
     .get(controller.getDraftMails);  
     
-// מיילים של לייבל מסוים    
+// Get mails by label name
 router.route('/labels/:labelName')
     .get(controller.getMailsByLabel);         
 
-// סימון מייל כנקרא
+// Mark a specific mail as read
 router.route('/read/:id')
     .patch(controller.markMailAsRead);
 
-// סימון מייל כספאם
+// Toggle spam status for a specific mail
 router.route('/spam/:id')
     .patch(controller.toggleSpamStatus);
 
+// Get, update (if draft), or delete a specific mail
 router.route('/:id')
     .get(controller.getMailById)
     .patch(controller.updateDraft)
     .delete(controller.deleteMail)    
 
+// Get mails by label ID
 router.post('/by-label', controller.getMailsByLabelById);
 
+// Restore a mail from trash
 router.patch('/restore/:id', controller.restoreMail);
 
-// הוצאת מייל מתווית
+// Remove a label from a mail
 router.patch('/unassign-label/:id', controller.removeLabelFromMail);
-
 
 module.exports = router;

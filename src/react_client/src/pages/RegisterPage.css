@@ -8,6 +8,7 @@
   box-sizing: border-box;
 }
 
+/* Box that holds the registration form */
 .register-box {
   max-width: 600px;
   width: 100%;
@@ -15,27 +16,30 @@
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  margin: 0 auto; /* מרכז את התיבה */
+  margin: 0 auto; 
 }
 
-
+/* Title at the top of the form */
 .register-title {
   text-align: center;
   font-size: 1.8rem;
   margin-bottom: 2rem;
 }
 
+/* Form layout */
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* מרווח בין שדות */
+  gap: 1.5rem; 
 }
 
+/* Styling for input fields inside the form */
 .register-form input {
   padding: 0.75rem;
   font-size: 1rem;
 }
 
+/*  Submit button styling */
 .signup-button {
   padding: 0.75rem;
   font-size: 1rem;
@@ -46,6 +50,7 @@
   cursor: pointer;
 }
 
+/* Hover effect for the signup button */
 .signup-button:hover {
   background-color: #155ab6;
 }

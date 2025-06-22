@@ -7,6 +7,7 @@ import { FiLogOut } from "react-icons/fi";
 import "./Topbar.css";
 import { useTheme } from "./ThemeSwitcher";
 
+// Holds user info, popup visibility, image input reference, and search query
 const Topbar = () => {
   const [user, setUser] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -15,19 +16,20 @@ const Topbar = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
 
+  // Fetch user details when component mounts
   useEffect(() => {
   const fetchUser = async () => {
     try {
       const data = await getUserInfo();
       setUser(data);
     } catch (err) {
-      console.error("שגיאה בשליפת פרטי המשתמש", err);
-      // אפשרות: removeToken(); navigate("/login");
+      console.error("error in getting the user's info", err);
     }
   };
   fetchUser();
 }, []);
 
+  // Called when user selects a new profile picture
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -36,31 +38,25 @@ const Topbar = () => {
       const updatedUser = await updateUserImage(file);
       setUser(updatedUser);
     } catch (err) {
-      console.error("שגיאה בעדכון תמונה:", err);
+      console.error("error in updating image: ", err);
     }
   };
 
   return (
     <div className="topbar d-flex justify-content-between align-items-center px-4 py-2 position-relative w-100">
+      {/* MailSnap logo – split into two colors */}
       <div className="app-logo fw-bold fs-5 text-dark d-flex align-items-center gap-2">
         <span>
-          <span style={{ color: "#444444" }}>Mail</span>
-          <span style={{ color: "#e91e63" }}>Snap</span>
+          <span className="logo-gray">Mail</span>
+          <span className="logo-pink">Snap</span>
+
         </span>
       </div>
 
-      {/* תיבת חיפוש */}
+      {/* Search input with icon on the left and clear (×) button on the right */}
       <div className="flex-grow-1 d-flex justify-content-center px-3">
-        <div style={{ position: "relative", maxWidth: "500px", width: "100%" }}>
-          <FaSearch
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "14px",
-              transform: "translateY(-50%)",
-              color: "#888"
-            }}
-          />
+        <div className="search-container">
+          <FaSearch className="search-icon" />
           <input
             type="text"
             value={searchQuery}
@@ -74,24 +70,15 @@ const Topbar = () => {
             className="form-control rounded-pill ps-5 pe-4 border-0 search-input"
           />
           {searchQuery && (
-            <span
-              onClick={() => setSearchQuery("")}
-              style={{
-                position: "absolute",
-                top: "50%",
-                right: "14px",
-                transform: "translateY(-50%)",
-                color: "#888",
-                cursor: "pointer",
-                fontWeight: "bold",
-                fontSize: "18px"
-              }}
-            >
+            <span className="clear-search"
+              onClick={() => setSearchQuery("")}>
               ×
             </span>
           )}
         </div>
       </div>
+
+      {/* Dark/light theme toggle switch */}
      <label className="theme-switch">
       <input
       type="checkbox"
@@ -100,6 +87,8 @@ const Topbar = () => {
       />
       <span className="slider"></span>
     </label>
+
+      {/* If user is logged in, show their name and profile image */}
       {user && (
         <div className="d-flex align-items-center position-relative">
           <span className="me-2">{user.name}</span>
@@ -114,20 +103,17 @@ const Topbar = () => {
         </div>
       )}
 
+      {/* Profile popup includes email, image with camera icon, greeting, and logout button */}
       {showPopup && user && (
-        <div
-          className="position-absolute profile-popup border rounded shadow p-3"
-          style={{ top: "110%", right: 0, width: "240px", zIndex: 1000 }}
-        >
+        <div className="profile-popup-box position-absolute profile-popup border rounded shadow p-3">
+
           <div className="text-center position-relative">
             <p className="popup-email small mb-2">{user.email}</p>
             <div className="position-relative d-inline-block mb-2">
               <img
                 src={`http://localhost:3000/${typeof user.image === "string" ? user.image.replace(/\\/g, "/") : "uploads/default-pic.svg"}?t=${Date.now()}`}
                 alt="profile"
-                className="rounded-circle"
-                style={{ width: "48px", height: "48px", objectFit: "cover" }}
-              />
+                className="rounded-circle popup-profile-img"/>
               <FaCamera
                 onClick={() => fileInputRef.current.click()}
                 className="camera-icon"
@@ -143,19 +129,13 @@ const Topbar = () => {
             <h6 className="mb-1">Hi, {user?.firstName || "User"}!</h6>
           </div>
           <div
-            className="position-absolute"
-            style={{
-              top: "5px",
-              right: "10px",
-              cursor: "pointer",
-              fontSize: "16px"
-            }}
+            className="position-absolute popup-close"
             onClick={() => setShowPopup(false)}
           >
             ✕
           </div>
-      {/* כפתור התנתקות */}
-          <div className="text-center">
+        {/* Signs user out and navigates to login page */}
+        <div className="text-center">
         <button
           onClick={() => {
           removeToken();

@@ -32,8 +32,8 @@ const BlacklistService = require('../services/BlacklistService');
         if (!from || !Array.isArray(to) || to.length === 0 || !subject || !content) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
-
     try {
+        // Check if content or subject contains blacklisted items
         const isBlocked = await BlacklistService.check(subject, content);
         console.log(">> Checking spam status, isBlocked:", isBlocked);
         const newMail = Mail.createMail(from, to, subject, content, isBlocked, isDraft);
@@ -66,6 +66,7 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(204).end(); 
     };
 
+    // Return all deleted mails for the user
     function getTrashMails(req, res) {
         const userId = req.user.userId;
         const mails = Mail.getTrashMails(userId);
@@ -95,7 +96,7 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(204).end();
     }
 
-        // Assign labels to a mail
+    // Assign labels to a mail
     function assignLabelsToMail(req, res) {
         const userId = req.user.userId;
         const id = parseInt(req.params.id);
@@ -109,6 +110,7 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(updated);
     }
 
+    // Remove a label from a mail
     function removeLabelFromMail(req, res) {
         const userId = req.user.userId;
         const id = parseInt(req.params.id);
@@ -124,7 +126,6 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(updated);
     }
 
-
     // Toggle spam status
     async function toggleSpamStatus(req, res) {
     const userId = req.user.userId;
@@ -135,7 +136,7 @@ const BlacklistService = require('../services/BlacklistService');
         return res.status(403).json({ error: 'Unable to update spam status' });
     }
 
-    const updated = Mail.toggleSpam(id, userId); // 🔄 עדכון קודם
+    const updated = Mail.toggleSpam(id, userId);
 
     const urls = [
         ...BlacklistService.extractUrls(mail.subject),
@@ -143,7 +144,7 @@ const BlacklistService = require('../services/BlacklistService');
     ];
 
     if (updated.isSpam) {
-        // ✚ אם עכשיו זה ספאם – הוסף ל-blacklist
+        // Add URLs to blacklist
         for (const url of urls) {
             try {
                 await BlacklistService.add(url);
@@ -153,7 +154,7 @@ const BlacklistService = require('../services/BlacklistService');
             }
         }
     } else {
-        // ✖️ אם הוסר מספאם – הסר מהרשימה
+        // Remove URLs from blacklist
         for (const url of urls) {
             try {
                 await BlacklistService.remove(url);
@@ -167,9 +168,7 @@ const BlacklistService = require('../services/BlacklistService');
     res.status(200).json(updated);
 }
 
-
-
-        // Send a draft
+    // Send a draft mail
     function sendDraftMail(req, res) {
         const userId = req.user.userId;
         const id = parseInt(req.params.id);
@@ -195,17 +194,19 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(results);
     }
 
+    // Get all mails marked as spam
     function getSpamMails(req, res) {
     const userId = req.user.userId;
     const mails = Mail.getSpamMails(userId);
     res.status(200).json(mails); 
     }
 
+    // Toggle starred status of a mail
     function toggleStarredStatus(req, res) {
         const userId = req.user.userId;
         const id = parseInt(req.params.id);
-
         const updated = Mail.toggleStarred(id, userId);
+
         if (!updated) {
             return res.status(403).json({ error: 'Unable to update starred status' });
         }
@@ -213,30 +214,35 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(updated);
     }
 
+    // Get all mails (sent + received)
     function getAllUserMails(req, res) {
         const userId = req.user.userId;
         const mails = Mail.getAllMails(userId);
         res.status(200).json(mails);
     }
 
+    // Get only sent mails by user
     function getSentMails(req, res) {
         const userId = req.user.userId;
         const mails = Mail.getSentMails(userId);
         res.status(200).json(mails);
     }
 
+    // Get all draft mails
     function getDraftMails(req, res) {
     const userId = req.user.userId;
     const drafts = Mail.getDraftMails(userId);
     res.status(200).json(drafts);
     }
 
+    // Get all starred mails
     function getStarredMails(req, res) {
         const userId = req.user.userId;
         const starred = Mail.getStarredMails(userId);
         res.status(200).json(starred);
     }
 
+    // Get all mails with a given label name
     function getMailsByLabel(req, res) {
         const userId = req.user.userId;
         const labelName = req.params.labelName;
@@ -249,6 +255,7 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(mails);
     }
 
+    // Get all mails with a given label ID
     function getMailsByLabelById(req, res) {
     const userId = req.user.userId;
     const { labelId } = req.body;
@@ -257,10 +264,11 @@ const BlacklistService = require('../services/BlacklistService');
         return res.status(400).json({ error: "Missing labelId" });
     }
 
-    const mails = Mail.getMailsByLabel(userId, labelId); // משתמשים במזהה
+    const mails = Mail.getMailsByLabel(userId, labelId);
     res.status(200).json(mails);
     }
 
+    // Mark mail as read
     function markMailAsRead(req, res) {
         const userId = req.user.userId;
         const id = parseInt(req.params.id);
@@ -272,6 +280,8 @@ const BlacklistService = require('../services/BlacklistService');
 
         res.status(204).end();
     }
+
+    // Retrieve a deleted mail from trash
     function getDeletedMailById(req, res) {
         const id = parseInt(req.params.id);
         const userId = req.user.userId;
@@ -284,6 +294,8 @@ const BlacklistService = require('../services/BlacklistService');
         }
         res.status(200).json(mail);
     }
+
+    // Restore mail from trash
     function restoreMail(req, res) {
         const userId = req.user.userId;
         const id = parseInt(req.params.id);

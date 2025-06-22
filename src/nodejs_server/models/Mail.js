@@ -50,7 +50,7 @@ const createMail = (from, to, subject, content, isSpam = false, isDraft = false)
     // only if not draft send to recipients
     if (!isDraft) {
     for (const recipientId of to) {
-        if (recipientId !== from) { // הימנע מיצירת כפילויות
+        if (recipientId !== from) { 
             mails.push({
                 id: ++idCounter,
                 from,
@@ -124,6 +124,7 @@ const toggleSpam = (id, userId) => {
     return null;
 };
 
+//Updates an existing draft mail for the given user
 const updateDraft = (id, userId, updates) => {
     const mail = getMailById(id);
     if (!mail || mail.owner !== userId || !mail.isDraft || mail.from !== userId || mail.isDeleted) return null;
@@ -171,6 +172,7 @@ const sendDraft = (id, userId) => {
     return draft;
 };
 
+//Retrieves all non-deleted spam mails for the given user, sorted by newest first
 const getSpamMails = (userId) => {
     return mails
         .filter(mail => mail.owner === userId && mail.isSpam && !mail.isDeleted)
@@ -254,6 +256,7 @@ const getStarredMails = (userId) => {
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 };
 
+//Retrieves all non-deleted, non-draft, non-spam mails for a given user that are assigned a specific label
 const getMailsByLabel = (userId, labelId) => {
     return mails
         .filter(mail =>
@@ -266,19 +269,22 @@ const getMailsByLabel = (userId, labelId) => {
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 };
 
+// Marks a mail as read, for non-draft, non-deleted mails owned by the user
 const markAsRead = (id, userId) => {
     const mail = getMailById(id);
     if (
         mail &&
-        mail.owner === userId &&     // שייך למשתמש
-        !mail.isDraft &&             // לא טיוטה
-        !mail.isDeleted              // לא נמחק
+        mail.owner === userId && 
+        !mail.isDraft &&
+        !mail.isDeleted
     ) {
         mail.isRead = true;
         return mail;
     }
     return null;
 };
+
+// Restores a mail from the trash for the given user
 const restoreFromTrash = (id, userId) => {
   const mail = getMailById(id);
   if (mail && mail.owner === userId && mail.isDeleted) {

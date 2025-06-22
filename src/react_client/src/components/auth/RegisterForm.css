@@ -1,3 +1,4 @@
+/* Container for the registration form */
 .register-box {
   width: 400px;
   padding: 15px 25px;
@@ -7,10 +8,12 @@
 }
 
 .register-form {
+  /* Centers the form and limits its maximum width */
   max-width: 600px;
   margin: 0 auto;
 }
 
+/* Title at the top of the form */
 .form-title {
   font-size: 1rem;
   font-weight: bold;
@@ -18,6 +21,7 @@
   margin-bottom: 0.1rem;
 }
 
+/* Grouping for related form fields */
 .name-fields, .password-fields, .birth-gender-fields, .email-field {
   display: flex;
   gap: 0.8rem;
@@ -29,6 +33,7 @@
   min-width: 110px;
 }
 
+/* Styling for all labels */
 .register-form label {
   margin-bottom: 0.04rem;
   display: inline-block;
@@ -41,12 +46,13 @@
   height: 40px;
 }
 
-
+/* Ensures space is reserved for error messages */
 .error-wrapper {
   margin-top: 1px;
   min-height: 14px;
 }
 
+/* Styling for error messages */
 .error-message {
   color: red;
   font-size: 0.65rem;
@@ -54,11 +60,13 @@
   margin-bottom: 0.1rem;
 }
 
+/* Red asterisk indicating required fields */
 .required-star {
   color: red;
   margin-left: 4px;
 }
 
+/* Styling for the form submission button */
 .submit-button {
   background-color: #1a73e8;
   color: white;
@@ -73,6 +81,7 @@
   margin-bottom: 0.1rem;
 }
 
+/* Custom styled label to trigger file input */
 .custom-file-upload {
   display: inline-block;
   padding: 0.45rem 0.9rem;
@@ -93,4 +102,8 @@
 
 .custom-file-upload:hover {
   background-color: #e0e0e0;
+}
+
+.flex-1 {
+  flex: 1;
 }

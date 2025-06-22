@@ -16,11 +16,11 @@ const blacklistRoutes = require('./routes/blacklistRoutes');
 const tokensRoutes = require('./routes/tokensRoutes');
 const path = require("path");
 
-// Public routes (לא דורשים התחברות)
+// Public routes, don't require authantication
 app.use('/api/users', usersRoutes);
 app.use('/api/tokens', tokensRoutes);
 
-// Protected routes (דורשים התחברות)
+// Protected routes, require authantication
 app.use('/api/labels', authMiddleware, labelsRoutes);
 app.use('/api/mails', authMiddleware, mailsRoutes);
 app.use('/api/blacklist', authMiddleware, blacklistRoutes);

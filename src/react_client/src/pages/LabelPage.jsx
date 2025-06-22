@@ -4,19 +4,22 @@ import MailList from "../components/mail/MailList";
 import { getMailsByLabel } from "../services/mailsService";
 import { getLabelById } from "../services/mailsService";
 
+// Page to display mails that belong to a specific label
 const LabelPage = ({ refreshTrigger, triggerRefresh }) => {
-// We will get the label name from the URL
+  // Get labelId from the route parameters (URL)
   const { labelId } = useParams();
   const [mails, setMails] = useState([]);
   const [labelName, setLabelName] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Fetch both the mails and the label's name
     const fetchMailsAndLabel  = async () => {
       try {
+        // Get mails that have the current label
         const data = await getMailsByLabel(parseInt(labelId));
-        const sorted = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // ✅ NEW – מיון כמו בטראש
-        setMails(sorted); // ✅ MODIFIED – במקום setMails(data)
+        const sorted = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        setMails(sorted);
         const labelData = await getLabelById(parseInt(labelId));
         setLabelName(labelData.name);
       } catch (err) {
@@ -27,15 +30,14 @@ const LabelPage = ({ refreshTrigger, triggerRefresh }) => {
         setLoading(false);
       }
     };
-
     fetchMailsAndLabel();
   }, [labelId, refreshTrigger]);
-
 
   if (loading) return null;
 
   return (
     <div className="container p-3">
+      {/* Display list of mails for the selected label */}
       <MailList mails={mails} viewType="label" selectedLabelId={parseInt(labelId)}  onRefresh={triggerRefresh} />
 
     </div>

@@ -23,6 +23,7 @@ export const RegisterUser = async (userData) => {
   }
 };
 
+// Log in and receive a token
 export const loginUser = async (credentials) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/tokens`, credentials, {
@@ -36,6 +37,7 @@ export const loginUser = async (credentials) => {
   }
 };
 
+// Update user's profile picture
 export const updateUserImage = async (file) => {
   try {
     const formData = new FormData();
@@ -53,6 +55,7 @@ export const updateUserImage = async (file) => {
   }
 };
 
+// Get current logged-in user info by ID
 export const getUserInfo = async () => {
   try {
     const userId = getUserIdFromToken(); 
@@ -82,11 +85,12 @@ export const createMail = async (mailData, token) => {
   }
 };
 
+// Mark a mail as read
 export const markMailAsRead = async (mailId) => {
   try {
     await axios.patch(
       `${API_BASE_URL}/mails/read/${mailId}`,
-      {}, // אין צורך ב-body
+      {},
       {
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -98,6 +102,7 @@ export const markMailAsRead = async (mailId) => {
   }
 };
 
+// Toggle the starred status of a mail
 export const toggleStarred = async (mailId) => {
   try {
     const res = await axios.patch(
@@ -115,6 +120,7 @@ export const toggleStarred = async (mailId) => {
   }
 };
 
+// Get user details by ID
 export const getUserById = async (id) => {
   try {
     const res = await axios.get(`${API_BASE_URL}/users/${id}`, {
@@ -128,6 +134,7 @@ export const getUserById = async (id) => {
   }
 };
 
+// Move mail to trash
 export const deleteMail = async (mailId) => {
   try {
     await axios.delete(`${API_BASE_URL}/mails/${mailId}`, {
@@ -140,6 +147,7 @@ export const deleteMail = async (mailId) => {
   }
 };
 
+// Toggle spam status of a mail
 export const toggleSpam = async (mailId) => {
   try {
     const response = await axios.patch(`${API_BASE_URL}/mails/spam/${mailId}`, {}, {
@@ -153,11 +161,12 @@ export const toggleSpam = async (mailId) => {
   }
 };
 
+// Assign one or more labels to a mail
 export const assignLabelsToMail = async (mailId, labelIds) => {
   try {
     const response = await axios.patch(
       `${API_BASE_URL}/mails/labels/${mailId}`,
-      { labels: labelIds }, // מערך של תוויות
+      { labels: labelIds },
       {
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -170,6 +179,7 @@ export const assignLabelsToMail = async (mailId, labelIds) => {
   }
 };
 
+// Get all labels for the logged-in user
 export const fetchLabels = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/labels`, {
@@ -184,6 +194,7 @@ export const fetchLabels = async () => {
   }
 };
 
+// Get user ID based on email address
 export const getUserIdByEmail = async (email, token) => {
   const res = await axios.get(`${API_BASE_URL}/users/by-email/${email}`, {
     headers: { Authorization: `Bearer ${getToken()}` 
@@ -192,7 +203,7 @@ export const getUserIdByEmail = async (email, token) => {
   return res.data.id;
 };
 
-// עדכון טיוטה
+// Update a draft mail
 export const updateDraft = async (id, updates) => {
   await axios.patch(`${API_BASE_URL}/mails/${id}`, updates, {
     headers: {
@@ -201,7 +212,7 @@ export const updateDraft = async (id, updates) => {
   });
 };
 
-// שליחת טיוטה
+// Send a draft mail
 export const sendDraft = async (id) => {
   await axios.post(`${API_BASE_URL}/mails/send/${id}`, {}, {
     headers: {
@@ -210,6 +221,7 @@ export const sendDraft = async (id) => {
   });
 };
 
+// Remove a specific label from a mail
 export const unassignLabelFromMail = async (mailId, labelId) => {
   try {
     const response = await axios.patch(

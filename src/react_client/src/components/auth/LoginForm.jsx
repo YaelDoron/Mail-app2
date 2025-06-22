@@ -14,6 +14,7 @@ function LoginForm() {
   const navigate = useNavigate();
   const { setTheme } = useTheme();
 
+   // Validates email format and moves to password step
   const handleNext = () => {
     if (!/^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(email)) {
       setError("Please enter a valid email address.");
@@ -23,6 +24,7 @@ function LoginForm() {
     setStep("password");
   };
 
+  // Handles login form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -32,8 +34,8 @@ function LoginForm() {
       removeToken();
       saveToken(data.token);
       localStorage.setItem("theme", "light");
-      setTheme("light"); 
-      navigate("/inbox");
+      setTheme("light"); // Apply theme immediately
+      navigate("/inbox"); // Navigate to inbox after login
     } catch (err) {
       setError(err.error || "Login failed. Please try again.");
     }
@@ -41,17 +43,19 @@ function LoginForm() {
 
   return (
     <div className="gmail-login-box">
+      {/* Left panel with logo and greeting */}
       <div className="gmail-login-left">
         <div className="app-logo fw-bold fs-5 text-dark d-flex align-items-center gap-2">
           <i className="fw-bold fs-5 text-dark"></i>
           <span>
-            Mail<span style={{ color: "#e91e63" }}>Snap</span>
+            Mail<span className="mailsnap-pink">Snap</span>
           </span>
         </div>
         <h2 className="gmail-login-title">
           {step === "email" ? "Sign in" : "Welcome"}
         </h2>
 
+        {/* Show email after it has been entered */}
         {step === "password" && (
           <div className="gmail-email-display">
             <i className="bi bi-person-circle gmail-user-icon"></i>
@@ -60,10 +64,12 @@ function LoginForm() {
         )}
       </div>
 
+      {/* Right panel with form */}
       <form
         className="gmail-login-right"
         onSubmit={step === "password" ? handleSubmit : (e) => e.preventDefault()}
       >
+        {/* Email input */}
         {step === "email" && (
           <>
             <input
@@ -96,6 +102,7 @@ function LoginForm() {
           </>
         )}
 
+        {/* Password input */}
         {step === "password" && (
           <>
             <p className="gmail-subtext">To continue, first verify it’s you</p>

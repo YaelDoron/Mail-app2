@@ -33,6 +33,8 @@ const validateBirthDate=(birthDate)=> {
   
   return null; // valid
 }
+
+//Finds a user by their unique ID
 function findUserById(id) {
   return User.getUserById(id);
 }

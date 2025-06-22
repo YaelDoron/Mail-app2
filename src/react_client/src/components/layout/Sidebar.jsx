@@ -26,6 +26,7 @@ const Sidebar = ({ onComposeClick }) => {
         getLabels();
     }, []);
 
+    // Refresh labels whenever a "label-created" event is triggered globally
     useEffect(() => {
         const handleLabelCreated = async () => {
             const data = await fetchLabels();
@@ -35,13 +36,14 @@ const Sidebar = ({ onComposeClick }) => {
         window.addEventListener("label-created", handleLabelCreated);
         return () => window.removeEventListener("label-created", handleLabelCreated);
     }, []);
-
+  
+    // Helper function to determine if a link is active
     const isActive = (path) => location.pathname === path;
 
     return (
-    <div className="sidebar d-flex flex-column p-3" style={{ width: "280px", height: "100vh" }}>
+    <div className="sidebar d-flex flex-column p-3 full-height">
         {/* compose button*/}
-        <div style={{ width: "75%", minWidth: "200px" }}>
+        <div className="compose-button-container">
             <button
                 className="btn text-dark bg-primary-subtle mb-3 w-100 rounded-4 py-2 text-start fw-bold shadow-sm"
                 onClick={onComposeClick}
@@ -91,8 +93,7 @@ const Sidebar = ({ onComposeClick }) => {
             {/* Shortcut to open label creation modal */}
             <li>
                 <span
-                    className="nav-link d-flex justify-content-between align-items-center"
-                    style={{ cursor: "pointer" }}
+                    className="nav-link d-flex justify-content-between align-items-center pointer"
                     onClick={() => setShowModal(true)}
                 >
                     New label
@@ -105,8 +106,7 @@ const Sidebar = ({ onComposeClick }) => {
                 <div className="d-flex align-items-center justify-content-between px-3 mt-2 mb-1">
                     <span className="label-title fw-bold">Labels</span>
                     <i
-                        className="bi bi-plus-circle"
-                        style={{ cursor: "pointer" }}
+                        className="bi bi-plus-circle pointer"
                         onClick={() => setShowModal(true)}
                     ></i>
                 </div>

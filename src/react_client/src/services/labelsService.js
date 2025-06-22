@@ -14,6 +14,7 @@ export const fetchLabels = async () => {
   });
   return response.data;
 };
+
 //Adds a new label to the server, makes a POST request to the /api/labels endpoint with a label object
 export const addLabel = async (label) => {
   const response = await axios.post(`${API_BASE_URL}/labels`, label,
