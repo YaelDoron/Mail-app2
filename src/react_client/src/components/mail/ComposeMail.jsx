@@ -31,6 +31,8 @@ const ComposeMail = ({ onClose, onMailSent, draft = null }) => { // ✅ הוספ
     }
   }, [draft]);
 
+  const isValidMailsnapEmail = (email) => /^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(email); // ✅ NEW
+
   const resetForm = () => {
     setRecipients([]);
     setSubject("");
@@ -41,6 +43,11 @@ const handleSend = async () => {
   if (!userId || !token) return;
   if (recipients.length === 0) {
     alert("Please fill recipients before sending.");
+    return;
+  }
+  const invalidRecipients = recipients.filter(email => !isValidMailsnapEmail(email)); // ✅ NEW
+  if (invalidRecipients.length > 0) {
+    alert(`Invalid recipient address: ${invalidRecipients.join(", ")}`); // ✅ NEW
     return;
   }
   try {

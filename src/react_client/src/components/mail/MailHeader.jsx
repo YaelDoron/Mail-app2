@@ -30,12 +30,12 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
   const navigate = useNavigate();
   const formattedDate = new Date(mail.timestamp).toLocaleString();
   // Build sender image URL
-  const baseUrl = process.env.REACT_APP_API_BASE_URL?.replace("/api", "") || "";
+  const baseUrl = "http://localhost:3000"; // או מה שאת משתמשת בו בפועל
   const imageUrl = sender?.image
-    ? sender.image.startsWith("http")
-      ? sender.image
-      : `${baseUrl}/${sender.image}`
-    : null;
+  ? sender.image.startsWith("http")
+    ? sender.image
+    : `${baseUrl}/${sender.image}`
+  : null;
   const currentUserId = mail.owner;
   const toLine = getToLine(mail, currentUserId, Array.isArray(recipients) ? recipients : []);
 

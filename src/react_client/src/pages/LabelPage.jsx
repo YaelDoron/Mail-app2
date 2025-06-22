@@ -4,18 +4,19 @@ import MailList from "../components/mail/MailList";
 import { getMailsByLabel } from "../services/mailsService";
 import { getLabelById } from "../services/mailsService";
 
-const LabelPage = ({ refreshTrigger }) => {
+const LabelPage = ({ refreshTrigger, triggerRefresh }) => {
 // We will get the label name from the URL
   const { labelId } = useParams();
   const [mails, setMails] = useState([]);
-  const [, setLabelName] = useState("");
+  const [labelName, setLabelName] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMailsAndLabel  = async () => {
       try {
         const data = await getMailsByLabel(parseInt(labelId));
-        setMails(data);
+        const sorted = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // ✅ NEW – מיון כמו בטראש
+        setMails(sorted); // ✅ MODIFIED – במקום setMails(data)
         const labelData = await getLabelById(parseInt(labelId));
         setLabelName(labelData.name);
       } catch (err) {
@@ -35,7 +36,7 @@ const LabelPage = ({ refreshTrigger }) => {
 
   return (
     <div className="container p-3">
-      <MailList mails={mails} viewType="label" selectedLabelId={parseInt(labelId)} />
+      <MailList mails={mails} viewType="label" selectedLabelId={parseInt(labelId)}  onRefresh={triggerRefresh} />
 
     </div>
   );

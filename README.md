@@ -9,9 +9,9 @@ MailSnap is a full-featured email web application inspired by Gmail. It offers a
     <td align="center"><strong>Compose</strong></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/633454d3-30c6-4a45-ba63-47a8ae54ff18" width="250"/></td>
-    <td><img src="https://github.com/user-attachments/assets/870a2945-ea03-4a0d-b43a-cfab07594b19" width="250"/></td>
-    <td><img src="https://github.com/user-attachments/assets/f68e8497-f788-40f9-a57f-32130bc31497" width="250"/></td>
+    <td><img src="https://github.com/user-attachments/assets/5c2e7fe6-9cbb-4814-b3eb-62fcaea45ab2" width="250"/></td>
+    <td><img src="https://github.com/user-attachments/assets/a5125a47-9f2e-4057-880a-5473a80316cf" width="250"/></td>
+    <td><img src="https://github.com/user-attachments/assets/931b261f-c226-4907-9885-9cf96e608c89" width="250"/></td>
   </tr>
 </table>
 
@@ -44,30 +44,32 @@ Users can sign up and log in securely using JWTs. Registration includes uploadin
 ### Sign Up Form Requirements:
 - All fields are required, except for the image upload, which is optional.
 
-- Users must be at least 13 years old to register (based on their birth date).
+- Users must be at least 13 years old to register.
 
 - The form includes validation for:
 
      * First name & last name
 
-     * Birth date (min. year 1905, max. age under 13 not allowed)
+     * Birth date
 
      * Gender
 
-     * Email must be in valid format (e.g., user@gmail.com)
+     * Email must be in the format: username@mailspam.com
 
      * Password & password confirmation
+
+> **Note:** Only users with an email ending in @mailspam.com can be created, send, or receive emails in > the system.
 
 ### Login flow
 
 
 | Sign Up                                    |
 |--------------------------------------------|
-| ![Register](https://github.com/user-attachments/assets/ac31b692-8b09-4cac-868e-a70c2dd76938)      |
+| ![Register](https://github.com/user-attachments/assets/84a2c4dc-6dfc-44d1-8950-302c60d5a3c1)      |
 
 | Login – Step 1 (Email Input)               | Login – Step 2 (Password Input)            |
 |--------------------------------------------|--------------------------------------------|
-| ![Login Step 1](https://github.com/user-attachments/assets/9c4b77b3-e0ef-48ad-b90e-b0e5c8dea39f) | ![Login Step 2](https://github.com/user-attachments/assets/377ec100-6e11-4bca-89aa-3545843c2bf4) |
+| ![Login Step 1](https://github.com/user-attachments/assets/6725c1f8-b681-430d-90bd-95bdd1da440a) | ![Login Step 2](https://github.com/user-attachments/assets/8c3528ad-2ace-4fc2-ab37-963a5027348d) |
 
 ---
 
@@ -78,7 +80,7 @@ MailSnap includes a Dark/Light mode toggle, conveniently located at the top righ
 
 |   Light Mode |   Dark Mode |
 |--------------|-------------|
-| ![Light Mode](https://github.com/user-attachments/assets/825b3e97-6371-4dae-8285-ffc5d67ce37d) | ![Dark Mode](https://github.com/user-attachments/assets/3b0b9a0b-061a-4bf1-8434-3f5ec2f49179) |
+| ![Light Mode](https://github.com/user-attachments/assets/f67b7147-d078-4acc-8b81-0438aede0e57) | ![Dark Mode](https://github.com/user-attachments/assets/3421d931-24dd-48d8-9fd7-0392e4e13c8e) |
 
 ---
 
@@ -126,13 +128,20 @@ docker-compose down --remove-orphans
 
 ### Sample Users
 
-| Email                  | Password  |
-|------------------------|-----------|
-| demo1@example.com      | 12345678  |
-| demo2@example.com      | 12345678  |
+| Email                   | Password  |
+|------------------------ |-----------|
+| demo1@mailspam.com      | 12345678  |
+| demo2@mailspam.com      | 12345678  |
 
-> **Note:** In the screenshots, we used gmail.com addresses as examples,   
-> but any valid email provider (e.g., Outlook, Yahoo, etc.) would work just as well.
+
+### Working with Multiple Users
+
+To test the app with two users at the same time, open it in a regular browser window for one user, and in an Incognito (private) window for the second user.
+
+### Meeting Documentation
+
+You can find the full meeting documentation here:  
+[MailSnap – Team Meeting Notes](https://docs.google.com/document/d/1BDuAVKaDWLGJCRLLpi7os2Mg3411-seBCfxYCQfKHOo/edit?usp=sharing)
 
 
 

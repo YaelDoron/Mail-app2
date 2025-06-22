@@ -15,7 +15,7 @@ function LoginForm() {
   const { setTheme } = useTheme();
 
   const handleNext = () => {
-    if (!email.includes("@")) {
+    if (!/^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
