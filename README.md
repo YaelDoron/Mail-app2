@@ -58,7 +58,7 @@ Users can sign up and log in securely using JWTs. Registration includes uploadin
 
      * Password & password confirmation
 
-> **Note:** Only users with an email ending in @mailspam.com can be created, send, or receive emails in > the system.
+> **Note:** Only users with an email ending in @mailspam.com can be created, send, or receive emails in the system.
 
 ### Login flow
 
