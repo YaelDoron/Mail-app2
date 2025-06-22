@@ -187,9 +187,11 @@
     min-width: 100px;
     white-space: nowrap;
   }
-
-  /* Pink color for "Snap" in logo */
-  .mailsnap-pink {
+.logo-gray {
+  color: #444444;
+}
+/* Pink color for "Snap" in logo */
+.logo-pink {
   color: #e91e63;
 }
 

@@ -48,7 +48,8 @@ function LoginForm() {
         <div className="app-logo fw-bold fs-5 text-dark d-flex align-items-center gap-2">
           <i className="fw-bold fs-5 text-dark"></i>
           <span>
-            Mail<span className="mailsnap-pink">Snap</span>
+            <span className="logo-gray">Mail</span>
+            <span className="logo-pink">Snap</span>
           </span>
         </div>
         <h2 className="gmail-login-title">
