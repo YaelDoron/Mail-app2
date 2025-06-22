@@ -25,6 +25,8 @@ services:
     networks:
       appnet:
         ipv4_address: 172.28.0.3
+    volumes:
+      - ./src/nodejs_server/uploads:/app/uploads
 
   react-client:
     build:

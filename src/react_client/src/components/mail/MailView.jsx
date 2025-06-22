@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate  } from "react-router-dom";
+import { useNavigate , useSearchParams } from "react-router-dom";
 import MailHeader from "./MailHeader";
 import MailBody from "./MailBody";
-import { toggleStarred, toggleSpam, deleteMail, assignLabelsToMail,getUserById } from "../../services/api";
+import { toggleStarred, toggleSpam, deleteMail, assignLabelsToMail,getUserById, unassignLabelFromMail } from "../../services/api";
 import { getUserIdFromToken } from "../../services/authService";
 import {fetchLabels } from "../../services/labelsService";
 import LabelSelectorModal from "../mail/LabelSelectorModal";
 import { restoreMail } from "../../services/mailsService"; 
+import "./MailView.css";
 
 
 const MailView = ({ mail: initialMail, viewType }) => {
@@ -17,7 +18,7 @@ const MailView = ({ mail: initialMail, viewType }) => {
   const [, setLabels] = useState([]);
   const [recipients, setRecipients] = useState([]);
   const navigate = useNavigate();
-  
+
   // Load sender and receiver (if sent) once mail is loaded
   useEffect(() => {
     if (!mail) return;
@@ -111,9 +112,7 @@ const MailView = ({ mail: initialMail, viewType }) => {
 
   return (
     <div className="mail-view-wrapper">
-      <div className="mail-view-container"
-           style={{ maxWidth: "1000px", margin: "0 auto", minHeight: "calc(100vh - 40px)" }}>
-
+      <div className="mail-view-container">
          {/* Mail header section with all mail actions */}
           <MailHeader
             mail={mail}
