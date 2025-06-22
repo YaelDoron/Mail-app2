@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./RegisterForm.css";
 import { RegisterUser } from "../../services/api";
 import RegisterInput from "./RegisterInput";
 import ImageUploader from "./ImageUploader";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../layout/ThemeSwitcher";
 
 // Registration form component
 const RegisterForm = () => {
@@ -21,6 +22,13 @@ const RegisterForm = () => {
   const [errors, setErrors] = useState({});
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
+  const { setTheme } = useTheme();
+  
+  // Force light theme on initial load (ignore previous user preferences)
+useEffect(() => {
+  setTheme("light");
+  localStorage.setItem("theme", "light");
+}, []);
 
   // Handles file selection and sets image preview
   const handleImageUpload = (e) => {
