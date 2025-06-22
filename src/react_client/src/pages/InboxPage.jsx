@@ -9,13 +9,21 @@ const InboxPage = ({ refreshTrigger, triggerRefresh }) => { // ✅ גם את ז�
     const fetchInbox = async () => {
       try {
         const data = await getInboxMails();
-        setMails(data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+        const sorted = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        // ✅ NEW – avoid unnecessary render if no change
+        if (JSON.stringify(sorted) !== JSON.stringify(mails)) {
+          setMails(sorted);
+        }
+
       } catch (err) {
         console.error("Failed to load inbox mails:", err);
       }
     };
     fetchInbox();
-  }, [refreshTrigger]); // ✅ useEffect תלוי ברענון
+    const interval = setInterval(fetchInbox, 5000); // ✅ NEW – auto-refresh every 5 sec
+    return () => clearInterval(interval); // ✅ NEW – cleanup
+  }, [refreshTrigger, mails]); // ✅ useEffect תלוי ברענון
 
   return (
     <div className="container p-3">

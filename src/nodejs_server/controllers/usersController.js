@@ -36,7 +36,7 @@ function createUser(req, res) {
 });
 
   //the json returns the new user's id
-const SECRET = process.env.JWT_SECRET || "your-secret-key";
+const SECRET = "your-secret-key";
 const token = jwt.sign({ userId: newUser.id }, SECRET, { expiresIn: "2h" });
 
 res.status(201).json({ id: newUser.id, token });

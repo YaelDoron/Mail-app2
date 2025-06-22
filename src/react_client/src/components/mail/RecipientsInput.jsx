@@ -21,10 +21,12 @@ const RecipientsInput = ({ recipients, setRecipients }) => {
       e.preventDefault();
 
       const newEmail = inputValue.trim();
-      const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
+      const isValidEmail = /^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(newEmail);
 
       if (!isValidEmail) {
         setError(true);
+        alert("Invalid email address. Only @mailsnap.com is allowed."); // ✅ NEW – הודעת שגיאה
+        setInputValue("");                       // ✅ NEW – ניקוי שדה הקלט
         return;
       }
 
@@ -101,7 +103,7 @@ const RecipientsInput = ({ recipients, setRecipients }) => {
   setIsFocused(false);
 
   const trimmed = inputValue.trim();
-  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+  const isValidEmail = /^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(trimmed);
 
   if (trimmed && isValidEmail && !recipients.includes(trimmed)) {
     setRecipients([...recipients, trimmed]);
@@ -109,6 +111,7 @@ const RecipientsInput = ({ recipients, setRecipients }) => {
     setError(false);
   } else if (trimmed && !isValidEmail) {
     setError(true);
+    alert("Invalid email address. Only @mailsnap.com is allowed."); // ✅ NEW
   }
 }}
 

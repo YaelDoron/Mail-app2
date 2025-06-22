@@ -50,8 +50,8 @@ const RegisterForm = () => {
         }
     }
 
-    if (field === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      error = "Please enter a valid email address.";
+    if (field === "email" && !/^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(value)) {
+      error = "Email must end with @mailsnap.com";
     }
     if (field === "password" && value.length < 8) {
       error = "Password must be at least 8 characters long.";
@@ -109,8 +109,8 @@ const handleSubmit = async (e) => {
       }
     }
 
-    if (field === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      error = "Please enter a valid email address.";
+    if (field === "email" && !/^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(value)) {
+      error = "Email must end with @mailsnap.com";
     }
 
     if (field === "password" && value.length < 8) {

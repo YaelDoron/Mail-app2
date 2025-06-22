@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const UserService = require('../services/UserService');
 
 // Secret key used to sign JWT tokens
-const SECRET = process.env.JWT_SECRET || "your-secret-key";
+const SECRET = "your-secret-key";
 
 /**
  * Handles user login.
