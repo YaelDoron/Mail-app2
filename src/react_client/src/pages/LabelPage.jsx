@@ -9,7 +9,7 @@ const LabelPage = ({ refreshTrigger, triggerRefresh }) => {
   // Get labelId from the route parameters (URL)
   const { labelId } = useParams();
   const [mails, setMails] = useState([]);
-  const [labelName, setLabelName] = useState("");
+  const [, setLabelName] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
