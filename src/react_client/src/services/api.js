@@ -33,7 +33,10 @@ export const loginUser = async (credentials) => {
     });
     return response.data; // => { token: "..." }
   } catch (error) {
-    throw error.response?.data || error.message;
+    throw {
+    error: error.response?.data?.error || error.message,
+    status: error.response?.status
+  };
   }
 };
 
@@ -239,3 +242,12 @@ export const unassignLabelFromMail = async (mailId, labelId) => {
   }
 };
 
+export const checkEmailExists = async (email) => {
+  try {
+    await axios.get(`${API_BASE_URL}/users/by-email/${email}`);
+    return true; // נמצא
+  } catch (error) {
+    if (error.response?.status === 404) return false; // לא נמצא
+    throw error;
+  }
+};

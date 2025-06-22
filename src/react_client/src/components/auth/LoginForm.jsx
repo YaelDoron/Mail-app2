@@ -15,29 +15,43 @@ function LoginForm() {
   const { setTheme } = useTheme();
 
    // Validates email format and moves to password step
-  const handleNext = () => {
-    if (!/^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(email)) {
-      setError("Please enter a valid email address.");
-      return;
+  const handleNext = async () => {
+      if (!/^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(email)) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+       try {
+      const exists = await checkEmailExists(email);
+      if (!exists) {
+        setError("Couldn't find your MailSpam Account");
+        return;
+      }
+  
+      setError("");
+      setStep("password");
+    } catch (err) {
+      setError("Unable to verify email. Please try again.");
     }
-    setError("");
-    setStep("password");
-  };
+    };
 
   // Handles login form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    try {
-      const data = await loginUser({ email, password });
-      removeToken();
-      saveToken(data.token);
-      localStorage.setItem("theme", "light");
-      setTheme("light"); // Apply theme immediately
-      navigate("/inbox"); // Navigate to inbox after login
-    } catch (err) {
-      setError(err.error || "Login failed. Please try again.");
+      e.preventDefault();
+      setError("");
+  
+      try {
+        const data = await loginUser({ email, password });
+        removeToken();
+        saveToken(data.token);
+        localStorage.setItem("theme", "light");
+        setTheme("light"); 
+        navigate("/inbox");
+      } catch (err) {
+         if (err.status === 401) {
+        setError("Incorrect password.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
     }
   };
 
