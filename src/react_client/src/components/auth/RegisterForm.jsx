@@ -58,8 +58,11 @@ useEffect(() => {
         const maxValidDate = new Date();
         maxValidDate.setFullYear(maxValidDate.getFullYear() - 13); 
 
-        if (date < minValidDate || date > maxValidDate) {
+        if (date > maxValidDate) {
         error = "Must be at least 13 years old";
+        }
+        else if(date < minValidDate){
+        error = "Birth year must be between 1905 and today";
         }
     }
     // Validate email format
@@ -97,7 +100,7 @@ useEffect(() => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  const fields = [
+  const requiredFields = [
     "firstName",
     "lastName",
     "birthDate",
@@ -110,90 +113,55 @@ const handleSubmit = async (e) => {
   const newErrors = {};
 
   // Run validation for all fields
-  fields.forEach((field) => {
-    const value = formData[field];
-    let error = "";
-
-    if ((field === "firstName" || field === "lastName" || field === "gender" || field === "birthDate") && !value?.trim()) {
-      error = `${field} is required.`;
-    }
-
-    if (field === "birthDate") {
-      const date = new Date(value);
-      const minValidDate = new Date("1905-01-01");
-      const maxValidDate = new Date();
-      maxValidDate.setFullYear(maxValidDate.getFullYear() - 13);
-      if (date < minValidDate || date > maxValidDate) {
-        error = "Must be at least 13 years old";
-      }
-    }
-
-    if (field === "email" && !/^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(value)) {
-      error = "Email must end with @mailsnap.com";
-    }
-
-    if (field === "password" && value.length < 8) {
-      error = "Password must be at least 8 characters long.";
-    }
-
-    if (field === "confirmPassword" && value !== formData.password) {
-      error = "Passwords do not match.";
-    }
-
-    if (error) {
-      newErrors[field] = error;
+  requiredFields.forEach((field) => {
+    const value = formData[field]?.trim();
+    if (!value) {
+      newErrors[field] = `${field} is required.`;
     }
   });
 
+  if (formData.email && !/^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(formData.email)) {
+    newErrors.email = "Email must end with @mailsnap.com";
+  }
+
+  if (formData.password && formData.password.length < 8) {
+    newErrors.password = "Password must be at least 8 characters long.";
+  }
+
+  if (formData.confirmPassword && formData.confirmPassword !== formData.password) {
+    newErrors.confirmPassword = "Passwords do not match.";
+  }
+
   setErrors(newErrors);
 
-  const hasErrors = Object.keys(newErrors).length > 0;
-  // Show alert based on the first error field
-  if (hasErrors) {
-    const firstErrorField = Object.keys(newErrors)[0];
-    let alertMessage = "Missing required fields";
+  if (Object.keys(newErrors).length > 0) {
+    const firstField = Object.keys(newErrors)[0];
+    const defaultMsg = "Missing required fields";
 
-    switch (firstErrorField) {
-      case "firstName":
-        alertMessage = "First name is required";
-        break;
-      case "lastName":
-         alertMessage = "Last name is required";
-         break;
-      case "birthDate":
-        alertMessage = "You don’t meet the age requirement to create an account";
-        break;
-      case "gender":
-        alertMessage = "Please select a gender";
-        break;
-      case "email":
-        alertMessage = newErrors.email.includes("exists")
+    const alertMessage = {
+      firstName: "First name is required",
+      lastName: "Last name is required",
+      birthDate: "Birth date is required",
+      gender: "Please select a gender",
+      email:
+        typeof newErrors.email === "string" && newErrors.email.includes("exists")
           ? "This email is already registered"
-          : "Please enter a valid email address";
-        break;
-      case "password":
-        alertMessage = newErrors.password;
-        break;
-      case "confirmPassword":
-        alertMessage = "Passwords do not match";
-        break;
-    }
-
+          : "Please enter a valid email address",
+      password: newErrors.password,
+      confirmPassword: "Passwords do not match",
+    }[firstField] || defaultMsg;
     alert(alertMessage);
     return;
   }
-
   try {
-    const response = await RegisterUser(formData);
-    navigate("/login"); // Redirect to login after success
+    await RegisterUser(formData);
+    navigate("/login");
   } catch (error) {
-  // Handle errors from server
-  const response = error?.response;
-  const message = typeof error === "string" ? error : error?.message || "Unknown error";
+    // Handle errors from server
+    const response = error?.response;
+    const message = typeof error === "string" ? error : error?.message || "Unknown error";
+    const fieldErrors = {};
 
-  const fieldErrors = {};
-
-  if (message) {
     if (
       response?.status === 409 ||
       message === "Email address already exists" ||
@@ -210,12 +178,8 @@ const handleSubmit = async (e) => {
     } else {
       alert(message);
     }
-
-    setErrors((prev) => ({ ...prev, ...fieldErrors }));
-  } else {
-    alert("An unexpected error occurred.");
+    setErrors((prev) => ({ ...prev, ...fieldErrors }));
   }
-}
 };
 
   // JSX structure of the form

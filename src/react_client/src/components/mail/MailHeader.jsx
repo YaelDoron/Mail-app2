@@ -30,7 +30,7 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
   const navigate = useNavigate();
   const formattedDate = new Date(mail.timestamp).toLocaleString();
   // Build sender image URL
-  const baseUrl = "http://localhost:3000"; // או מה שאת משתמשת בו בפועל
+  const baseUrl = "http://localhost:3000";
   const imageUrl = sender?.image
   ? sender.image.startsWith("http")
     ? sender.image
@@ -52,7 +52,7 @@ const MailHeader = ({ mail,sender,recipients = [], onToggleStar, onDelete, onMar
       onMarkSpam(mail.id);
     }
     setMarkedSpam(true);
-    setTimeout(() => navigate(-1), 300); // מאפשר לראות את האפקט
+    setTimeout(() => navigate(-1), 300);
   };
 
 
