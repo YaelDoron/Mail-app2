@@ -4,7 +4,9 @@ export const ThemeContext = createContext();
 
 // ThemeProvider component to wrap the app and provide theme state
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(() => {
+  return localStorage.getItem("theme") || "light";
+});
 
   // Load the stored theme from localStorage when the component mounts
   useEffect(() => {
