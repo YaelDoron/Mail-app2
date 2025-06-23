@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loginUser } from "../../services/api";
+import { loginUser, checkEmailExists } from "../../services/api";
 import { removeToken, saveToken } from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";

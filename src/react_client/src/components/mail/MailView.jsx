@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate , useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MailHeader from "./MailHeader";
 import MailBody from "./MailBody";
-import { toggleStarred, toggleSpam, deleteMail, assignLabelsToMail,getUserById, unassignLabelFromMail } from "../../services/api";
+import { toggleStarred, toggleSpam, deleteMail, assignLabelsToMail,getUserById } from "../../services/api";
 import { getUserIdFromToken } from "../../services/authService";
 import {fetchLabels } from "../../services/labelsService";
 import LabelSelectorModal from "../mail/LabelSelectorModal";

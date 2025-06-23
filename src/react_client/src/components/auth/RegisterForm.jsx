@@ -28,7 +28,7 @@ const RegisterForm = () => {
 useEffect(() => {
   setTheme("light");
   localStorage.setItem("theme", "light");
-}, []);
+}, [setTheme]);
 
   // Handles file selection and sets image preview
   const handleImageUpload = (e) => {

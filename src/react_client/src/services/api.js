@@ -33,10 +33,9 @@ export const loginUser = async (credentials) => {
     });
     return response.data; // => { token: "..." }
   } catch (error) {
-    throw {
-    error: error.response?.data?.error || error.message,
-    status: error.response?.status
-  };
+    const err = new Error(error.response?.data?.error || error.message);
+    err.status = error.response?.status;
+    throw err;
   }
 };
 

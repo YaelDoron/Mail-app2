@@ -79,7 +79,8 @@ const Topbar = () => {
       </div>
 
       {/* Dark/light theme toggle switch */}
-     <label className="theme-switch">
+      <div className="d-flex align-items-center gap-2">
+     <label className="theme-switch mb-0">
       <input
       type="checkbox"
       checked={theme === "dark"}
@@ -89,19 +90,17 @@ const Topbar = () => {
     </label>
 
       {/* If user is logged in, show their name and profile image */}
-      {user && (
-        <div className="d-flex align-items-center position-relative">
-          <span className="me-2">{user.name}</span>
-          {user.image && (
-            <img
-              src={`http://localhost:3000/${user.image.replace(/\\/g, "/")}?t=${Date.now()}`}
-              alt="profile"
-              onClick={() => setShowPopup(!showPopup)}
-              className="profile-button"
-            />
-          )}
-        </div>
-      )}
+      <img
+        src={
+          user?.image
+            ? `http://localhost:3000/${user.image.replace(/\\/g, "/")}?t=${Date.now()}`
+            : "/default-pic.svg"
+        }
+        alt="profile"
+        className="profile-button"
+        onClick={() => user && setShowPopup(!showPopup)}
+      />
+    </div>
 
       {/* Profile popup includes email, image with camera icon, greeting, and logout button */}
       {showPopup && user && (
