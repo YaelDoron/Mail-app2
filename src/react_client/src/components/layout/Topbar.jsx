@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import { FaCamera, FaSearch } from "react-icons/fa";
 import { getUserInfo, updateUserImage } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import { removeToken } from "../../services/authService";
-import { FiLogOut } from "react-icons/fi";
 import "./Topbar.css";
 import { useTheme } from "./ThemeSwitcher";
 
@@ -56,7 +54,7 @@ const Topbar = () => {
       {/* Search input with icon on the left and clear (×) button on the right */}
       <div className="flex-grow-1 d-flex justify-content-center px-3">
         <div className="search-container">
-          <FaSearch className="search-icon" />
+          <i className="bi bi-search search-icon"/>
           <input
             type="text"
             value={searchQuery}
@@ -113,9 +111,8 @@ const Topbar = () => {
                 src={`http://localhost:3000/${typeof user.image === "string" ? user.image.replace(/\\/g, "/") : "uploads/default-pic.svg"}?t=${Date.now()}`}
                 alt="profile"
                 className="rounded-circle popup-profile-img"/>
-              <FaCamera
+              <i className="bi bi-camera-fill camera-icon"
                 onClick={() => fileInputRef.current.click()}
-                className="camera-icon"
               />
               <input
                 ref={fileInputRef}
@@ -142,7 +139,7 @@ const Topbar = () => {
        }}
         className="logout-button d-flex align-items-center justify-content-center gap-2 w-100 border-0 px-3 py-2 rounded"
       >
-        <FiLogOut />
+        <i className="bi bi-box-arrow-right" />
        <span>Sign out</span>
     </button>
     </div>
