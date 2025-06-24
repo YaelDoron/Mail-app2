@@ -1,4 +1,3 @@
-ex3 is in branch: Exercise-3
 # MailSnap – Gmail-like Mail Application
 MailSnap is a full-featured email web application inspired by Gmail. It offers a modern, responsive UI, custom labels, spam detection, dark mode, and secure authentication – all built using a full-stack architecture and microservices.
 
