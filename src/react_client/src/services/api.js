@@ -244,9 +244,9 @@ export const unassignLabelFromMail = async (mailId, labelId) => {
 export const checkEmailExists = async (email) => {
   try {
     await axios.get(`${API_BASE_URL}/users/by-email/${email}`);
-    return true; // נמצא
+    return true; 
   } catch (error) {
-    if (error.response?.status === 404) return false; // לא נמצא
+    if (error.response?.status === 404) return false; 
     throw error;
   }
 };

@@ -4,7 +4,7 @@ import Editor from "./Editor";
 import { createMail, getUserIdByEmail, getUserById, sendDraft, updateDraft, deleteMail } from "../../services/api"; 
 import { getToken, getUserIdFromToken } from "../../services/authService";
 
-const ComposeMail = ({ onClose, onMailSent, draft = null }) => { // ✅ הוספנו onMailSent
+const ComposeMail = ({ onClose, onMailSent, draft = null }) => { 
   const token = getToken();
   const userId = getUserIdFromToken();
   const [recipients, setRecipients] = useState([]);
@@ -13,13 +13,13 @@ const ComposeMail = ({ onClose, onMailSent, draft = null }) => { // ✅ הוספ
   const [isMinimized, setIsMinimized] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // ✅ טוען תוכן טיוטה אם קיים
+  
   useEffect(() => {
     if (draft) {
       const loadRecipients = async () => {
         const emails = await Promise.all(
           draft.to.map(async (id) => {
-            const user = await getUserById(id); // ✅ שימוש בפונקציה הקיימת
+            const user = await getUserById(id); 
             return user.email;
           })
         );
@@ -31,7 +31,7 @@ const ComposeMail = ({ onClose, onMailSent, draft = null }) => { // ✅ הוספ
     }
   }, [draft]);
 
-  const isValidMailsnapEmail = (email) => /^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(email); // ✅ NEW
+  const isValidMailsnapEmail = (email) => /^[a-zA-Z0-9._%+-]+@mailsnap\.com$/.test(email); 
 
   const resetForm = () => {
     setRecipients([]);
@@ -45,9 +45,9 @@ const handleSend = async () => {
     alert("Please fill recipients before sending.");
     return;
   }
-  const invalidRecipients = recipients.filter(email => !isValidMailsnapEmail(email)); // ✅ NEW
+  const invalidRecipients = recipients.filter(email => !isValidMailsnapEmail(email)); 
   if (invalidRecipients.length > 0) {
-    alert(`Invalid recipient address: ${invalidRecipients.join(", ")}`); // ✅ NEW
+    alert(`Invalid recipient address: ${invalidRecipients.join(", ")}`); 
     return;
   }
   try {
@@ -58,7 +58,7 @@ const handleSend = async () => {
     const finalSubject = subject.trim() || "(no subject)";
     const finalContent = content.trim() || " ";
 
-    // ✅ אם זו טיוטה – שלח אותה
+    
     if (draft) {
         await updateDraft(draft.id, {
           to: toUserIds,
@@ -80,7 +80,7 @@ const handleSend = async () => {
       }
     resetForm();
     onClose();
-    onMailSent?.(); // ✅ נוסף – קריאה ל-trigger מה-layout
+    onMailSent?.(); 
   } catch (err) {
     console.error("Failed to send mail:", err);
     alert("Failed to send mail. Please try again.");
@@ -132,7 +132,7 @@ const handleClose = async () => {
   const handleDelete = async () => {
   try {
     if (draft?.id) {
-      await deleteMail(draft.id); // ✅ מחיקת טיוטה מהשרת
+      await deleteMail(draft.id); 
     }
   } catch (err) {
     console.error("Failed to delete draft:", err);
@@ -140,7 +140,7 @@ const handleClose = async () => {
 
   resetForm();
   onClose();
-  onMailSent?.(); // ✅ מרענן את הרשימה
+  onMailSent?.(); 
 };
 
   return (
@@ -191,9 +191,9 @@ const handleClose = async () => {
             onClick={() => {
               if (isMinimized) {
               setIsMinimized(false);  
-              setIsExpanded(true);     // תפתח ישר למצב מורחב
+              setIsExpanded(true);     
               } else {
-              setIsExpanded(prev => !prev); // רגיל: Toggle בין רגיל למורחב
+              setIsExpanded(prev => !prev); 
               }
             }}
            style={{ fontSize: "1.25rem" }}

@@ -7,7 +7,7 @@ const sendToServer = (command, url) => {
   return new Promise((resolve, reject) => {
     const client = new net.Socket();
     let response = '';
-    // Connect to the server on port 12345
+    // Connect to the server on port 3800
     client.connect(3800, HOST, () => {
       client.write(`${command} ${url}\n`);
     });

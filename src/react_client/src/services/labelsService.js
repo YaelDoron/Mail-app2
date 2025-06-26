@@ -27,3 +27,25 @@ export const addLabel = async (label) => {
   );
   return response.data;
 };
+
+
+export const updateLabel = async (id, newName) => {
+  await axios.patch(`${API_BASE_URL}/labels/${id}`,
+    { name: newName },
+    {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+};
+
+
+export const deleteLabel = async (id) => {
+  await axios.delete(`${API_BASE_URL}/labels/${id}`, {
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  });
+};

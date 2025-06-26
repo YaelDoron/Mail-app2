@@ -1,3 +1,4 @@
+const Mail = require('./Mail');
 let labelIdCounter = 1;
 let labels = [];
 
@@ -33,6 +34,10 @@ const deleteLabel = (id, userId) => {
   if (index === -1) return null
 
   labels.splice(index, 1)
+  const userMails = Mail.getAllMails(userId); 
+  for (const mail of userMails) {
+    mail.labels = mail.labels.filter(label => label !== id);
+  }
   return true
 }
 

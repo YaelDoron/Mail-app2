@@ -6,13 +6,6 @@ const getMailById = (id) => {
     return mails.find(mail => mail.id === id)
 }
 
-// Delete a mail by ID, only if it belongs to the user
-const deleteMail = (id, userId) => {
-    const index = mails.findIndex(mail => mail.id === id && mail.owner === userId);
-    if (index === -1) return null;
-    return mails.splice(index, 1)[0]; // Remove from array and return the deleted mail
-};
-
 // Search mails by subject or content (excluding spam and drafts)
 const searchMails = (userId, term) => {
     return mails

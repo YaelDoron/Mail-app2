@@ -13,8 +13,8 @@
 }
 
 .label-popup {
-  background: var(--popup-bg); /* ✅ מתאים למצב בהיר/כהה */
-  color: var(--text-color);    /* ✅ תומך גם בטקסט כהה וגם בהיר */
+  background: var(--popup-bg); 
+  color: var(--text-color);    
   border-radius: 8px;
   padding: 1rem;
   min-width: 250px;
@@ -44,7 +44,7 @@
 }
 
 .label-item:hover {
-  background-color: var(--hover-bg-color); /* ✅ מתאים לדארק מוד */
+  background-color: var(--hover-bg-color); 
 }
 
 .close-button {
@@ -69,7 +69,7 @@
 .new-label-section input {
   flex: 1;
   padding: 6px;
-  border: 1px solid var(--border-color); /* ✅ משתנה מתאים למצב כהה ובהיר */
+  border: 1px solid var(--border-color); 
   border-radius: 4px;
 }
 

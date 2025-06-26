@@ -10,7 +10,7 @@ const CreateLabelModal = ({ onClose, onCreate, existingLabels = [] }) => {
       alert("A label with that name already exists.");
       return;
     }
-    onCreate(trimmed); // קורא לפונקציה שתקבל את השם
+    onCreate(trimmed); 
     setLabelName("");
   };
 

@@ -25,8 +25,8 @@ const RecipientsInput = ({ recipients, setRecipients }) => {
 
       if (!isValidEmail) {
         setError(true);
-        alert("Invalid email address. Only @mailsnap.com is allowed."); // ✅ NEW – הודעת שגיאה
-        setInputValue("");                       // ✅ NEW – ניקוי שדה הקלט
+        alert("Invalid email address. Only @mailsnap.com is allowed."); 
+        setInputValue("");                     
         return;
       }
 
@@ -111,7 +111,7 @@ const RecipientsInput = ({ recipients, setRecipients }) => {
     setError(false);
   } else if (trimmed && !isValidEmail) {
     setError(true);
-    alert("Invalid email address. Only @mailsnap.com is allowed."); // ✅ NEW
+    alert("Invalid email address. Only @mailsnap.com is allowed."); 
   }
 }}
 
