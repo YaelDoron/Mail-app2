@@ -28,10 +28,9 @@ export const addLabel = async (label) => {
   return response.data;
 };
 
-
+//Updates label name 
 export const updateLabel = async (id, newName) => {
-  await axios.patch(`${API_BASE_URL}/labels/${id}`,
-    { name: newName },
+   const response= await axios.patch(`${API_BASE_URL}/labels/${id}`,newName ,
     {
       headers: {
         Authorization: `Bearer ${getToken()}`,
@@ -39,9 +38,10 @@ export const updateLabel = async (id, newName) => {
       }
     }
   );
+  return response.data;
 };
 
-
+//Deletes label from the server 
 export const deleteLabel = async (id) => {
   await axios.delete(`${API_BASE_URL}/labels/${id}`, {
     headers: {

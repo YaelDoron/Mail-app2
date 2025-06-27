@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import { Link } from "react-router-dom";
-import { fetchLabels, addLabel } from "../../services/labelsService";
+import { fetchLabels, addLabel, deleteLabel} from "../../services/labelsService";
 import CreateLabelModal from "../mail/CreateLabelModal";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import './Sidebar.css';
+import EditLabelModal from "../mail/EditLabelModal";
 
 const Sidebar = ({ onComposeClick }) => {
     // State to hold labels fetched from the server
     const [labels, setLabels] = useState([]);
-    // State to hold 
     const [showModal, setShowModal] = useState(false);
     const location = useLocation();
+    const [editingLabel, setEditingLabel] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const menuRefs = useRef({});
+    const editModalRef = useRef();
+    const navigate = useNavigate();
+
+
 
     // Fetch labels once when the component mounts
     useEffect(() => {
@@ -36,6 +43,29 @@ const Sidebar = ({ onComposeClick }) => {
         window.addEventListener("label-created", handleLabelCreated);
         return () => window.removeEventListener("label-created", handleLabelCreated);
     }, []);
+
+    // Close dropdown when clicking outside menu or edit modal
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            const clickedInsideMenu = Object.values(menuRefs.current).some(ref => ref?.contains(e.target));
+            const clickedEditModal = editModalRef.current?.contains(e.target);
+
+            if (!clickedInsideMenu && !clickedEditModal) {
+            setEditingLabel(null);
+            setShowEditModal(false);
+            }
+        };
+
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
+
+
+const closeEditModal = () => {
+  setShowEditModal(false);
+  setEditingLabel(null);
+};
+
   
     // Helper function to determine if a link is active
     const isActive = (path) => location.pathname === path;
@@ -112,12 +142,39 @@ const Sidebar = ({ onComposeClick }) => {
                 </div>
             </li>
             {labels.map((label) => (
-                <li className="nav-item" key={label.id}>
-                    <Link to={`/labels/${label.id}`} className={`nav-link ${location.pathname === `/labels/${label.id}` ? "active" : ""}`}>
-                    <i className="bi bi-tag me-3"></i> {label.name}
-                    </Link>
-                </li>
+            <li className="nav-item d-flex justify-content-between align-items-center px-3" key={label.id}>
+                <Link
+                to={`/labels/${label.id}`}
+                className={`nav-link p-0 flex-grow-1 ${location.pathname === `/labels/${label.id}` ? "active" : ""}`}
+                >
+                <i className="bi bi-tag me-2"></i> {label.name}
+                </Link>
+                <div className="position-relative" ref={(el) => (menuRefs.current[label.id] = el)}
+>
+                <i
+                    className="bi bi-three-dots-vertical pointer"
+                    onClick={() => setEditingLabel(label)}
+                ></i>
+                {editingLabel?.id === label.id && (
+                    <div className="position-absolute bg-white border rounded shadow-sm p-2 small end-0 mt-2" style={{ zIndex: 999 }}>
+                    <div className="dropdown-item pointer" onClick={() => {
+                        setShowEditModal(true);
+                    }}>Edit</div>
+                    <div className="dropdown-item pointer text-danger" onClick={async () => {
+                        await deleteLabel(label.id);
+                        const refreshed = await fetchLabels();
+                        setLabels(refreshed);
+                        setEditingLabel(null);
+                        if (location.pathname === `/labels/${label.id}`) {
+                            navigate("/inbox");
+                        }
+                    }}>Remove Label</div>
+                    </div>
+                )}
+                </div>
+            </li>
             ))}
+
         </ul>
 
 
@@ -134,6 +191,22 @@ const Sidebar = ({ onComposeClick }) => {
                 existingLabels={labels}
             />
         )}
+
+        {showEditModal && editingLabel && (
+            <EditLabelModal
+                ref={editModalRef}
+                label={editingLabel}
+                existingLabels={labels} 
+                onClose={closeEditModal}
+                onSave={async (updatedLabel) => {
+                    const refreshed = await fetchLabels();
+                    setLabels(refreshed);
+                    closeEditModal();
+                }}
+            />
+
+        )}
+
     </div>
 );
 
