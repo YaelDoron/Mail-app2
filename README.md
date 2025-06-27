@@ -53,7 +53,7 @@ Users can sign up and log in securely using JWTs. Registration includes uploadin
 
      * Gender
 
-     * Email must be in the format: username@mailspam.com
+     * Email must be in the format: username@mailsnap.com
 
      * Password & password confirmation
 
@@ -129,8 +129,8 @@ docker-compose down --remove-orphans
 
 | Email                   | Password  |
 |------------------------ |-----------|
-| demo1@mailspam.com      | 12345678  |
-| demo2@mailspam.com      | 12345678  |
+| demo1@mailsnap.com      | 12345678  |
+| demo2@mailsnap.com      | 12345678  |
 
 
 ### Working with Multiple Users
