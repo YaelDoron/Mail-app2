@@ -1,24 +1,24 @@
-const Mail = require('../models/Mail')
+const mailService = require('../services/MailService');
 const BlacklistService = require('../services/BlacklistService');
 
     // Get all mails for the logged-in user
-    function getUserMails(req, res) {
+    async function getUserMails(req, res) {
         const userId = req.user.userId;
-        const mails = Mail.getUserMails(userId);
+        const mails = await mailService.getUserMails(userId);
         res.status(200).json(mails);
     }
 
     // Get a specific mail by ID, only if it belongs to the user (either sender or receiver)
-    function getMailById(req, res){
-        const id = parseInt(req.params.id);
+    async function getMailById(req, res) {
+        const id = req.params.id;
         const userId = req.user.userId;
-        const mail = Mail.getMailById(id)
+        const mail = await mailService.getMailById(id);
         if(!mail || mail.isDeleted){
             return res.status(404).json({error: 'Mail not found'});
         }
 
         // Authorization check: only sender or recipient can access the mail
-        if (mail.from !== userId && !mail.to.includes(userId)) {
+        if (mail.from.toString() !== userId && !mail.to.map(id => id.toString()).includes(userId)) {
             return res.status(403).json({ error: 'Access denied' });
         }
         res.status(200).json(mail);
@@ -36,7 +36,8 @@ const BlacklistService = require('../services/BlacklistService');
         // Check if content or subject contains blacklisted items
         const isBlocked = await BlacklistService.check(subject, content);
         console.log(">> Checking spam status, isBlocked:", isBlocked);
-        const newMail = Mail.createMail(from, to, subject, content, isBlocked, isDraft);
+        const newMail = await mailService.createMail(from, to, subject, content, isBlocked, isDraft);
+        console.log("📨 New mail saved to MongoDB:", newMail); // debug
         res.status(201)
     .location(`/api/mails/${newMail.id}`)
     .end();
@@ -48,78 +49,59 @@ const BlacklistService = require('../services/BlacklistService');
     };
 
     // Delete a mail, only if the logged-in user is the mail's owner
-    function deleteMail(req, res){
+    async function deleteMail(req, res) {
         const userId = req.user.userId;
-        const id = parseInt(req.params.id);
-        const mail = Mail.getMailById(id);
-        if (!mail) {
-            return res.status(404).json({ error: 'Mail not found' });
-        }
-        // Authorization check: only the owner can delete the mail
-        if (mail.owner !== userId) {
-            return res.status(403).json({ error: 'Access denied' });
-        }
-        const moved = Mail.moveToTrash(id, userId);
-        if (!moved) {
-            return res.status(403).json({ error: 'Unable to move to trash' });
-        }
-        res.status(204).end(); 
-    };
+        const id = req.params.id;
+        const moved = await mailService.moveToTrash(id, userId);
+    if (!moved) {
+        return res.status(404).json({ error: 'Unable to move to trash' });
+    }
+    res.status(204).end();
+    }
+
 
     // Return all deleted mails for the user
-    function getTrashMails(req, res) {
+    async function getTrashMails(req, res) {
         const userId = req.user.userId;
-        const mails = Mail.getTrashMails(userId);
+        const mails = await mailService.getTrashMails(userId);
         res.status(200).json(mails);
     }
 
     // Edit a draft, only if the logged-in user is the sender
-    function updateDraft(req, res){
+    async function updateDraft(req, res) {
         const userId = req.user.userId;
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         const updates = req.body;
-        const mail = Mail.getMailById(id);
-
-        if (!mail) {
-            return res.status(404).json({ error: 'Mail not found' });
+        const updated = await mailService.updateDraft(id, userId, updates);
+        if (!updated) {
+            return res.status(403).json({ error: 'Unable to update draft' });
         }
-        // Authorization check: only the sender can edit the mail
-        if (mail.owner !== userId || mail.from !== userId) {
-            return res.status(403).json({ error: 'Only the sender can edit the draft' });
-         }
-
-         if (!mail.isDraft) {
-            return res.status(400).json({ error: 'Mail is not a draft' });
-        }
-
-        const updated = Mail.updateDraft(id, userId, updates);
         res.status(204).end();
     }
 
     // Assign labels to a mail
-    function assignLabelsToMail(req, res) {
+    async function assignLabelsToMail(req, res) {
         const userId = req.user.userId;
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         const { labels } = req.body;
 
-        const updated = Mail.assignLabels(id, userId, labels);
+        const updated = await mailService.assignLabels(id, userId, labels);
         if (!updated) {
             return res.status(403).json({ error: 'Unable to assign labels' });
         }
-
         res.status(200).json(updated);
     }
 
     // Remove a label from a mail
-    function removeLabelFromMail(req, res) {
+    async function removeLabelFromMail(req, res) {
         const userId = req.user.userId;
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
         const { labelId } = req.body;
 
         if (!labelId) {
             return res.status(400).json({ error: 'Missing labelId in body' });
         }
-        const updated = Mail.removeLabelFromMail(id, userId, labelId);
+        const updated = await mailService.removeLabelFromMail(id, userId, labelId);
         if (!updated) {
             return res.status(403).json({ error: 'Unable to remove label' });
         }
@@ -129,14 +111,14 @@ const BlacklistService = require('../services/BlacklistService');
     // Toggle spam status
     async function toggleSpamStatus(req, res) {
     const userId = req.user.userId;
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
-    const mail = Mail.getMailById(id);
-    if (!mail || mail.owner !== userId || mail.isDeleted) {
+    const mail = await mailService.getMailById(id);
+    if (!mail || mail.owner.toString() !== userId || mail.isDeleted) {
         return res.status(403).json({ error: 'Unable to update spam status' });
     }
 
-    const updated = Mail.toggleSpam(id, userId);
+    const updated = await mailService.toggleSpam(id, userId);
 
     const urls = [
         ...BlacklistService.extractUrls(mail.subject),
@@ -169,11 +151,11 @@ const BlacklistService = require('../services/BlacklistService');
 }
 
     // Send a draft mail
-    function sendDraftMail(req, res) {
+    async function sendDraftMail(req, res) {
         const userId = req.user.userId;
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
 
-        const sent = Mail.sendDraft(id, userId);
+        const sent = await mailService.sendDraft(id, userId);
         if (!sent) {
             return res.status(403).json({ error: 'Unable to send draft' });
         }
@@ -182,7 +164,7 @@ const BlacklistService = require('../services/BlacklistService');
     }
 
     // Search user's mails using a query term
-    function searchMails(req, res){
+    async function searchMails(req, res) {
         const userId = req.user.userId;
         const term = req.params.query;
 
@@ -190,22 +172,22 @@ const BlacklistService = require('../services/BlacklistService');
             return res.status(400).json({ error: 'Missing search term in URL' });
         }
 
-        const results = Mail.searchMails(userId, term);
+        const results = await mailService.searchMails(userId, term);
         res.status(200).json(results);
     }
 
     // Get all mails marked as spam
-    function getSpamMails(req, res) {
+    async function getSpamMails(req, res) {
     const userId = req.user.userId;
-    const mails = Mail.getSpamMails(userId);
+    const mails = await mailService.getSpamMails(userId);
     res.status(200).json(mails); 
     }
 
     // Toggle starred status of a mail
-    function toggleStarredStatus(req, res) {
+    async function toggleStarredStatus(req, res) {
         const userId = req.user.userId;
-        const id = parseInt(req.params.id);
-        const updated = Mail.toggleStarred(id, userId);
+        const id = req.params.id;
+        const updated = await mailService.toggleStarred(id, userId);
 
         if (!updated) {
             return res.status(403).json({ error: 'Unable to update starred status' });
@@ -215,48 +197,36 @@ const BlacklistService = require('../services/BlacklistService');
     }
 
     // Get all mails (sent + received)
-    function getAllUserMails(req, res) {
+    async function getAllUserMails(req, res) {
         const userId = req.user.userId;
-        const mails = Mail.getAllMails(userId);
+        const mails = await mailService.getAllMails(userId);
         res.status(200).json(mails);
     }
 
     // Get only sent mails by user
-    function getSentMails(req, res) {
+    async function getSentMails(req, res) {
         const userId = req.user.userId;
-        const mails = Mail.getSentMails(userId);
+        const mails = await mailService.getSentMails(userId);
         res.status(200).json(mails);
     }
 
     // Get all draft mails
-    function getDraftMails(req, res) {
+    async function getDraftMails(req, res) {
     const userId = req.user.userId;
-    const drafts = Mail.getDraftMails(userId);
+    const drafts = await mailService.getDraftMails(userId);
     res.status(200).json(drafts);
     }
 
     // Get all starred mails
-    function getStarredMails(req, res) {
+    async function getStarredMails(req, res) {
         const userId = req.user.userId;
-        const starred = Mail.getStarredMails(userId);
+        const starred = await mailService.getStarredMails(userId);
         res.status(200).json(starred);
     }
 
-    // Get all mails with a given label name
-    function getMailsByLabel(req, res) {
-        const userId = req.user.userId;
-        const labelName = req.params.labelName;
-
-        if (!labelName) {
-            return res.status(400).json({ error: 'Missing label name' });
-        }
-
-        const mails = Mail.getMailsByLabel(userId, labelName);
-        res.status(200).json(mails);
-    }
 
     // Get all mails with a given label ID
-    function getMailsByLabelById(req, res) {
+    async function getMailsByLabelById(req, res) {
     const userId = req.user.userId;
     const { labelId } = req.body;
 
@@ -264,16 +234,16 @@ const BlacklistService = require('../services/BlacklistService');
         return res.status(400).json({ error: "Missing labelId" });
     }
 
-    const mails = Mail.getMailsByLabel(userId, labelId);
+    const mails = await mailService.getMailsByLabel(userId, labelId);
     res.status(200).json(mails);
     }
 
     // Mark mail as read
-    function markMailAsRead(req, res) {
+    async function markMailAsRead(req, res) {
         const userId = req.user.userId;
-        const id = parseInt(req.params.id);
+        const id = req.params.id;
 
-        const updated = Mail.markAsRead(id, userId);
+        const updated = await mailService.markAsRead(id, userId);
         if (!updated) {
             return res.status(403).json({ error: 'Unable to mark mail as read' });
         }
@@ -282,24 +252,24 @@ const BlacklistService = require('../services/BlacklistService');
     }
 
     // Retrieve a deleted mail from trash
-    function getDeletedMailById(req, res) {
-        const id = parseInt(req.params.id);
-        const userId = req.user.userId;
-        const mail = Mail.getMailById(id);
-        if (!mail || !mail.isDeleted) {
-            return res.status(404).json({ error: 'Mail not found in trash' });
+    async function getDeletedMailById(req, res) {
+    const id = req.params.id;
+    const userId = req.user.userId;
+
+    const mail = await mailService.getDeletedMailById(id, userId);
+
+        if (!mail) {
+            return res.status(404).json({ error: 'Mail not found in trash or access denied' });
         }
-        if (mail.from !== userId && !mail.to.includes(userId)) {
-            return res.status(403).json({ error: 'Access denied' });
-        }
+
         res.status(200).json(mail);
     }
 
     // Restore mail from trash
-    function restoreMail(req, res) {
+    async function restoreMail(req, res) {
         const userId = req.user.userId;
-        const id = parseInt(req.params.id);
-        const restored = Mail.restoreFromTrash(id, userId);
+        const id = req.params.id;
+        const restored = await mailService.restoreFromTrash(id, userId);
         if (!restored) return res.status(403).json({ error: "Cannot restore mail" });
         res.status(200).json(restored);
     }
@@ -321,7 +291,6 @@ const BlacklistService = require('../services/BlacklistService');
     getSentMails,
     getDraftMails,
     getStarredMails,
-    getMailsByLabel,
     getMailsByLabelById,
     getTrashMails,
     markMailAsRead,
