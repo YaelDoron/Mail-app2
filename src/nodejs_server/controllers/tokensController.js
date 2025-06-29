@@ -9,11 +9,11 @@ const SECRET = "your-secret-key";
  * Expects { email, password } in the request body.
  * If credentials are valid, returns a signed JWT token.
  */
-function loginUser(req, res) {
+async function loginUser(req, res) {
   const { email, password } = req.body;
 
   // Attempt to find the user by email
-  const user = UserService.findUserByEmail(email);
+ const user = await UserService.findUserByEmail(email);
 
   // If user not found, return 404
   if (!user) {
@@ -26,7 +26,7 @@ function loginUser(req, res) {
   }
 
   // If login is successful, generate a JWT containing the user's ID
-  const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: "2h" });
+  const token = jwt.sign({ userId: user._id }, SECRET, { expiresIn: "2h" });
 
   // Send the token back to the client
   res.status(200).json({ token });

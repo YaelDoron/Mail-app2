@@ -1,11 +1,10 @@
-require("dotenv").config();
+const customEnv = require('custom-env');
+customEnv.env(process.env.NODE_ENV, './config');
 
 const app = require('./app');
 
-// Start listening on the specified port
-const PORT =3000;
+const PORT = process.env.PORT;
 
-app.listen(PORT, () => {
+app.listen(PORT , '0.0.0.0', () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
-
