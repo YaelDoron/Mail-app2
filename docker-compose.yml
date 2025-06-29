@@ -1,4 +1,16 @@
 services:
+  mongo:
+    image: mongo:5.0
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      appnet:
+        ipv4_address: 172.28.0.5
+    volumes:
+      - ./mongo-volume:/data/db
+
   server:
     build:
       context: ./src/cpp_server
@@ -17,10 +29,14 @@ services:
     build:
       context: ./src/nodejs_server
       dockerfile: Dockerfile
+    env_file:
+      - ./src/nodejs_server/config/.env.local
+
     ports:
       - "3000:3000"
     environment:
       - PORT=3000
+      - NODE_ENV=local
     restart: always
     networks:
       appnet:
@@ -45,3 +61,4 @@ networks:
     ipam:
       config:
         - subnet: 172.28.0.0/16
+
