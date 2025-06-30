@@ -205,7 +205,7 @@ const removeLabelFromMail = async (id, userId, labelId) => {
   const mail = await Mail.findOne({ _id: id, owner: userId, isDeleted: false });
   if (!mail) return null;
 
-  mail.labels = mail.labels.filter(label => label !== labelId);
+  mail.labels = mail.labels.filter(label => label.toString() !== labelId.toString());
   await mail.save();
   return mail;
 };
