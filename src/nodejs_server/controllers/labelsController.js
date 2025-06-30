@@ -42,6 +42,12 @@ exports.updateLabel = (req, res) => {
   if (!newName) {
     return res.status(400).json({ error: 'Name is required' })
   }
+
+  const duplicate = Label.getAllLabels(userId).find(l => l.name === newName && l.id !== id);
+  if (duplicate) {
+    return res.status(409).json({ error: 'Label with this name already exists' });
+  }
+
   const updatedLabel = Label.updateLabel(id, newName, userId)
   // Return error if the label not exist
   if (!updatedLabel) {
