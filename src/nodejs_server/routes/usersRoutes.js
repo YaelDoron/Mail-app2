@@ -6,7 +6,7 @@ const upload = require('../middleware/multer');
 
 // Route: /api/users
 router.route('/')
-  .post(upload.single('profilePicture'), userController.createUser);
+  .post(upload.single('image'), userController.createUser);
 
 // Route: /api/users/:id
 router.route('/:id')

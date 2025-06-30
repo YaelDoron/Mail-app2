@@ -6,25 +6,28 @@ const jwt = require("jsonwebtoken");
 // Create a new user
 const createUser = async (req, res) => {
   try{
-  const profilePicture = req.file && req.file.originalname ? req.file.path : "uploads/default-pic.svg";
+    const profilePicture = req.file ? req.file.path : 'uploads/default-pic.svg';
 
     // Check required fields
-  if (!req.body.firstName || !req.body.lastName || !req.body.birthDate || !req.body.gender || !req.body.email || !req.body.password) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
+    if (!req.body.firstName || !req.body.lastName || !req.body.birthDate || !req.body.gender || !req.body.email || !req.body.password) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Check email address ends with @mailsnap.com
+    if (!req.body.email.endsWith('@mailsnap.com')) {
+      return res.status(400).json({ error: "Email must end with @mailsnap.com" });
+    }
 
     // Prevent duplicate emails
-  const existingUser = await userService.findUserByEmail(req.body.email);
-    if (existingUser) return res.status(409).json({ error: "Email address already exists" });
-
+    const existingUser = await userService.findUserByEmail(req.body.email);
+      if (existingUser) return res.status(409).json({ error: "Email address already exists" });
 
     // Validate birthDate format
-  const birthDateError = userService.validateBirthDate(req.body.birthDate);
-    if (birthDateError) return res.status(400).json({ error: birthDateError });
-
+    const birthDateError = userService.validateBirthDate(req.body.birthDate);
+      if (birthDateError) return res.status(400).json({ error: birthDateError });
 
     // Create a new user 
-  const user = await userService.createUser({ ...req.body, profilePicture });
+    const user = await userService.createUser({ ...req.body, profilePicture });
 
     //the json returns the new user's id
     const SECRET = "your-secret-key";
