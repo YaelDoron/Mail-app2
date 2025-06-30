@@ -1,5 +1,7 @@
 const Mail = require('../models/Mail')
 const BlacklistService = require('../services/BlacklistService');
+const UserService = require('../services/UserService');
+
 
     // Get all mails for the logged-in user
     function getUserMails(req, res) {
@@ -31,7 +33,12 @@ const BlacklistService = require('../services/BlacklistService');
         // Validate input
         if (!from || !Array.isArray(to) || to.length === 0 || !subject || !content) {
         return res.status(400).json({ error: 'Missing required fields' });
-    }
+        }
+        for (const recipientId of to) {
+            if (!UserService.exists(recipientId)) {
+            return res.status(400).json({ error: "One or more recipients do not exist" });
+            }
+        }
     try {
         // Check if content or subject contains blacklisted items
         const isBlocked = await BlacklistService.check(subject, content);
@@ -242,18 +249,6 @@ const BlacklistService = require('../services/BlacklistService');
         res.status(200).json(starred);
     }
 
-    // Get all mails with a given label name
-    function getMailsByLabel(req, res) {
-        const userId = req.user.userId;
-        const labelName = req.params.labelName;
-
-        if (!labelName) {
-            return res.status(400).json({ error: 'Missing label name' });
-        }
-
-        const mails = Mail.getMailsByLabel(userId, labelName);
-        res.status(200).json(mails);
-    }
 
     // Get all mails with a given label ID
     function getMailsByLabelById(req, res) {
@@ -321,7 +316,6 @@ const BlacklistService = require('../services/BlacklistService');
     getSentMails,
     getDraftMails,
     getStarredMails,
-    getMailsByLabel,
     getMailsByLabelById,
     getTrashMails,
     markMailAsRead,
