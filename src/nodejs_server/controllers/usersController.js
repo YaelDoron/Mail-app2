@@ -13,6 +13,11 @@ function createUser(req, res) {
   if (!firstName || !lastName || !birthDate || !gender || !email || !password) {
     return res.status(400).json({ error: "Missing required fields" });
   }
+
+  if (!email.endsWith("@mailsnap.com")) {
+    return res.status(400).json({ error: "Email must end with @mailsnap.com" });
+  }
+
   // Prevent duplicate emails
   if (UserService.findUserByEmail(email)) {
     return res.status(409).json({ error: "Email address already exists" });
@@ -21,6 +26,11 @@ function createUser(req, res) {
   const birthDateError = UserService.validateBirthDate(birthDate);
   if (birthDateError) {
     return res.status(400).json({ error: birthDateError });
+  }
+
+  // Validate password length
+  if (password.length < 8) {
+    return res.status(400).json({ error: "Password must be at least 8 characters long" });
   }
 
 
