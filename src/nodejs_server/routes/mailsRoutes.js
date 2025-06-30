@@ -49,10 +49,7 @@ router.route('/star')
 // Get all drafts
 router.route('/draft')
     .get(controller.getDraftMails);  
-    
-// Get mails by label name
-router.route('/labels/:labelName')
-    .get(controller.getMailsByLabel);         
+            
 
 // Mark a specific mail as read
 router.route('/read/:id')
