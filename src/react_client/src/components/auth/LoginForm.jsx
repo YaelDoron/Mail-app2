@@ -23,7 +23,7 @@ function LoginForm() {
        try {
       const exists = await checkEmailExists(email);
       if (!exists) {
-        setError("Couldn't find your MailSpam Account");
+        setError("Couldn't find your MailSnap Account");
         return;
       }
   
