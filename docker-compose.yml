@@ -9,7 +9,7 @@ services:
       appnet:
         ipv4_address: 172.28.0.5
     volumes:
-      - ./mongo-volume:/data/db
+      - mongo-data:/data/db
 
   server:
     build:
@@ -62,3 +62,5 @@ networks:
       config:
         - subnet: 172.28.0.0/16
 
+volumes:
+  mongo-data:
