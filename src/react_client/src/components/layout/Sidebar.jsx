@@ -157,7 +157,9 @@ const closeEditModal = () => {
                 ></i>
                 {editingLabel?.id === label.id && (
                     <div className="position-absolute bg-white border rounded shadow-sm p-2 small end-0 mt-2" style={{ zIndex: 999 }}>
-                    <div className="dropdown-item pointer" onClick={() => {
+                    <div className="dropdown-item pointer" 
+                    style={{ color: "#000000" }}
+                    onClick={() => {
                         setShowEditModal(true);
                     }}>Edit</div>
                     <div className="dropdown-item pointer text-danger" onClick={async () => {
