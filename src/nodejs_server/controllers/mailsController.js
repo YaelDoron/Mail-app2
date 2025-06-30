@@ -45,7 +45,6 @@ const UserService = require('../services/UserService');
         const isBlocked = await BlacklistService.check(subject, content);
         console.log(">> Checking spam status, isBlocked:", isBlocked);
         const newMail = await mailService.createMail(from, to, subject, content, isBlocked, isDraft);
-        console.log("📨 New mail saved to MongoDB:", newMail); // debug
         res.status(201)
     .location(`/api/mails/${newMail.id}`)
     .end();
