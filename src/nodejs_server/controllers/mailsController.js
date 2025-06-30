@@ -1,5 +1,6 @@
 const mailService = require('../services/MailService');
 const BlacklistService = require('../services/BlacklistService');
+const UserService = require('../services/UserService');
 
     // Get all mails for the logged-in user
     async function getUserMails(req, res) {
@@ -31,7 +32,14 @@ const BlacklistService = require('../services/BlacklistService');
         // Validate input
         if (!from || !Array.isArray(to) || to.length === 0 || !subject || !content) {
         return res.status(400).json({ error: 'Missing required fields' });
-    }
+         }
+
+         for (const recipientId of to) {
+            if (!UserService.exists(recipientId)) {
+            return res.status(400).json({ error: "One or more recipients do not exist" });
+            }
+        }
+        
     try {
         // Check if content or subject contains blacklisted items
         const isBlocked = await BlacklistService.check(subject, content);

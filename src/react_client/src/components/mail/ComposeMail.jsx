@@ -51,9 +51,16 @@ const handleSend = async () => {
     return;
   }
   try {
-    const toUserIds = await Promise.all(
-      recipients.map(email => getUserIdByEmail(email, token))
-    );
+        let toUserIds;
+    try {
+      toUserIds = await Promise.all(
+        recipients.map(email => getUserIdByEmail(email, token))
+      );
+    } catch (err) {
+      alert("One or more recipients do not exist.");
+      return;
+    }
+
 
     const finalSubject = subject.trim() || "(no subject)";
     const finalContent = content.trim() || " ";
@@ -94,9 +101,15 @@ const handleClose = async () => {
   const hasContent = recipients.length > 0 || subject.trim() || content.trim();
   if (hasContent) {
     try {
-      const toUserIds = await Promise.all(
+        let toUserIds;
+    try {
+      toUserIds = await Promise.all(
         recipients.map(email => getUserIdByEmail(email, token))
       );
+    } catch (err) {
+      alert("One or more recipients do not exist. Draft was not saved.");
+      return;
+    }
 
       const finalSubject = subject.trim() || "(no subject)";
       const finaltContent= content.trim() || " ";
