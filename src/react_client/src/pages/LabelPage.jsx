@@ -17,10 +17,10 @@ const LabelPage = ({ refreshTrigger, triggerRefresh }) => {
     const fetchMailsAndLabel  = async () => {
       try {
         // Get mails that have the current label
-        const data = await getMailsByLabel(parseInt(labelId));
+        const data = await getMailsByLabel(labelId);
         const sorted = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         setMails(sorted);
-        const labelData = await getLabelById(parseInt(labelId));
+        const labelData = await getLabelById(labelId);
         setLabelName(labelData.name);
       } catch (err) {
         console.error("Error retrieving emails by label:", err);
@@ -38,7 +38,7 @@ const LabelPage = ({ refreshTrigger, triggerRefresh }) => {
   return (
     <div className="container p-3">
       {/* Display list of mails for the selected label */}
-      <MailList mails={mails} viewType="label" selectedLabelId={parseInt(labelId)}  onRefresh={triggerRefresh} />
+      <MailList mails={mails} viewType="label" selectedLabelId={labelId}  onRefresh={triggerRefresh} />
 
     </div>
   );
