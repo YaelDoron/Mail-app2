@@ -30,7 +30,7 @@ const UserService = require('../services/UserService');
         const from = req.user.userId;
         const { to, subject, content, isDraft = false } = req.body;
         // Validate input
-        if (!from || !Array.isArray(to) || to.length === 0 || !subject || !content) {
+        if (!from || !Array.isArray(to) || to.length === 0) {
         return res.status(400).json({ error: 'Missing required fields' });
          }
 

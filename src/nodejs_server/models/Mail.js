@@ -14,13 +14,14 @@ const Mail = new Schema({
 
   subject: {
     type: String,
-    required: true
+    default: "no subject"
   },
 
   content: {
     type: String,
-    required: true
+    default: " "
   },
+
 
   timestamp: {
     type: Date,
@@ -34,7 +35,7 @@ const Mail = new Schema({
 
   labels: [{
   type: mongoose.Schema.Types.ObjectId,
-  required: true
+  default: []
   }],
 
   isSpam: {

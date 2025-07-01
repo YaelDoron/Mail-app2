@@ -32,7 +32,6 @@ const createMail = async (from, to, subject, content, isSpam = false, isDraft = 
 
     await Mail.insertMany(recipientMails);
   }
-  console.log("Saved mail:", senderMail); // שורת הדיבוג
   return senderMail;
 };
 
