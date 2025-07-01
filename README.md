@@ -116,6 +116,17 @@ Optional - If you encounter issues with leftover containers, run:
 docker-compose down --remove-orphans
 ```
 
+If you encounter the following error when running docker-compose up --build:
+```bash
+Pool overlaps with other one on this address space
+```
+Run the following command before building:
+```bash
+docker network ls --filter driver=bridge --format '{{.ID}} {{.Name}}' | while read id name; do
+  docker network inspect "$name" | grep -q '172.28.' && docker network rm "$id"
+done
+```
+
 ### Available Services & Endpoints
 
 | Service           | Address                        |
