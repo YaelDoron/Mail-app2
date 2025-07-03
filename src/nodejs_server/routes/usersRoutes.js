@@ -20,4 +20,8 @@ router.route('/by-email/:email')
 router.route('/image')
   .put(authMiddleware, upload.single('image'), userController.updateUserImage);
 
+router.route('/current')
+  .get(authMiddleware, userController.getCurrentUser);
+
+
 module.exports = router;

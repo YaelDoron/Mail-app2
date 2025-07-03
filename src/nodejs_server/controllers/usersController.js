@@ -79,10 +79,25 @@ const updateUserImage = async (req, res) => {
   });
 };
 
+const getCurrentUser = async (req, res) => {
+  const user = await userService.findUserById(req.userId);
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  res.json({
+    id: user._id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    image: user.profilePicture || "uploads/default.jpg"
+  });
+};
+
+
 // Export controller functions
 module.exports = {
   createUser,
   getUserById,
   getUserByEmail,
-  updateUserImage
+  updateUserImage,
+  getCurrentUser
 };
