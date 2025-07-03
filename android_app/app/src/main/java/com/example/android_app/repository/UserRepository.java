@@ -8,6 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.android_app.MyApplication;
+import com.example.android_app.AppDatabase;
+import com.example.android_app.api.RetrofitClient;
 import com.example.android_app.api.UserApi;
 import com.example.android_app.dao.UserDao;
 import com.example.android_app.entity.User;
