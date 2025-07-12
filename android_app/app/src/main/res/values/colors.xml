@@ -1,5 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorSurface">#E8ECF6</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorOnPrimary">#000000</color>
+    <color name="colorOnSurface">#000000</color>
+
+    <color name="purple">#7D0DC3</color>
+    <color name="blue">#4285F4</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="gray">#808080</color>
+    <color name="dark_blue">#174EA6</color>
+    <color name="textPrimary">#000000</color>
+    <color name="hintTextColor">#999999</color>
+    <color name="colorOnSurfaceVariant">#666666</color>
 </resources>
