@@ -1,0 +1,97 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        style="@style/Widget.Material3.Toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorBackground"
+        android:theme="@style/ThemeOverlay.Material3.Dark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="4dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_back"
+            android:contentDescription="Back"
+            app:tint="@color/colorOnSurface" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/deleteDraftButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete Draft"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/saveDraftButton"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Save Draft"
+            android:padding="4dp"
+            app:tint="@color/colorOnSurface" />
+    </LinearLayout>
+
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/recipientEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter recipients"
+        android:imeOptions="actionNext"
+        android:inputType="textEmailAddress|textMultiLine"
+        android:lines="3"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/hintTextColor" />
+
+    <EditText
+        android:id="@+id/emailSubject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Subject"
+        android:inputType="text"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/hintTextColor" />
+
+    <EditText
+        android:id="@+id/emailBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Body"
+        android:inputType="textMultiLine|textCapSentences"
+        android:minLines="7"
+        android:gravity="top|start"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/hintTextColor" />
+
+
+    <Button
+        android:id="@+id/sendEmailButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:backgroundTint="@color/blue"
+        android:text="Send Email"
+        android:textColor="@color/textPrimary" />
+</LinearLayout>
