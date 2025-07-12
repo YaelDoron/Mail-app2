@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.example.android_app.Converters;
+import com.example.android_app.core.Converters;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -13,7 +13,6 @@ import java.util.List;
 
 @Entity(tableName = "mails")
 public class Mail implements Serializable {
-
     @PrimaryKey
     @NonNull
     @SerializedName("id")
@@ -49,8 +48,6 @@ public class Mail implements Serializable {
         this.subject = subject;
     }
 
-    // Getters
-
     public String getId() { return id; }
     public String getFrom() { return from; }
     public List<String> getTo() { return to; }
@@ -65,9 +62,6 @@ public class Mail implements Serializable {
     public boolean isDeleted() { return isDeleted; }
     public boolean isRead() { return isRead; }
     public List<String> getLabels() { return labels; }
-
-    // Setters
-
     public void setId(String id) { this.id = id; }
     public void setFrom(String from) { this.from = from; }
     public void setTo(List<String> to) { this.to = to; }
@@ -88,4 +82,3 @@ public class Mail implements Serializable {
         return subject;
     }
 }
-

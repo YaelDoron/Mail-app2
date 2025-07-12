@@ -10,7 +10,6 @@ import com.example.android_app.entity.User;
 
 @Dao
 public interface UserDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(User user);
 
@@ -19,4 +18,7 @@ public interface UserDao {
 
     @Query("DELETE FROM users")
     void clearAllUsers();
+
+    @Query("SELECT * FROM users LIMIT 1")
+    User getUserSync();
 }

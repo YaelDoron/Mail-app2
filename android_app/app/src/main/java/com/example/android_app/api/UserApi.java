@@ -1,7 +1,7 @@
 package com.example.android_app.api;
 
 import com.example.android_app.entity.User;
-import com.example.android_app.response.TokenResponse;
+import com.example.android_app.core.response.TokenResponse;
 
 import java.util.Map;
 
@@ -14,23 +14,14 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 
-
- // Retrofit API interface for user-related operations such as sign-in and sign-up.
 public interface UserApi {
-    /**
-     * Sends a login request to the server with user credentials.
-     * The request body is a JSON map containing "email" and "password".
-     *
-     * @param credentials A map of login credentials.
-     * @return A Call that returns a TokenResponse on success.
-     */
     @POST("tokens")
     Call<TokenResponse> signIn(@Body Map<String, String> credentials);
 
-     // Sends a sign-up request with a profile picture
     @Multipart
     @POST("users")
     Call<ResponseBody> signUp(
@@ -38,7 +29,6 @@ public interface UserApi {
             @PartMap Map<String, RequestBody> credentials
     );
 
-     // Sends a sign-up request without a profile picture
     @Multipart
     @POST("users")
     Call<ResponseBody> signUp(
@@ -50,4 +40,17 @@ public interface UserApi {
             @Header("Authorization") String token
     );
 
- }
+    @GET("users/by-email/{email}")
+    Call<Map<String, String>> getUserIdByEmail(@retrofit2.http.Path("email") String email);
+
+    @GET("users/{id}")
+    Call<User> getUserById(@retrofit2.http.Path("id") String id);
+
+    @Multipart
+    @PUT("users/image")
+    Call<User> uploadProfileImage(
+            @Header("Authorization") String token,
+            @Part MultipartBody.Part image
+    );
+
+}

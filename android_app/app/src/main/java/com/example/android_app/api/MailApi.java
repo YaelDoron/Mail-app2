@@ -15,7 +15,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface MailApi {
-
     @GET("mails")
     Call<List<Mail>> getInboxMails(
             @Header("Authorization") String token
@@ -123,7 +122,7 @@ public interface MailApi {
     @POST("mails/by-label")
     Call<List<Mail>> getMailsByLabel(
             @Header("Authorization") String token,
-            @Body Map<String, String> body // body = { labelId: "123" }
+            @Body Map<String, String> body
     );
 
     @GET("mails/trash/{id}")

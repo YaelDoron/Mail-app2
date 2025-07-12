@@ -16,14 +16,13 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface LabelApi {
-
     @GET("labels")
     Call<List<Label>> getLabels(
             @Header("Authorization") String token
     );
 
     @POST("labels")
-    Call<Label> addLabel(
+    Call<ResponseBody> addLabel(
             @Header("Authorization") String token,
             @Body Label label
     );

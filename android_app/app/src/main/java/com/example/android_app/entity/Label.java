@@ -1,14 +1,16 @@
 package com.example.android_app.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 @Entity(tableName = "labels")
 public class Label {
-
-    @SerializedName("id") // שם מהשרת (MongoDB)
+    @NonNull
     @PrimaryKey
     public String id;
 
@@ -18,10 +20,8 @@ public class Label {
     @SerializedName("owner")
     public String owner;
 
-    // בנאי ריק (Room דורש)
     public Label() {}
 
-    // Getters ו-Setters
     public String getId() {
         return id;
     }
@@ -44,5 +44,20 @@ public class Label {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Label)) return false;
+        Label other = (Label) obj;
+        return id.equals(other.id) &&
+                name.equals(other.name) &&
+                owner.equals(other.owner);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, owner);
     }
 }

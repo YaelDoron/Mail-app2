@@ -1,47 +1,71 @@
 package com.example.android_app.viewmodel;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
+import android.util.Log;
 
-import com.example.android_app.MyApplication;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.android_app.entity.Label;
+import com.example.android_app.entity.User;
 import com.example.android_app.repository.LabelRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class LabelViewModel extends ViewModel {
-
+public class LabelViewModel extends AndroidViewModel {
+    private LiveData<List<Label>> currentSource;
     private final LabelRepository labelRepository;
+    private final MediatorLiveData<List<Label>> labelLiveData = new MediatorLiveData<>();
 
-    public LabelViewModel() {
-        labelRepository = MyApplication.getInstance().getLabelRepository();
+    public LabelViewModel(@NonNull Application application) {
+        super(application);
+        labelRepository = LabelRepository.getInstance(application);
     }
 
-    public LiveData<List<Label>> getAllLabels(String userId) {
-        return labelRepository.getAllLabels(userId);
+    public void setCurrentUser(User user) {
+        if (user == null || user.getId() == null) return;
+
+        if (currentSource != null) {
+            labelLiveData.removeSource(currentSource);
+        }
+
+        currentSource = labelRepository.getLabelLiveData(user.getId());
+        labelLiveData.addSource(currentSource, labelLiveData::setValue);
     }
 
-    public LiveData<String> getErrorMessage() {
-        return labelRepository.getErrorMessage();
+    public LiveData<List<Label>> getLabels() {
+        return labelLiveData;
     }
 
-    public LiveData<Boolean> getIsLoading() {
-        return labelRepository.getIsLoading();
+    public void fetchLabels() {
+        labelRepository.fetchLabels(new LabelRepository.FetchLabelsCallback() {
+            @Override
+            public void onLabelsFetched(List<Label> labels) {
+                Log.d("LabelViewModel", "Labels fetched: " + labels.size());
+            }
+
+            @Override
+            public void onError(String errorMsg) {
+                Log.e("LabelViewModel", "Fetch error: " + errorMsg);
+            }
+        });
     }
 
-    public void fetchLabels(String token, String userId) {
-        labelRepository.fetchLabels(token, userId);
+    public void updateLabel(Label label) {
+        labelRepository.updateLabel(label);
+        fetchLabels();
     }
 
-    public void addLabel(String token, Label label) {
-        labelRepository.addLabel(token, label);
+    public void addLabel(Label label) {
+        labelRepository.addLabel(label, addedLabel -> fetchLabels());
     }
 
-    public void updateLabel(String token, Label label) {
-        labelRepository.updateLabel(token, label);
-    }
-
-    public void deleteLabel(String token, String labelId) {
-        labelRepository.deleteLabel(token, labelId);
+    public void deleteLabel(String labelId) {
+        labelRepository.deleteLabel(labelId);
+        fetchLabels();
     }
 }

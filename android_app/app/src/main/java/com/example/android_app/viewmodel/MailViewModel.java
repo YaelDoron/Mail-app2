@@ -1,139 +1,241 @@
 package com.example.android_app.viewmodel;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.android_app.MyApplication;
+import com.example.android_app.core.MyApplication;
+import com.example.android_app.api.RetrofitClient;
+import com.example.android_app.api.UserApi;
 import com.example.android_app.entity.Mail;
+import com.example.android_app.entity.User;
 import com.example.android_app.repository.MailRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MailViewModel extends ViewModel {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MailViewModel extends AndroidViewModel {
+    private User currentUser;
     private final MailRepository mailRepository;
 
-    public MailViewModel() {
-        mailRepository = MyApplication.getInstance().getMailRepository();
+    private final MutableLiveData<Mail> selectedMail = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<List<Mail>> mailsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+
+    public void fetchMailsByLabel(String labelId) {
+        mailRepository.fetchMailsByLabel(labelId, createListCallback());
     }
 
-    public LiveData<List<Mail>> getInboxMails() {
-        return mailRepository.getInboxMails();
+    private final Map<String, User> senderCache = new HashMap<>();
+
+    public User getSender(String userId) {
+        return senderCache.get(userId);
     }
 
-    public LiveData<List<Mail>> getSentMails() {
-        return mailRepository.getSentMails();
+    public void fetchSender(String userId, Runnable onComplete) {
+        if (senderCache.containsKey(userId)) {
+            onComplete.run();
+            return;
+        }
+        UserApi api = RetrofitClient.getClient().create(UserApi.class);
+        api.getUserById(userId).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    senderCache.put(userId, response.body());
+                }
+                onComplete.run();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                onComplete.run();
+            }
+        });
     }
 
-    public LiveData<List<Mail>> getDraftMails() {
-        return mailRepository.getDraftMails();
+
+    public LiveData<User> getCurrentUser() {
+        return mailRepository.getCurrentUser();
     }
 
-    public LiveData<List<Mail>> getSpamMails() {
-        return mailRepository.getSpamMails();
+    public MailViewModel(Application application) {
+        super(application);
+        mailRepository = MailRepository.getInstance(application);
     }
 
-    public LiveData<List<Mail>> getStarredMails() {
-        return mailRepository.getStarredMails();
+    public void setUser(User user) {
+        this.currentUser = user;
     }
 
-    public LiveData<List<Mail>> getTrashMails() {
-        return mailRepository.getTrashMails();
-    }
-
-    public LiveData<List<Mail>> getLabelMails() {
-        return mailRepository.getLabelMails();
-    }
-
-    public LiveData<List<Mail>> getSearchResults() {
-        return mailRepository.getSearchResults();
+    public LiveData<List<Mail>> getMails() {
+        return mailsLiveData;
     }
 
     public LiveData<Mail> getSelectedMail() {
-        return mailRepository.getSelectedMail();
-    }
-
-    public LiveData<String> getErrorMessage() {
-        return mailRepository.getErrorMessage();
+        return selectedMail;
     }
 
     public LiveData<Boolean> getIsLoading() {
-        return mailRepository.getIsLoading();
+        return isLoading;
     }
 
-    public void fetchInboxMails(String token) {
-        mailRepository.fetchInboxMails(token);
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
     }
 
-    public void fetchSentMails(String token) {
-        mailRepository.fetchSentMails(token);
+    public void fetchMails(String type) {
+        isLoading.setValue(true);
+        mailRepository.fetchMails(type, new MailRepository.MailListCallback() {
+            @Override
+            public void onSuccess(List<Mail> mails) {
+                isLoading.setValue(false);
+                mailsLiveData.setValue(mails);
+            }
+
+            @Override
+            public void onError(String error) {
+                isLoading.setValue(false);
+                errorMessage.setValue(error);
+            }
+        });
     }
 
-    public void fetchDraftMails(String token) {
-        mailRepository.fetchDraftMails(token);
+    public void fetchMailById(String mailId) {
+        isLoading.setValue(true);
+        mailRepository.fetchMailById(mailId, new MailRepository.SingleMailCallback() {
+            @Override
+            public void onSuccess(Mail mail) {
+                isLoading.postValue(false);
+                selectedMail.postValue(mail);
+            }
+
+            @Override
+            public void onError(String error) {
+                isLoading.postValue(false);
+                errorMessage.postValue(error);
+            }
+        });
     }
 
-    public void fetchSpamMails(String token) {
-        mailRepository.fetchSpamMails(token);
+    public void searchMails(String query) {
+        isLoading.setValue(true);
+        mailRepository.searchMails(query, new MailRepository.MailListCallback() {
+            @Override
+            public void onSuccess(List<Mail> mails) {
+                isLoading.postValue(false);
+                mailsLiveData.postValue(mails);
+            }
+
+            @Override
+            public void onError(String error) {
+                isLoading.postValue(false);
+                errorMessage.postValue(error);
+            }
+        });
     }
 
-    public void fetchStarredMails(String token) {
-        mailRepository.fetchStarredMails(token);
+
+    private MailRepository.MailListCallback createListCallback() {
+        return new MailRepository.MailListCallback() {
+            @Override
+            public void onSuccess(List<Mail> mails) {
+                isLoading.postValue(false);
+                mailsLiveData.postValue(mails);
+            }
+
+            @Override
+            public void onError(String error) {
+                isLoading.postValue(false);
+                errorMessage.postValue(error);
+            }
+        };
     }
 
-    public void fetchTrashMails(String token) {
-        mailRepository.fetchTrashMails(token);
+    public void markAsRead(String mailId) {
+        List<Mail> currentList = mailsLiveData.getValue();
+        if (currentList == null) return;
+
+        for (Mail mail : currentList) {
+            if (mail.getId().equals(mailId)) {
+                mail.setRead(true);
+                break;
+            }
+        }
+        mailsLiveData.postValue(currentList);
+
+        mailRepository.markAsRead(mailId);
     }
 
-    public void fetchMailById(String token, String mailId) {
-        mailRepository.fetchMailById(token, mailId);
+
+
+    public void toggleStarred(String mailId) {
+        mailRepository.toggleStarred(mailId, updatedMail -> {
+            List<Mail> currentList = mailsLiveData.getValue();
+            if (currentList == null) return;
+
+            for (int i = 0; i < currentList.size(); i++) {
+                if (currentList.get(i).getId().equals(updatedMail.getId())) {
+                    currentList.set(i, updatedMail);
+                    break;
+                }
+            }
+
+            mailsLiveData.postValue(new ArrayList<>(currentList));
+        });
     }
 
-    public void fetchMailsByLabel(String token, Map<String, String> labelMap) {
-        mailRepository.fetchMailsByLabel(token, labelMap);
+
+    public void toggleSpam(String mailId) {
+        mailRepository.toggleSpam(mailId);
     }
 
-    public void searchMails(String token, String query) {
-        mailRepository.searchMails(token, query);
+    public void clearSenders() {
+        senderCache.clear();
     }
 
-    public void markAsRead(String token, String mailId) {
-        mailRepository.markAsRead(token, mailId);
+    public void assignLabels(String mailId, Map<String, List<String>> labels) {
+        mailRepository.assignLabels(mailId, labels);
     }
 
-    public void toggleStarred(String token, String mailId) {
-        mailRepository.toggleStarred(token, mailId);
+    public void unassignLabel(String mailId, Map<String, String> label) {
+        mailRepository.unassignLabel(mailId, label);
     }
 
-    public void toggleSpam(String token, String mailId) {
-        mailRepository.toggleSpam(token, mailId);
+    public void createMail(Mail mail) {
+        mailRepository.createMail(mail);
     }
 
-    public void assignLabels(String token, String mailId, Map<String, List<String>> labels) {
-        mailRepository.assignLabels(token, mailId, labels);
+    public void updateDraft(String mailId, Mail updates) {
+        mailRepository.updateDraft(mailId, updates);
     }
 
-    public void unassignLabel(String token, String mailId, Map<String, String> label) {
-        mailRepository.unassignLabel(token, mailId, label);
+    public void sendDraft(String mailId) {
+        mailRepository.sendDraft(mailId);
     }
 
-    public void createMail(String token, Mail mail) {
-        mailRepository.createMail(token, mail);
+    public void deleteMail(String mailId) {
+        mailRepository.deleteMail(mailId, () -> {
+            List<Mail> currentList = mailsLiveData.getValue();
+            if (currentList != null) {
+                List<Mail> updatedList = new ArrayList<>(currentList);
+                updatedList.removeIf(mail -> mail.getId().equals(mailId));
+                mailsLiveData.postValue(updatedList);
+            }
+        });
     }
 
-    public void updateDraft(String token, String mailId, Mail updates) {
-        mailRepository.updateDraft(token, mailId, updates);
-    }
-
-    public void sendDraft(String token, String mailId) {
-        mailRepository.sendDraft(token, mailId);
-    }
-
-    public void deleteMail(String token, String mailId) {
-        mailRepository.deleteMail(token, mailId);
-    }
-
-    public void restoreMail(String token, String mailId) {
-        mailRepository.restoreMail(token, mailId);
+    public void restoreMail(String mailId) {
+        mailRepository.restoreMail(mailId);
     }
 }

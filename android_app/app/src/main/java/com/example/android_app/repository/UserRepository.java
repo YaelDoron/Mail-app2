@@ -1,26 +1,25 @@
 package com.example.android_app.repository;
 
-
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.android_app.MyApplication;
-import com.example.android_app.AppDatabase;
+import com.example.android_app.core.AppDatabase;
 import com.example.android_app.api.RetrofitClient;
 import com.example.android_app.api.UserApi;
+import com.example.android_app.core.utils.FileUtils;
 import com.example.android_app.dao.UserDao;
 import com.example.android_app.entity.User;
-import com.example.android_app.response.TokenResponse;
-import com.example.android_app.utils.InputStreamRequestBody;
-import com.example.android_app.R;
+import com.example.android_app.core.response.TokenResponse;
 
-import org.json.JSONObject;
-
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,76 +30,66 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserRepository {
-
     private final UserApi userApi;
-    private final Context context;
     private final UserDao userDao;
-    public MutableLiveData<Boolean> isSignedUp = new MutableLiveData<>();
-    public MutableLiveData<Boolean> isSignedIn = new MutableLiveData<>();
-    public MutableLiveData<String> errorMessage = new MutableLiveData<>();
+
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> loginSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> registerSuccess = new MutableLiveData<>();
+
+    private final MutableLiveData<User> userLiveData = new MutableLiveData<>();
+
+    private static final String TAG = "UserRepository";
+
+    public LiveData<User> getUserLiveData() {
+        return userLiveData;
+    }
+
 
     public UserRepository(Context context) {
-        this.context = context;
-
-        this.userApi = RetrofitClient.getClient().create(UserApi.class);
-
-        // Initialize Room Database
         userDao = AppDatabase.getInstance(context).userDao();
+        userApi = RetrofitClient.getClient().create(UserApi.class);
     }
 
     public LiveData<User> getCurrentUser() {
         return userDao.getUser();
     }
 
+    public LiveData<Boolean> getLoginSuccess() {
+        return loginSuccess;
+    }
 
-    public void signUp(User user, Uri imageUri) {
-        MultipartBody.Part picturePart = null;
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
 
-        try {
-            if (imageUri != null) {
-                InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
-                RequestBody pictureBody = new InputStreamRequestBody(
-                        MediaType.parse("image/*"), inputStream);
-                picturePart = MultipartBody.Part.createFormData
-                        ("picture", "profile.jpg", pictureBody);
+    public LiveData<Boolean> getRegisterSuccess() {
+        return registerSuccess;
+    }
+
+    public void register(Map<String, String> userData) {
+        Map<String, RequestBody> parts = new HashMap<>();
+        for (Map.Entry<String, String> entry : userData.entrySet()) {
+            parts.put(entry.getKey(), RequestBody.create(entry.getValue(), MediaType.parse("text/plain")));
+        }
+
+        userApi.signUp(parts).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    registerSuccess.postValue(true);
+                } else {
+                    errorMessage.postValue("Registration failed: " + response.code());
+                }
             }
 
-            MediaType textPlain = MediaType.parse("text/plain");
-            Map<String, RequestBody> credentials = new HashMap<>();
-            credentials.put("firstName", RequestBody.create(user.getFirstName(), textPlain));
-            credentials.put("lastName", RequestBody.create(user.getLastName(), textPlain));
-            credentials.put("birthDate", RequestBody.create(user.getBirthDate(), textPlain));
-            credentials.put("gender", RequestBody.create(user.getGender(), textPlain));
-            credentials.put("email", RequestBody.create(user.getEmail(), textPlain));
-            credentials.put("password", RequestBody.create(user.getPassword(), textPlain));
-
-            Call<ResponseBody> call = (picturePart != null)
-                    ? userApi.signUp(picturePart, credentials)
-                    : userApi.signUp(credentials);
-
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response.isSuccessful()) {
-                        isSignedUp.postValue(true);
-                    } else {
-                        errorMessage.postValue("Signup failed: " + response.code());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    errorMessage.postValue("Sign-up failed: " + t.getMessage());
-                }
-            });
-
-        } catch (IOException e) {
-            errorMessage.postValue("Image read error: " + e.getMessage());
-        }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                errorMessage.postValue("Registration error: " + t.getMessage());
+            }
+        });
     }
 
     public void signIn(String email, String password) {
@@ -108,49 +97,167 @@ public class UserRepository {
         credentials.put("email", email);
         credentials.put("password", password);
 
-        Call<TokenResponse> call = userApi.signIn(credentials);
-        call.enqueue(new Callback<TokenResponse>() {
+        userApi.signIn(credentials).enqueue(new Callback<TokenResponse>() {
             @Override
             public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().getToken();
-                    String bearerToken = "Bearer " + token;
-                    MyApplication.setToken(bearerToken);
-                    Call<User> userCall = userApi.getCurrentUser(bearerToken);
-                    userCall.enqueue(new Callback<User>() {
-                        @Override
-                        public void onResponse(Call<User> call, Response<User> userResponse) {
-                            if (userResponse.isSuccessful() && userResponse.body() != null) {
-                                User user = userResponse.body();
-                                user.setToken(token);
-                                AppDatabase.databaseWriteExecutor.execute(() -> userDao.insert(user));
-                                isSignedIn.postValue(true);
-                            } else {
-                                errorMessage.postValue("Failed to load user data");
-                            }
-                        }
-                        @Override
-                        public void onFailure(Call<User> call, Throwable t) {
-                            errorMessage.postValue("Network error: " + t.getMessage());
-                        }
-                    });
+                    fetchUserDetails(email, token);
                 } else {
-                    errorMessage.postValue("Sign-in failed: " + response.code());
+                    errorMessage.postValue("Login failed: Invalid credentials");
                 }
             }
 
             @Override
             public void onFailure(Call<TokenResponse> call, Throwable t) {
-                errorMessage.postValue("Sign-in failed: " + t.getMessage());
+                errorMessage.postValue("Login failed: " + t.getMessage());
             }
         });
     }
 
+    private void fetchUserDetails(String email, String token) {
+        userApi.getUserIdByEmail(email).enqueue(new Callback<Map<String, String>>() {
+            @Override
+            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String userId = response.body().get("id");
+                    fetchUserById(userId, token);
+                } else {
+                    errorMessage.postValue("Failed to fetch user ID");
+                }
+            }
 
-    public void logout() {
-        MyApplication.setToken(null);
-        AppDatabase.databaseWriteExecutor.execute(userDao::clearAllUsers);
-        isSignedIn.postValue(false);
+            @Override
+            public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                errorMessage.postValue("User ID fetch error: " + t.getMessage());
+            }
+        });
     }
 
+    private void fetchUserById(String userId, String token) {
+        userApi.getUserById(userId).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    User user = response.body();
+                    user.setToken(token);
+                    saveUserToDatabase(user);
+                } else {
+                    errorMessage.postValue("Failed to fetch user details");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                errorMessage.postValue("User fetch error: " + t.getMessage());
+            }
+        });
+    }
+
+    private void saveUserToDatabase(User user) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            userDao.insert(user);
+            loginSuccess.postValue(true);
+        });
+    }
+
+    public LiveData<User> fetchUserById(String userId) {
+        MutableLiveData<User> result = new MutableLiveData<>();
+
+        userApi.getUserById(userId).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    result.setValue(response.body());
+                } else {
+                    result.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                result.setValue(null);
+            }
+        });
+
+        return result;
+    }
+
+    public LiveData<String> fetchUserIdByEmail(String email) {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        UserApi userApi = RetrofitClient.getClient().create(UserApi.class);
+
+        userApi.getUserIdByEmail(email).enqueue(new Callback<Map<String, String>>() {
+            @Override
+            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    result.setValue(response.body().get("id"));
+                } else {
+                    result.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                result.setValue(null);
+            }
+        });
+
+        return result;
+    }
+
+    public void uploadProfileImage(Context context, String token, Uri uri, User currentUser) {
+        Log.d("UserRepository", "Starting image upload");
+
+        File file = FileUtils.getFileFromUri(context, uri);
+        if (file == null || !file.exists()) {
+            Log.e("UserRepository", "File is null or does not exist");
+            errorMessage.postValue("Invalid image file");
+            return;
+        }
+
+        Log.d("UserRepository", "File path: " + file.getAbsolutePath());
+        Log.d("UserRepository", "File exists: " + file.exists());
+
+        RequestBody requestFile = RequestBody.create(file, MediaType.parse("image/*"));
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+
+        String authHeader = "Bearer " + token;
+        Log.d("UserRepository", "Uploading with token: " + authHeader);
+
+        userApi.uploadProfileImage(authHeader, body).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("UserRepository", "onResponse triggered");
+
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "Upload successful: " + response.body().getImage());
+
+                    User updatedUser = response.body();
+                    updatedUser.setToken(currentUser.getToken());
+
+                    // Update DB and LiveData
+                    AppDatabase.databaseWriteExecutor.execute(() -> {
+                        userDao.insert(updatedUser);
+                        userLiveData.postValue(updatedUser);
+                    });
+                } else {
+                    Log.e(TAG, "Upload failed with code: " + response.code());
+                    try {
+                        Log.e(TAG, "Error body: " + (response.errorBody() != null ? response.errorBody().string() : "null"));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing errorBody", e);
+                    }
+                    errorMessage.postValue("Image upload failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("UserRepository", "Upload failed: ", t);
+                errorMessage.postValue("Upload error: " + t.getMessage());
+            }
+        });
+    }
 }
