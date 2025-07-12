@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">android_app</string>
+    <string name="navigation_drawer_open">yeah</string>
+    <string name="navigation_drawer_close">yeah</string>
+    <string name="inbox">Inbox</string>
+    <string name="starred">Starred</string>
+    <string name="drafts">Drafts</string>
+    <string name="sent">Sent</string>
+    <string name="all_mail">All mail</string>
+    <string name="spam">Spam</string>
+    <string name="trash">Trash</string>
+    <string name="avatar">test</string>
 </resources>
