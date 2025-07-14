@@ -47,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
             new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
                 String selectedDate = selectedYear + "-" + String.format("%02d", selectedMonth + 1) + "-" + String.format("%02d", selectedDay);
                 birthDateInput.setText(selectedDate);
+                birthDateInput.clearFocus();
             }, year, month, day).show();
         });
 
@@ -108,7 +109,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (!FormValidator.isDateValid(birthDate)) {
-            showToast("Select a birth date");
+            showToast("Invalid birthdate");
             return false;
         }
 

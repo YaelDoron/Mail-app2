@@ -11,11 +11,14 @@ import androidx.room.Upsert;
 import com.example.android_app.entity.Label;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 @Dao
 public interface LabelDao {

@@ -237,7 +237,17 @@ public class MailsActivity extends AppCompatActivity {
         dialog.setOnShowListener(d -> {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                 String newName = input.getText().toString().trim();
-                if (!newName.isEmpty() && cachedUser != null) {
+                if (newName.isEmpty()) {
+                    Toast.makeText(this, "Label name cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (latestLabels.stream().anyMatch(label -> label.getName().equalsIgnoreCase(newName))) {
+                    Toast.makeText(this, "Label with this name already exists", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (cachedUser != null) {
                     Label newLabel = new Label();
                     newLabel.setName(newName);
                     newLabel.setOwner(cachedUser.getId());
@@ -329,33 +339,27 @@ public class MailsActivity extends AppCompatActivity {
 
     private void showProfileMenu(View anchor) {
         PopupMenu popupMenu = new PopupMenu(this, anchor);
-        popupMenu.getMenu().add("Sign out");
-        popupMenu.setOnMenuItemClickListener(item -> {
-            if ("Sign out".equals(item.getTitle())) {
-                new Thread(() -> {
-                    AppDatabase db = AppDatabase.getInstance(getApplicationContext());
-                    db.userDao().clearAllUsers();
-                    getApplicationContext().deleteDatabase("app_database");
-                    AppDatabase.destroyInstance();
-                    MyApplication.setToken(null);
+        popupMenu.getMenu().add("Sign out").setOnMenuItemClickListener(item -> {
+            new Thread(() -> {
+                AppDatabase db = AppDatabase.getInstance(getApplicationContext());
+                db.userDao().clearAllUsers();  // clear user table
+                db.close(); // flush
+                AppDatabase.destroyInstance(); // release singleton
 
-                    while (db.userDao().getUserSync() != null) {
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException ignored) {}
-                    }
+                MyApplication.getInstance().getUserViewModel().resetLoginState();
 
-                    runOnUiThread(() -> {
-                        Intent intent = new Intent(this, LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        intent.putExtra("fromLogout", true);
-                        startActivity(intent);
-                    });
-                }).start();
-                return true;
-            }
-            return false;
+                try { Thread.sleep(200); } catch (InterruptedException ignored) {}
+
+                runOnUiThread(() -> {
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra("fromLogout", true); // <- important
+                    startActivity(intent);
+                });
+            }).start();
+            return true;
         });
+
 
         popupMenu.getMenu().add("Edit Profile Image").setOnMenuItemClickListener(item -> {
             checkStoragePermissionAndPickImage();

@@ -92,6 +92,11 @@ public class UserRepository {
         });
     }
 
+    public void resetLoginState() {
+        loginSuccess.postValue(false);
+        errorMessage.postValue(null);
+    }
+
     public void signIn(String email, String password) {
         Map<String, String> credentials = new HashMap<>();
         credentials.put("email", email);

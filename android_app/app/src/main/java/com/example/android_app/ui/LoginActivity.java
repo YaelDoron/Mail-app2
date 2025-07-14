@@ -3,6 +3,7 @@ package com.example.android_app.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,6 +16,7 @@ import com.example.android_app.R;
 import com.example.android_app.core.AppDatabase;
 import com.example.android_app.core.MyApplication;
 import com.example.android_app.core.utils.FormValidator;
+import com.example.android_app.entity.User;
 import com.example.android_app.viewmodel.MailViewModel;
 import com.example.android_app.viewmodel.UserViewModel;
 import com.google.android.material.button.MaterialButton;
@@ -22,6 +24,7 @@ import com.google.android.material.button.MaterialButton;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
+    private boolean fromLogout = false;
     private boolean isEmailStage = true;
     private EditText emailInput, passwordInput;
     private LinearLayout emailStep, passwordStep;
@@ -38,7 +41,14 @@ public class LoginActivity extends AppCompatActivity {
 
         initViews();
         setupListeners();
-        checkSignedInUser();
+
+        fromLogout = getIntent().getBooleanExtra("fromLogout", false);
+        Log.d("LoginActivity", "onCreate, fromLogout = " + fromLogout);
+
+        if (!fromLogout) {
+            checkSignedInUser();
+        }
+
         observeLoginResult();
     }
 
@@ -154,20 +164,22 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkSignedInUser() {
-        AppDatabase.getInstance(getApplicationContext())
-                .userDao()
-                .getUser()
-                .observe(this, user -> {
-                    if (user != null && user.getToken() != null && !user.getToken().isEmpty()) {
-                        if (isTokenExpired(user.getToken())) {
-                            showToast("Session expired, please log in again");
-                        } else {
-                            Toast.makeText(this, "Logged in as " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                            goToMails();
-                        }
-                    }
-                });
+        new Thread(() -> {
+            User user = AppDatabase.getInstance(getApplicationContext()).userDao().getUserSync();
+            Log.d("LoginCheck", "User returned: " + (user == null ? "null" : user.getEmail()));
+            if (user != null && user.getToken() != null && !user.getToken().isEmpty()) {
+                if (isTokenExpired(user.getToken())) {
+                    runOnUiThread(() -> showToast("Session expired, please log in again"));
+                } else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, "Logged in as " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                        goToMails();
+                    });
+                }
+            }
+        }).start();
     }
+
 
     private boolean isTokenExpired(String jwt) {
         try {

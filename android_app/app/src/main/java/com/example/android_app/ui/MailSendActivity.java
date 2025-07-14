@@ -1,6 +1,7 @@
 package com.example.android_app.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -57,7 +58,17 @@ public class MailSendActivity extends AppCompatActivity {
         deleteDraftButton = findViewById(R.id.deleteDraftButton);
 
         backButton.setOnClickListener(v -> finish());
-        saveDraftButton.setOnClickListener(v -> saveDraft());
+        saveDraftButton.setOnClickListener(v -> {
+            String subject = emailSubject.getText().toString().trim();
+            String content = emailBody.getText().toString().trim();
+            String recipients = recipientEmail.getText().toString().trim();
+
+            if (subject.isEmpty() && content.isEmpty() && recipients.isEmpty()) {
+                finish();
+            } else {
+                saveDraft();
+            }
+        });
         deleteDraftButton.setOnClickListener(v -> deleteDraft());
 
         mailViewModel = MyApplication.getInstance().getMailViewModel();
@@ -96,8 +107,13 @@ public class MailSendActivity extends AppCompatActivity {
 
         recipientEmail.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         recipientEmail.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -128,27 +144,57 @@ public class MailSendActivity extends AppCompatActivity {
         userViewModel.fetchUserIdByEmail(email).observe(this, userId -> {
             if (userId != null && !userIds.contains(userId)) {
                 userIds.add(userId);
+            } else if (userId == null) {
+                Toast.makeText(this, "No user found with email: " + email, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void sendMail() {
-        String subject = emailSubject.getText().toString().trim();
+        final String[] subject = {emailSubject.getText().toString().trim()};
         String content = emailBody.getText().toString().trim();
 
-        if (userIds.isEmpty() || subject.isEmpty() || content.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields and wait for email resolution", Toast.LENGTH_SHORT).show();
-            return;
+        String[] parts = recipientEmail.getText().toString().split(",");
+        List<String> invalidEmails = new ArrayList<>();
+        List<String> validUserIds = new ArrayList<>();
+
+        for (String raw : parts) {
+            String email = raw.trim();
+            if (!email.isEmpty()) {
+                if (!FormValidator.isEmailValid(email)) {
+                    invalidEmails.add(email);
+                } else {
+                    userViewModel.fetchUserIdByEmail(email).observe(this, userId -> {
+                        if (userId != null && !validUserIds.contains(userId)) {
+                            validUserIds.add(userId);
+                        }
+                    });
+                }
+            }
         }
 
-        userViewModel.getCurrentUser().observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
+        new Handler().postDelayed(() -> {
+            if (!invalidEmails.isEmpty()) {
+                Toast.makeText(this, "Invalid emails: " + String.join(", ", invalidEmails), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (validUserIds.isEmpty()) {
+                Toast.makeText(this, "You need to add at least one valid recipient", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (subject[0].isEmpty()) {
+                subject[0] = "(no subject)";
+            }
+
+            String finalSubject = subject[0];
+            userViewModel.getCurrentUser().observe(this, user -> {
                 if (user != null) {
                     Mail mail = new Mail();
                     mail.setFrom(user.getId());
-                    mail.setTo(userIds);
-                    mail.setSubject(subject);
+                    mail.setTo(validUserIds);
+                    mail.setSubject(finalSubject);
                     mail.setContent(content);
                     mail.setTimestamp(new Date());
                     mail.setOwner(user.getId());
@@ -156,8 +202,8 @@ public class MailSendActivity extends AppCompatActivity {
                     mailViewModel.createMail(mail);
                     finish();
                 }
-            }
-        });
+            });
+        }, 300);
     }
 
     private void saveDraft() {

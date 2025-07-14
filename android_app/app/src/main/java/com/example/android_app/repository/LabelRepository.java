@@ -1,6 +1,8 @@
 package com.example.android_app.repository;
 
 import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import okhttp3.ResponseBody;
@@ -179,7 +181,6 @@ public class LabelRepository {
             }
 
             String token = "Bearer " + user.getToken();
-
             Map<String, String> nameMap = new HashMap<>();
             nameMap.put("name", label.getName());
 
@@ -187,13 +188,14 @@ public class LabelRepository {
                 @Override
                 public void onResponse(Call<Label> call, Response<Label> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Label updatedLabel = response.body();
-                        updatedLabel.setOwner(user.getId()); // ✅ REQUIRED or Room query fails
-
                         AppDatabase.databaseWriteExecutor.execute(() -> {
-                            labelDao.deleteById(updatedLabel.getId());
-                            labelDao.insert(updatedLabel);
-                            Log.d("LabelRepo", "Inserted updated label into DB: " + updatedLabel.getName());
+                            fetchLabels(new FetchLabelsCallback() {
+                                @Override
+                                public void onLabelsFetched(List<Label> labels) { /* no-op */ }
+
+                                @Override
+                                public void onError(String errorMsg) { /* no-op */ }
+                            });
                         });
                     } else {
                         errorMessage.postValue("Update failed: " + response.code());

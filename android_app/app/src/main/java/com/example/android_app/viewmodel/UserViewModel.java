@@ -11,7 +11,6 @@ import androidx.lifecycle.LiveData;
 import com.example.android_app.entity.User;
 import com.example.android_app.repository.UserRepository;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,5 +63,10 @@ public class UserViewModel extends AndroidViewModel {
 
     public void uploadProfileImage(Context context, String token, Uri uri, User currentUser) {
         userRepository.uploadProfileImage(context, token, uri, currentUser);
+    }
+
+
+    public void resetLoginState() {
+        userRepository.resetLoginState();
     }
 }

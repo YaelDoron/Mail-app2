@@ -42,9 +42,13 @@ public class FormValidator {
             Calendar dob = Calendar.getInstance();
             dob.setTime(date);
 
-            Calendar today = Calendar.getInstance();
-            int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+            int year = dob.get(Calendar.YEAR);
+            if (year < 1900 || year > Calendar.getInstance().get(Calendar.YEAR)) {
+                return false;
+            }
 
+            Calendar today = Calendar.getInstance();
+            int age = today.get(Calendar.YEAR) - year;
             if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
                 age--;
             }
