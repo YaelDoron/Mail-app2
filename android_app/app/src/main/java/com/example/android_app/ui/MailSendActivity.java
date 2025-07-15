@@ -198,8 +198,14 @@ public class MailSendActivity extends AppCompatActivity {
                     mail.setContent(content);
                     mail.setTimestamp(new Date());
                     mail.setOwner(user.getId());
+                    mail.setDraft(false);
 
-                    mailViewModel.createMail(mail);
+                    if (draftMailId != null && !draftMailId.isEmpty()) {
+                        mailViewModel.sendDraft(draftMailId);
+                    } else {
+                        mailViewModel.createMail(mail);
+                    }
+
                     finish();
                 }
             });

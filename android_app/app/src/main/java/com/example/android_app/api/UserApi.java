@@ -35,6 +35,13 @@ public interface UserApi {
             @PartMap Map<String, RequestBody> credentials
     );
 
+    @Multipart
+    @POST("users")
+    Call<ResponseBody> signUpWithImage(
+            @Part MultipartBody.Part image,
+            @PartMap Map<String, RequestBody> credentials
+    );
+
     @GET("users/current")
     Call<User> getCurrentUser(
             @Header("Authorization") String token

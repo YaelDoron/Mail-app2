@@ -127,7 +127,7 @@ public class MailRepository {
                 case "trash":
                     call = mailApi.getTrashMails(token); break;
                 default:
-                    call = mailApi.getInboxMails(token); break;
+                    call = mailApi.getAllMails(token); break;
             }
 
             call.enqueue(new Callback<List<Mail>>() {
@@ -312,7 +312,6 @@ public class MailRepository {
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-                    // optional: handle error
                 }
             });
         });

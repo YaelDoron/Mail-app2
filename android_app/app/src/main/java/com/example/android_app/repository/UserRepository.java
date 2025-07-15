@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -16,10 +17,7 @@ import com.example.android_app.entity.User;
 import com.example.android_app.core.response.TokenResponse;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,19 +67,23 @@ public class UserRepository {
         return registerSuccess;
     }
 
-    public void register(Map<String, String> userData) {
-        Map<String, RequestBody> parts = new HashMap<>();
-        for (Map.Entry<String, String> entry : userData.entrySet()) {
-            parts.put(entry.getKey(), RequestBody.create(entry.getValue(), MediaType.parse("text/plain")));
-        }
-
-        userApi.signUp(parts).enqueue(new Callback<ResponseBody>() {
+    public void registerWithImage(Map<String, RequestBody> userData, @Nullable MultipartBody.Part imagePart) {
+        userApi.signUpWithImage(imagePart, userData).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     registerSuccess.postValue(true);
                 } else {
-                    errorMessage.postValue("Registration failed: " + response.code());
+                    if (response.code() == 409) {
+                        errorMessage.postValue("Email already exists");
+                    } else {
+                        try {
+                            String serverMessage = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                            errorMessage.postValue("Registration failed: " + serverMessage);
+                        } catch (IOException e) {
+                            errorMessage.postValue("Registration failed: " + response.code());
+                        }
+                    }
                 }
             }
 
@@ -91,7 +93,6 @@ public class UserRepository {
             }
         });
     }
-
     public void resetLoginState() {
         loginSuccess.postValue(false);
         errorMessage.postValue(null);

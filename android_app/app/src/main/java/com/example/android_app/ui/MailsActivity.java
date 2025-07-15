@@ -49,6 +49,7 @@ public class MailsActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
     private MailViewModel mailViewModel;
+    private UserViewModel userViewModel;
     private NavigationView navigationView;
     private LabelViewModel labelViewModel;
 
@@ -72,6 +73,7 @@ public class MailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mails);
 
         mailViewModel = MyApplication.getInstance().getMailViewModel();
+        userViewModel = MyApplication.getInstance().getUserViewModel();
         labelViewModel = MyApplication.getInstance().getLabelViewModel();
 
         setupRecyclerView();
@@ -98,7 +100,7 @@ public class MailsActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         recyclerView = findViewById(R.id.mailRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MailAdapter(this, mailViewModel);
+        adapter = new MailAdapter(this, mailViewModel, userViewModel);
         recyclerView.setAdapter(adapter);
     }
 

@@ -8,11 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.android_app.core.utils.FileUtils;
 import com.example.android_app.entity.User;
 import com.example.android_app.repository.UserRepository;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class UserViewModel extends AndroidViewModel {
 
@@ -27,14 +33,25 @@ public class UserViewModel extends AndroidViewModel {
         userRepository.signIn(email, password);
     }
 
-    public void register(Map<String, Object> payload) {
-        Map<String, String> safePayload = new HashMap<>();
+    public void registerWithImage(Context context, Map<String, Object> payload, Uri imageUri) {
+        Map<String, RequestBody> dataMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : payload.entrySet()) {
             if (entry.getValue() != null) {
-                safePayload.put(entry.getKey(), entry.getValue().toString());
+                dataMap.put(entry.getKey(), RequestBody.create(MediaType.parse("text/plain"), entry.getValue().toString()));
             }
         }
-        userRepository.register(safePayload);
+
+        MultipartBody.Part imagePart = null;
+        if (imageUri != null) {
+            String path = FileUtils.getPath(context, imageUri);
+            if (path != null) {
+                File file = new File(path);
+                RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
+                imagePart = MultipartBody.Part.createFormData("image", file.getName(), fileBody);
+            }
+        }
+
+        userRepository.registerWithImage(dataMap, imagePart);
     }
 
     public LiveData<Boolean> getLoginSuccess() {
@@ -64,7 +81,6 @@ public class UserViewModel extends AndroidViewModel {
     public void uploadProfileImage(Context context, String token, Uri uri, User currentUser) {
         userRepository.uploadProfileImage(context, token, uri, currentUser);
     }
-
 
     public void resetLoginState() {
         userRepository.resetLoginState();

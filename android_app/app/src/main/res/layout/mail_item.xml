@@ -36,6 +36,13 @@
             android:textColor="@color/colorOnSurface" />
 
         <TextView
+            android:id="@+id/recipientText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/colorOnSurfaceVariant" />
+
+        <TextView
             android:id="@+id/timeText"
             android:textSize="12sp"
             android:layout_width="wrap_content"

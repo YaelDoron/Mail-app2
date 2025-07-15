@@ -1,10 +1,14 @@
 package com.example.android_app.ui;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +25,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
+    private ImageView profileImageView;
+    private MaterialButton selectImageButton;
+    private Uri selectedImageUri = null;
+    private static final int PICK_IMAGE_REQUEST = 201;
+
+
     private MaterialButton registerButton;
     private AutoCompleteTextView genderInput;
     private EditText firstNameInput, lastNameInput, birthDateInput;
@@ -37,6 +47,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         initViews();
         observeViewModel();
+
+        selectImageButton.setOnClickListener(v -> openImagePicker());
+        profileImageView.setOnClickListener(v -> openImagePicker());
 
         birthDateInput.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
@@ -67,9 +80,9 @@ public class RegisterActivity extends AppCompatActivity {
                 payload.put("email", emailInput.getText().toString().trim());
                 payload.put("password", passwordInput.getText().toString().trim());
                 payload.put("confirmPassword", confirmPasswordInput.getText().toString().trim());
-                payload.put("image", null);
+                payload.put("image", selectedImageUri != null ? selectedImageUri.toString() : null);
 
-                userViewModel.register(payload);
+                userViewModel.registerWithImage(this, payload, selectedImageUri);
             }
         });
 
@@ -78,7 +91,10 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("WrongViewCast")
     private void initViews() {
+        profileImageView = findViewById(R.id.profileImageView);
+        selectImageButton = findViewById(R.id.selectImageButton);
         firstNameInput = findViewById(R.id.firstNameInput);
         lastNameInput = findViewById(R.id.lastNameInput);
         birthDateInput = findViewById(R.id.birthDateInput);
@@ -87,6 +103,21 @@ public class RegisterActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.passwordInput);
         confirmPasswordInput = findViewById(R.id.confirmPasswordInput);
         registerButton = findViewById(R.id.registerButton);
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
+            profileImageView.setImageURI(selectedImageUri);
+        }
     }
 
     private boolean validateForm() {

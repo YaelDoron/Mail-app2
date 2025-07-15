@@ -21,6 +21,7 @@ import com.example.android_app.entity.User;
 import com.example.android_app.ui.MailInfoActivity;
 import com.example.android_app.ui.MailSendActivity;
 import com.example.android_app.viewmodel.MailViewModel;
+import com.example.android_app.viewmodel.UserViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,11 +33,13 @@ import android.app.Activity;
 public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailViewHolder> {
     private final Context context;
     private final MailViewModel mailViewModel;
+    private final UserViewModel userViewModel;
     private List<Mail> mailList = new ArrayList<>();
 
-    public MailAdapter(Context context, MailViewModel viewModel) {
+    public MailAdapter(Context context, MailViewModel viewModel, UserViewModel userViewModel) {
         this.context = context;
         this.mailViewModel = viewModel;
+        this.userViewModel = userViewModel;
     }
 
     public void setMails(List<Mail> mails) {
@@ -95,6 +98,21 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailViewHolder
             mailViewModel.toggleStarred(mail.getId());
         });
 
+        List<String> recipients = mail.getTo();
+        if (!recipients.isEmpty()) {
+            String firstRecipientId = recipients.get(0);
+            holder.recipientText.setText("To: Loading...");
+            userViewModel.fetchUserById(firstRecipientId).observeForever(user -> {
+                if (user != null) {
+                    holder.recipientText.setText("To: " + user.getFirstName() + " " + user.getLastName());
+                } else {
+                    holder.recipientText.setText("To: Unknown");
+                }
+            });
+        } else {
+            holder.recipientText.setText("To: —");
+        }
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent;
             if (mail.isDraft()) {
@@ -142,10 +160,11 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailViewHolder
 
     static class MailViewHolder extends RecyclerView.ViewHolder {
         ImageView starIcon, senderAvatar;
-        TextView senderText, subjectText, timeText;
+        TextView senderText, subjectText, timeText, recipientText;
 
         MailViewHolder(View itemView) {
             super(itemView);
+            recipientText = itemView.findViewById(R.id.recipientText);
             starIcon = itemView.findViewById(R.id.starIcon);
             senderAvatar = itemView.findViewById(R.id.avatarImage);
             senderText = itemView.findViewById(R.id.senderText);
