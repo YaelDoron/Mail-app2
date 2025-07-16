@@ -9,8 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.stream.Collectors;
-
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MailInfoActivity extends AppCompatActivity {
     private String mailId;
@@ -129,6 +128,8 @@ public class MailInfoActivity extends AppCompatActivity {
         if (isTrash) {
             deleteButton.setVisibility(View.GONE);
             restoreButton.setVisibility(View.VISIBLE);
+            reportButton.setVisibility(View.GONE);
+            labelButton.setVisibility(View.GONE);
         } else {
             deleteButton.setVisibility(View.VISIBLE);
             restoreButton.setVisibility(View.GONE);
@@ -173,8 +174,9 @@ public class MailInfoActivity extends AppCompatActivity {
         List<String> assignedLabelIds = mailViewModel.getMails().getValue()
                 .stream()
                 .filter(mail -> mail.getId().equals(mailId))
-                .flatMap(mail -> mail.getLabels() != null ? mail.getLabels().stream() : java.util.stream.Stream.<String>empty())
+                .flatMap(mail -> mail.getLabels() != null ? mail.getLabels().stream() : java.util.stream.Stream.empty())
                 .collect(Collectors.toList());
+
 
         for (Label label : currentLabels) {
             CheckBox checkBox = new CheckBox(this);

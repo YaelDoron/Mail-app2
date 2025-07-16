@@ -101,6 +101,7 @@ public class MailRepository {
 
     public void fetchMails(String type, MailListCallback callback) {
         isLoading.postValue(true);
+        Log.d("tag", type);
 
         Executors.newSingleThreadExecutor().execute(() -> {
             User user = userDao.getUserSync();

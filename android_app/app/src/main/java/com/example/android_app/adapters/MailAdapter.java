@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.Activity;
 
@@ -100,15 +101,24 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailViewHolder
 
         List<String> recipients = mail.getTo();
         if (!recipients.isEmpty()) {
-            String firstRecipientId = recipients.get(0);
             holder.recipientText.setText("To: Loading...");
-            userViewModel.fetchUserById(firstRecipientId).observeForever(user -> {
-                if (user != null) {
-                    holder.recipientText.setText("To: " + user.getFirstName() + " " + user.getLastName());
-                } else {
-                    holder.recipientText.setText("To: Unknown");
-                }
-            });
+
+            List<String> names = new ArrayList<>();
+            AtomicInteger counter = new AtomicInteger(0);
+
+            for (String recipientId : recipients) {
+                userViewModel.fetchUserById(recipientId).observeForever(user -> {
+                    if (user != null) {
+                        names.add(user.getFirstName() + " " + user.getLastName());
+                    } else {
+                        names.add("Unknown");
+                    }
+
+                    if (counter.incrementAndGet() == recipients.size()) {
+                        holder.recipientText.setText("To: " + String.join(", ", names));
+                    }
+                });
+            }
         } else {
             holder.recipientText.setText("To: —");
         }
