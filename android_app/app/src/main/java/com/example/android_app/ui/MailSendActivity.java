@@ -78,7 +78,15 @@ public class MailSendActivity extends AppCompatActivity {
         if (extras != null) {
             draftMailId = extras.getString("id", null);
 
-            if (draftMailId != null && !draftMailId.isEmpty()) {
+            // ✅
+            boolean isDraft = extras.getBoolean("isDraft", false);
+            boolean isTrash = extras.getBoolean("isTrash", false);
+            if (isDraft && isTrash) {
+                sendEmailButton.setVisibility(View.GONE);
+                deleteDraftButton.setVisibility(View.GONE);
+            }
+
+            if (draftMailId != null && !draftMailId.isEmpty() && !(isDraft && isTrash)) {
                 deleteDraftButton.setVisibility(View.VISIBLE);
             }
 
