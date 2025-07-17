@@ -84,7 +84,7 @@ public class LabelRepository {
                         AppDatabase.databaseWriteExecutor.execute(() -> {
                             labelDao.clear();
                             labelDao.insertAll(labels);
-                            callback.onLabelsFetched(labels);
+                            new Handler(Looper.getMainLooper()).post(() -> callback.onLabelsFetched(labels));
                         });
                     } else {
                         postError("Failed to fetch labels: " + response.code(), callback);
@@ -172,7 +172,7 @@ public class LabelRepository {
         });
     }
 
-    public void updateLabel(Label label) {
+    public void updateLabel(Label label, Runnable onComplete) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             User user = userDao.getUserSync();
             if (user == null || user.getToken() == null) {
@@ -187,14 +187,20 @@ public class LabelRepository {
             labelApi.updateLabel(token, label.getId(), nameMap).enqueue(new Callback<Label>() {
                 @Override
                 public void onResponse(Call<Label> call, Response<Label> response) {
-                    if (response.isSuccessful() && response.body() != null) {
+                    if (response.isSuccessful()) {
+                        // Force DB clear + refetch from server for 100% sync
                         AppDatabase.databaseWriteExecutor.execute(() -> {
+                            labelDao.clear();
                             fetchLabels(new FetchLabelsCallback() {
                                 @Override
-                                public void onLabelsFetched(List<Label> labels) { /* no-op */ }
+                                public void onLabelsFetched(List<Label> labels) {
+                                    if (onComplete != null) onComplete.run();
+                                }
 
                                 @Override
-                                public void onError(String errorMsg) { /* no-op */ }
+                                public void onError(String errorMsg) {
+                                    if (onComplete != null) onComplete.run();
+                                }
                             });
                         });
                     } else {

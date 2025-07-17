@@ -230,7 +230,9 @@ public class MailsActivity extends AppCompatActivity {
 
         Observer<List<Label>> dialogObserver = labels -> renderLabels(labelList, labels);
 
-        labelViewModel.getLabels().observeForever(dialogObserver);
+        labelViewModel.fetchLabels();
+        labelViewModel.getLabels().observe(this, dialogObserver);
+
 
         dialog.setOnDismissListener(d -> {
             labelViewModel.getLabels().removeObserver(dialogObserver);

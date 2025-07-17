@@ -45,7 +45,7 @@ public class LabelViewModel extends AndroidViewModel {
         labelRepository.fetchLabels(new LabelRepository.FetchLabelsCallback() {
             @Override
             public void onLabelsFetched(List<Label> labels) {
-                Log.d("LabelViewModel", "Labels fetched: " + labels.size());
+                labelLiveData.postValue(labels);  // Force emit!
             }
 
             @Override
@@ -53,11 +53,11 @@ public class LabelViewModel extends AndroidViewModel {
                 Log.e("LabelViewModel", "Fetch error: " + errorMsg);
             }
         });
+
     }
 
     public void updateLabel(Label label) {
-        labelRepository.updateLabel(label);
-        fetchLabels();
+        labelRepository.updateLabel(label, () -> fetchLabels());
     }
 
     public void addLabel(Label label) {

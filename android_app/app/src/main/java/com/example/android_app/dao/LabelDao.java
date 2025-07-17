@@ -31,6 +31,9 @@ public interface LabelDao {
     @Upsert
     void insert(Label label);
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void update(Label label);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Label> labels);
 
