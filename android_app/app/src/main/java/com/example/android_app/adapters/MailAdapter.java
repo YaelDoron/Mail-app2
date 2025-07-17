@@ -130,8 +130,8 @@ public class MailAdapter extends RecyclerView.Adapter<MailAdapter.MailViewHolder
                 intent.putExtra("id", mail.getId());
                 intent.putExtra("subject", mail.getSubject());
                 intent.putExtra("content", mail.getContent());
-                intent.putExtra("isDraft", mail.isDraft()); // ✅
-                intent.putExtra("isTrash", mail.isDeleted()); // ✅
+                intent.putExtra("isDraft", mail.isDraft());
+                intent.putExtra("isTrash", mail.isDeleted());
                 intent.putStringArrayListExtra("recipients", new ArrayList<>(mail.getTo()));
             } else {
                 intent = new Intent(context, MailInfoActivity.class);

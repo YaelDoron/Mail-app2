@@ -139,6 +139,8 @@ public class MailsActivity extends AppCompatActivity {
                 currentCategory = "sent";
             } else if (itemId == R.id.nav_drafts) {
                 currentCategory = "draft";
+            } else if(itemId == R.id.nav_all) {
+                currentCategory = "all";
             } else if (itemId == R.id.nav_spam) {
                 currentCategory = "spam";
             } else if (itemId == R.id.nav_trash) {

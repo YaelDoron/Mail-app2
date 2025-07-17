@@ -127,8 +127,11 @@ public class MailRepository {
                     call = mailApi.getStarredMails(token); break;
                 case "trash":
                     call = mailApi.getTrashMails(token); break;
-                default:
+                case "all":
                     call = mailApi.getAllMails(token); break;
+                default:
+                    callback.onError("Unknown mail type: " + type);
+                    return;
             }
 
             call.enqueue(new Callback<List<Mail>>() {

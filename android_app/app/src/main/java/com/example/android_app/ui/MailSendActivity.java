@@ -78,7 +78,6 @@ public class MailSendActivity extends AppCompatActivity {
         if (extras != null) {
             draftMailId = extras.getString("id", null);
 
-            // ✅
             boolean isDraft = extras.getBoolean("isDraft", false);
             boolean isTrash = extras.getBoolean("isTrash", false);
             if (isDraft && isTrash) {
