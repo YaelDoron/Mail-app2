@@ -348,29 +348,29 @@ public class MailsActivity extends AppCompatActivity {
         popupMenu.getMenu().add("Sign out").setOnMenuItemClickListener(item -> {
             new Thread(() -> {
                 AppDatabase db = AppDatabase.getInstance(getApplicationContext());
-                db.userDao().clearAllUsers();  // clear user table
-                db.close(); // flush
-                AppDatabase.destroyInstance(); // release singleton
 
+                db.userDao().clearAllUsers();
+                db.mailDao().clear();
+                db.labelDao().clear();
+
+                MyApplication.setToken(null);
                 MyApplication.getInstance().getUserViewModel().resetLoginState();
-
-                try { Thread.sleep(200); } catch (InterruptedException ignored) {}
 
                 runOnUiThread(() -> {
                     Intent intent = new Intent(this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.putExtra("fromLogout", true); // <- important
+                    intent.putExtra("fromLogout", true);
                     startActivity(intent);
                 });
             }).start();
             return true;
         });
 
-
         popupMenu.getMenu().add("Edit Profile Image").setOnMenuItemClickListener(item -> {
             checkStoragePermissionAndPickImage();
             return true;
         });
+
         popupMenu.show();
     }
 
