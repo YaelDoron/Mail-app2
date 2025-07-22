@@ -50,9 +50,9 @@ To log out of the system:
 
 > This action removes the JWT from localStorage and redirects you to the login screen.
 
-| Logout Menu |
-|-------------|
-| ![Logout](assets/logout-web.jpg) |
+<p align="center">
+  <img src="assets/logout-web-small.png" width="400" alt="Logout menu screenshot"/>
+</p>
 
 ---
 
