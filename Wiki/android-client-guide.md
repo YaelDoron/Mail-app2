@@ -124,7 +124,7 @@ You can create, edit, and delete custom labels. These labels will appear in the 
 
 | Finish Edit | Updated Labels   | Sidebar View   |
 |-------------|------------------|----------------|
-| ![Edit2](assets/edit-label2-android.jpg) | ![Sidebar](assets/labels-list-android.jpg) | ![Show](assets/show-edited-label-android.jpg) |
+| ![Edit2](assets/edit-label2-android.jpg) | ![Sidebar](assets/show-edited-label-android.jpg) | ![Show](assets/labels-list-android.jpg) |
 
 ---
 
