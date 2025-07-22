@@ -52,7 +52,7 @@ To log out of the system:
 
 | Logout Menu |
 |-------------|
-| ![Logout](assets/logout-web.png) |
+| ![Logout](assets/logout-web.jpg) |
 
 ---
 
@@ -101,7 +101,7 @@ If you close the window instead of sending → the email is saved as a **draft**
 
 | Before Editing                            | Edit Dialog                              | After Editing                            |
 |-------------------------------------------|-------------------------------------------|-------------------------------------------|
-| ![Before](assets/label-before-web.png)     | ![Edit Dialog](assets/label-editing-web.png) | ![After](assets/label-after-web.png)       |
+| ![Before](assets/label-after-web.png)     | ![Edit Dialog](assets/label-editing-web.png) | ![After](assets/label-before-web.png)       |
 
 > Once saved, the label will update immediately in the sidebar and all associated emails will reflect the new label name.
 
