@@ -48,9 +48,9 @@ To keep things modular, full documentation is separated into three detailed guid
 
 | Guide                     | Description |
 |---------------------------|-------------|
-| [Environment Setup](environment-setup.md) | How to clone, run, and connect all services with Docker. Required for local deployment. |
-| [Web Client Guide](web-client-guide.md) | Full walkthrough of how to use the **React** interface: login, draft, spam, labels, dark mode. |
-| [Android Client Guide](android-client-guide.md) | Full usage guide of the **Android app** (built with MVVM + Room + Retrofit). |
+| [Environment Setup](Wiki/environment-setup.md) | How to clone, run, and connect all services with Docker. Required for local deployment. |
+| [Web Client Guide](Wiki/web-client-guide.md) | Full walkthrough of how to use the **React** interface: login, draft, spam, labels, dark mode. |
+| [Android Client Guide](Wiki/android-client-guide.md) | Full usage guide of the **Android app** (built with MVVM + Room + Retrofit). |
 
 ---
 
