@@ -85,4 +85,9 @@ public class UserViewModel extends AndroidViewModel {
     public void resetLoginState() {
         userRepository.resetLoginState();
     }
+
+    public void resetRegisterState() {
+        userRepository.resetRegisterState();
+    }
+
 }

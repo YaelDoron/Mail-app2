@@ -44,6 +44,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         userViewModel = MyApplication.getInstance().getUserViewModel();
+        userViewModel.resetRegisterState();
+
 
         initViews();
         observeViewModel();
