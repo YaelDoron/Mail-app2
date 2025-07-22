@@ -41,6 +41,19 @@ Example:
 
 Once logged in, you will be redirected to your inbox and can begin using all email features.
 
+### Logout
+
+To log out of the system:
+
+1. Click on your profile image at the top-right corner.
+2. In the dropdown menu, click **"Sign out"**.
+
+> This action removes the JWT from localStorage and redirects you to the login screen.
+
+| Logout Menu |
+|-------------|
+| ![Logout](../assets/logout-web.png) |
+
 ---
 
 ## Email Actions – Compose / Edit / Delete
@@ -83,6 +96,14 @@ If you close the window instead of sending → the email is saved as a **draft**
   1. Select emails
   2. Click the **Label icon**
   3. Choose or create a new label
+
+  You can edit an existing label by clicking the three-dot menu next to it and selecting "Edit".
+
+| Before Editing                            | Edit Dialog                              | After Editing                            |
+|-------------------------------------------|-------------------------------------------|-------------------------------------------|
+| ![Before](../assets/label-before-web.png)     | ![Edit Dialog](../assets/label-editing-web.png) | ![After](../assets/label-after-web.png)       |
+
+> Once saved, the label will update immediately in the sidebar and all associated emails will reflect the new label name.
 
 ---
 
