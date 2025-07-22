@@ -98,6 +98,12 @@ public class UserRepository {
         errorMessage.postValue(null);
     }
 
+    public void resetRegisterState() {
+        registerSuccess.postValue(false);
+        errorMessage.postValue(null);
+    }
+
+
     public void signIn(String email, String password) {
         Map<String, String> credentials = new HashMap<>();
         credentials.put("email", email);
