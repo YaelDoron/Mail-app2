@@ -178,7 +178,7 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
         }
 
         if (!FormValidator.isDateValid(birthDate)) {
-            showToast("Invalid birthdate");
+            showToast("Invalid birthdate, you must be at least 13");
             return false;
         }
 
