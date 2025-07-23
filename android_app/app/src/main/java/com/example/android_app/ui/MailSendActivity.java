@@ -40,6 +40,9 @@ public class MailSendActivity extends AppCompatActivity {
 
     private MailViewModel mailViewModel;
     private UserViewModel userViewModel;
+    private boolean isDraft = false;
+    private boolean isTrash = false;
+
 
     private final List<String> userIds = new ArrayList<>();
     private final Set<String> parsedEmails = new HashSet<>();
@@ -78,8 +81,9 @@ public class MailSendActivity extends AppCompatActivity {
         if (extras != null) {
             draftMailId = extras.getString("id", null);
 
-            boolean isDraft = extras.getBoolean("isDraft", false);
-            boolean isTrash = extras.getBoolean("isTrash", false);
+            isDraft = extras.getBoolean("isDraft", false);
+            isTrash = extras.getBoolean("isTrash", false);
+
             if (isDraft && isTrash) {
                 sendEmailButton.setVisibility(View.GONE);
                 deleteDraftButton.setVisibility(View.GONE);
@@ -207,13 +211,10 @@ public class MailSendActivity extends AppCompatActivity {
                     mail.setOwner(user.getId());
                     mail.setDraft(false);
 
+                    mailViewModel.createMail(mail);
                     if (draftMailId != null && !draftMailId.isEmpty()) {
-                        mailViewModel.updateDraft(draftMailId, mail);
-                        mailViewModel.sendDraft(draftMailId);
-                    } else {
-                        mailViewModel.createMail(mail);
+                        mailViewModel.deleteMail(draftMailId);
                     }
-
                     finish();
                 }
             });
@@ -221,6 +222,13 @@ public class MailSendActivity extends AppCompatActivity {
     }
 
     private void saveDraft() {
+
+        if (isDraft && isTrash) {
+            finish();
+            return;
+        }
+
+
         String subject = emailSubject.getText().toString().trim();
         String content = emailBody.getText().toString().trim();
 
@@ -240,15 +248,17 @@ public class MailSendActivity extends AppCompatActivity {
                 mail.setOwner(user.getId());
                 mail.setDraft(true);
 
+
+
+                mailViewModel.createMail(mail);
+
                 if (draftMailId != null && !draftMailId.isEmpty()) {
-                    mailViewModel.updateDraft(draftMailId, mail);
-                    Toast.makeText(this, "Draft updated", Toast.LENGTH_SHORT).show();
-                } else {
-                    mailViewModel.createMail(mail);
-                    Toast.makeText(this, "Draft saved", Toast.LENGTH_SHORT).show();
+                    mailViewModel.deleteMail(draftMailId);
                 }
 
+                Toast.makeText(this, "Draft saved", Toast.LENGTH_SHORT).show();
                 finish();
+
             }
         });
     }

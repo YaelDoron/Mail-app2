@@ -80,7 +80,7 @@ public class MailInfoActivity extends AppCompatActivity {
                         }
                     }
                     if (names.length() > 0) names.setLength(names.length() - 2);
-                    subjectView.setText(subject + " <sent to " + names + ">");
+                    subjectView.setText(subject);
                 } else {
                     subjectView.setText(subject);
                 }
