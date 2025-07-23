@@ -10,6 +10,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.os.Build;
+import android.Manifest;
+import android.content.pm.PackageManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -29,6 +32,9 @@ public class RegisterActivity extends AppCompatActivity {
     private MaterialButton selectImageButton;
     private Uri selectedImageUri = null;
     private static final int PICK_IMAGE_REQUEST = 201;
+    private static final int STORAGE_PERMISSION_CODE = 103;
+
+    
 
 
     private MaterialButton registerButton;
@@ -37,6 +43,35 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText emailInput, passwordInput, confirmPasswordInput;
 
     private UserViewModel userViewModel;
+
+    private void checkPermissionAndPickImage() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES}, STORAGE_PERMISSION_CODE);
+            return;
+        }
+    } else {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+            return;
+        }
+    }
+    openImagePicker();
+}
+
+@Override
+public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+    if (requestCode == STORAGE_PERMISSION_CODE) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openImagePicker(); // ממשיכים לבחירת תמונה אחרי אישור
+        } else {
+            Toast.makeText(this, "Permission denied to access images", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +85,9 @@ public class RegisterActivity extends AppCompatActivity {
         initViews();
         observeViewModel();
 
-        selectImageButton.setOnClickListener(v -> openImagePicker());
-        profileImageView.setOnClickListener(v -> openImagePicker());
+        selectImageButton.setOnClickListener(v -> checkPermissionAndPickImage());
+        profileImageView.setOnClickListener(v -> checkPermissionAndPickImage());
+
 
         birthDateInput.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
