@@ -208,6 +208,7 @@ public class MailSendActivity extends AppCompatActivity {
                     mail.setDraft(false);
 
                     if (draftMailId != null && !draftMailId.isEmpty()) {
+                        mailViewModel.updateDraft(draftMailId, mail);
                         mailViewModel.sendDraft(draftMailId);
                     } else {
                         mailViewModel.createMail(mail);
