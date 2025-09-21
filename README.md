@@ -4,7 +4,7 @@ MailSnap is a modern, full-stack email application inspired by Gmail. It offers 
 
 ---
 
-![Demo](https://github.com/yourUser/yourRepo/assets/123456/demo.gif)
+![Demo](https://github.com/user-attachments/assets/3f52976b-b4c1-45b3-ba40-4fbf61c3c2d7)
 
 ## Project Overview
 
