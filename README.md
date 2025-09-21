@@ -1,4 +1,4 @@
-# MailSnap – Gmail-like Email Application 
+# MailSnap - Gmail-like Email Application 
 
 MailSnap is a modern, full-stack email application inspired by Gmail. It offers a sleek and responsive UI, spam detection, custom labels, support for drafts and dark mode, and secure authentication – all implemented through a microservices architecture.
 
